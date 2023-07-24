@@ -1,14 +1,16 @@
 |%
-+$  name  @
++$  name  @t
 +$  src  @t
 +$  owner  @p
-+$  image  [=src comments=(list [@p @da @t])] 
++$  comment  [@p @da @t]
++$  comments  ((mop @da comment) gth)
++$  image  [=src caption=comment =comments] 
 +$  album  [=name =owner images=(list image)]
 +$  albums  (map [owner name] album)
 +$  action
-  $%  [%create =name]
-      [%nuke =owner =name]
-      [%add [=owner =name] =image]
-      [%del [=owner =name] =image]
+  $%  [%create =name] :: Create album
+      [%nuke =owner =name] :: Delete an album
+      [%add [=owner =name] =image] :: add an image
+      [%del [=owner =name] =image] :: delete an image
   ==
 --
