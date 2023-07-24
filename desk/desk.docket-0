@@ -1,9 +1,10 @@
-:~  title+'albums'
-    info+'An Urbit app that does great things'
-    color+0x2e.4347
-    glob-http+['https://bootstrap.urbit.org/glob-0v5.hurm4.ejod5.ngg9h.iub9i.n1j7o.glob' 0v5.hurm4.ejod5.ngg9h.iub9i.n1j7o]
-    base+'albums'
-    version+[0 0 1]
-    website+'https://github.com'
-    license+'MIT'
+:~
+  title+'Albums'
+  info+'A photo sharing app'
+  color+0xd9.b06d
+  version+[0 1 1]
+  website+'https://structure.support/'
+  license+'MIT'
+  base+'albums'
+  glob-ames+[~wex 0v0]
 ==
