@@ -1,4 +1,4 @@
-/-  *journal
+/-  *albums
 |%
 ++  dejs-action
   =,  dejs:format

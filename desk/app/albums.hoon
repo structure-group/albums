@@ -34,21 +34,43 @@
       %create
     =/  name  +.act
     =/  owner  our.bowl
-    =/  =album  [name owner ~]
+    =/  =album  [name owner *shared *images]
     :-  ~
     this(albums (~(put by albums) [owner name] album))
     ::
       %nuke
+    =/  album-id  +.act
     :-  ~
-    this(albums (~(del by albums) name))
+    this(albums (~(del by albums) album-id))
     ::
       %add
+    =/  album-id  +6.act
+    =/  image  +7.act
+    =/  album  (~(get by albums.this) album-id)
+    ?~  album
+      ~&  >  ["Album not found" album-id]
+      `this
+    =/  new-album  %=  u.album
+    images  (snoc images.u.album image)
+    ==
     :-  ~
-    this
-    ::
+    this(albums (~(put by albums) album-id new-album))
       %del
+    =/  album-id  +6.act
+    =/  image  +7.act
+    =/  album  (~(get by albums.this) album-id)
+    ?~  album
+      ~&  >  ["Album not found" album-id]
+      `this
+    =/  idx  (find [image]~ images.u.album)
+    ?~  idx
+      ~&  >  ["Image not found" idx]
+      `this
+    =/  new-album  %=  u.album
+    images  (oust [u.idx 1] images.u.album)
+    ==
     :-  ~
-    this
+    this(albums (~(put by albums) album-id new-album))
   ==
 ::
 ++  on-watch
