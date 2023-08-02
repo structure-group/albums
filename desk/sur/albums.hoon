@@ -7,7 +7,8 @@
 +$  image  [=src caption=comment =comments] 
 +$  images  (list image)
 +$  shared  (list @p)
-+$  album-id  [=owner =name]
++$  album-id  [=name =owner]
++$  album-ids  (list album-id)
 +$  album  [=name =owner =shared =images]
 +$  albums  (map album-id album)
 +$  action
@@ -15,5 +16,9 @@
       [%nuke =album-id] :: Delete an album
       [%add =album-id =image] :: add an image
       [%del =album-id =image] :: delete an image
+  ==
++$  update
+  $%  [%album-id =album-ids]
+      [%album =album]
   ==
 --

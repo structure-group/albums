@@ -1,5 +1,5 @@
 /-  *albums
-/+  default-agent, dbug, agentio
+/+  default-agent, dbug, agentio, al=albums 
 |%
 +$  versioned-state
     $%  state-0
@@ -36,10 +36,11 @@
     =/  owner  our.bowl
     =/  =album  [name owner *shared *images]
     :-  ~
-    this(albums (~(put by albums) [owner name] album))
+    this(albums (~(put by albums) [name owner] album))
     ::
       %nuke
     =/  album-id  +.act
+    ~&  >>  album-id
     :-  ~
     this(albums (~(del by albums) album-id))
     ::
@@ -84,48 +85,23 @@
 ++  on-peek
   |=  =path
   ^-  (unit (unit cage))
-  ~
-  ::?>  (team:title our.bowl src.bowl)
-  ::=/  now=@  (unm:chrono:userlib now.bowl)
-  ::?+    path  (on-peek:def path)
-      ::[%x %entries *]
-    ::?+    t.t.path  (on-peek:def path)
-        ::[%all ~]
-      :::^  ~  ~  %journal-update
-      ::!>  ^-  update
-      ::[now %jrnl (tap:j-orm journal)]
+  ?>  (team:title our.bowl src.bowl)
+  =/  now  now.bowl
+  ?+  path  (on-peek:def path)
+      [%x %albums ~]
+    :^  ~  ~  %albums-update
+    !>  ^-  update
+    [%album-id ~(tap in ~(key by albums))]
+    ::``albums-update+!>([%album-id ~(tap in ~(key by albums))])
     ::
-        ::[%before @ @ ~]
-      ::=/  before=@  (rash i.t.t.t.path dem)
-      ::=/  max=@  (rash i.t.t.t.t.path dem)
-      :::^  ~  ~  %journal-update
-      ::!>  ^-  update
-      ::[now %jrnl (tab:j-orm journal `before max)]
-    ::::
-        ::[%between @ @ ~]
-      ::=/  start=@
-        ::=+  (rash i.t.t.t.path dem)
-        ::?:(=(0 -) - (sub - 1))
-      ::=/  end=@  (add 1 (rash i.t.t.t.t.path dem))
-      :::^  ~  ~  %journal-update
-      ::!>  ^-  update
-      ::[now %jrnl (tap:j-orm (lot:j-orm journal `end `start))]
-    ::==
-  ::::
-      ::[%x %updates *]
-    ::?+    t.t.path  (on-peek:def path)
-        ::[%all ~]
-      :::^  ~  ~  %journal-update
-      ::!>  ^-  update
-      ::[now %logs (tap:log-orm log)]
-    ::::
-        ::[%since @ ~]
-      ::=/  since=@  (rash i.t.t.t.path dem)
-      :::^  ~  ~  %journal-update
-      ::!>  ^-  update
-      ::[now %logs (tap:log-orm (lot:log-orm log `since ~))]
-    ::==
-  ::==
+      [%x %album name owner ~]
+    =/  =name   &3.path
+    =/  =owner  (slav %p &4.path)
+    :^  ~  ~  %albums-update
+    !>  ^-  update
+    [%album (~(got by albums) [name owner])]
+    ::``noun+!>([%album (~(got by albums) [name owner])])
+  ==
 ::
 ++  on-leave  on-leave:def
 ++  on-agent  on-agent:def
