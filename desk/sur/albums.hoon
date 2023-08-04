@@ -2,7 +2,7 @@
 +$  name  @t
 +$  src  @t
 +$  owner  @p
-+$  comment  [@p @da @t]
++$  comment  [who=@p when=@da what=@t]
 +$  comments  ((mop @da comment) gth)
 +$  image  [=src caption=comment =comments] 
 +$  images  (list image)
@@ -16,6 +16,8 @@
       [%nuke =album-id] :: Delete an album
       [%add =album-id =image] :: add an image
       [%del =album-id =image] :: delete an image
+      [%comment =album-id =image =comment] :: add comment to an image
+      [%share =album-id receiver=@p] :: share album with user
   ==
 +$  update
   $%  [%album-id =album-ids]

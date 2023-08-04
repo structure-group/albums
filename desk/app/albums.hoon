@@ -6,6 +6,7 @@
     ==
 +$  state-0  [%0 =albums]
 +$  card  card:agent:gall
+++  comment-on  ((on @da comment) gth)
 --
 %-  agent:dbug
 =|  state-0
@@ -34,7 +35,7 @@
       %create
     =/  name  +.act
     =/  owner  our.bowl
-    =/  =album  [name owner *shared *images]
+    =/  =album  [name owner ~[owner] *images]
     :-  ~
     this(albums (~(put by albums) [name owner] album))
     ::
@@ -56,6 +57,7 @@
     ==
     :-  ~
     this(albums (~(put by albums) album-id new-album))
+    ::
       %del
     =/  album-id  +6.act
     =/  image  +7.act
@@ -72,6 +74,39 @@
     ==
     :-  ~
     this(albums (~(put by albums) album-id new-album))
+    ::  
+      %comment
+    =/  =album-id  +6.act
+    =/  =image  -.+7.act
+    =/  =comment  +.+7.act
+    =/  album  (~(get by albums.this) album-id)
+    ?~  album
+      ~&  >  ["Album not found" album-id]
+      `this
+    =/  idx  (find [image]~ images.u.album)
+    ?~  idx
+      ~&  >  ["Image not found" idx]
+      `this
+    :: make sure we own the album if not poke the owner with the comment
+    ?.  =(owner.u.album who.comment)
+      ~&  >  ["We don't own the album" who.comment owner.u.album]
+      =/  cad  [%comment album-id image comment ~] 
+      ::`this
+      :_  this 
+      :~  [%pass /comment %agent [owner.u.album dap.bowl] %poke %albums-action !>(cad)]
+      ==
+    ?~  (find shared.u.album ~[who.comment])
+      ~&  >  ["We havent shared the album with this person" who.comment]
+      `this
+    =/  old-image  (snag u.idx images.u.album)
+    =/  comments  comments.old-image
+    =/  new-image  old-image(comments (put:comment-on comments when.comment comment))
+    =/  new-album  u.album(images (snoc (oust [u.idx 1] images.u.album) new-image))
+    :-  ~
+    this(albums (~(put by albums) album-id new-album))
+    ::
+      %share
+    !!
   ==
 ::
 ++  on-watch
@@ -88,11 +123,10 @@
   ?>  (team:title our.bowl src.bowl)
   =/  now  now.bowl
   ?+  path  (on-peek:def path)
-      [%x %albums ~]
+      [%x %list ~]
     :^  ~  ~  %albums-update
     !>  ^-  update
     [%album-id ~(tap in ~(key by albums))]
-    ::``albums-update+!>([%album-id ~(tap in ~(key by albums))])
     ::
       [%x %album name owner ~]
     =/  =name   &3.path
@@ -100,7 +134,6 @@
     :^  ~  ~  %albums-update
     !>  ^-  update
     [%album (~(got by albums) [name owner])]
-    ::``noun+!>([%album (~(got by albums) [name owner])])
   ==
 ::
 ++  on-leave  on-leave:def
