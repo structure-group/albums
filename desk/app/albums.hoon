@@ -7,6 +7,7 @@
 +$  state-0  [%0 =albums]
 +$  card  card:agent:gall
 ++  comment-on  ((on @da comment) gth)
+++  image-on  ((on @da image) gth)
 --
 %-  agent:dbug
 =|  state-0
@@ -101,7 +102,7 @@
     =/  old-image  (snag u.idx images.u.album)
     =/  comments  comments.old-image
     =/  new-image  old-image(comments (put:comment-on comments when.comment comment))
-    =/  new-album  u.album(images (snoc (oust [u.idx 1] images.u.album) new-image))
+    =/  new-album  u.album(images (into (oust [u.idx 1] images.u.album) u.idx new-image))
     :-  ~
     this(albums (~(put by albums) album-id new-album))
     ::
