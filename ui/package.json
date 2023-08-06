@@ -9,6 +9,7 @@
     "lint": "prettier --write ."
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.385.0",
     "@urbit/api": "^2.3.0",
     "@urbit/http-api": "^2.3.0",
     "immer": "^10.0.2",
