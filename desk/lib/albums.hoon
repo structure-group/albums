@@ -22,29 +22,42 @@
       :~
         [%create dejs-create]
         [%nuke dejs-nuke] :: Delete an album
-        ::[%add dejs-add]
-      ::[%add =album-id =src =comment] :: add an image
-      ::[%del =album-id =src] :: delete an image
-      ::[%comment =album-id =src =comment] :: add comment to an image
-      ::[%share =album-id receiver=@p] :: share album with user
+        [%add dejs-add]
+        [%del dejs-del]
+        [%comment dejs-comment]
+        [%share dejs-share]
     ==
   ++  dejs-create
     %-  ot  ~[name+so]
   ++  dejs-nuke
     %-  ot  ~[name+so owner+(se %p)]
-  ::++  dejs-add
-    ::%-  ot
-      :::~  
-        ::~[%album-id (ot ~[name+so owner+(se %p)])]
-        ::src+so
-        :::~  %comment 
-        ::%-  ot
-          :::~
-            ::[%who (se %p)]
-            ::[%what so]
-            ::[%when sd]
-          ::==
-        ::==
-      ::==
+  ++  dejs-add
+    %-  ot
+      :~  
+        ~[%album-id (ot ~[name+so owner+(se %p)])]
+        img-id+so
+        src+so
+        ~[%caption (ot ~[who+(se %p) when+sd what+so])]
+      ==
+  ++  dejs-del
+    %-  ot
+      :~  
+        ~[%album-id (ot ~[name+so owner+(se %p)])]
+        img-id+so
+      ==
+  ++  dejs-comment
+    %-  ot
+      :~  
+        ~[%album-id (ot ~[name+so owner+(se %p)])]
+        img-id+so
+        ~[%comment (ot ~[who+(se %p) when+sd what+so])]
+      ==
+  ++  dejs-share
+    %-  ot
+      :~  
+        ~[%album-id (ot ~[name+so owner+(se %p)])]
+        receiver+(se %p)
+      ==
+
   --
 --
