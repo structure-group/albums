@@ -47,46 +47,43 @@
     this(albums (~(del by albums) album-id))
     ::
       %add
-    =/  album-id  +6.act
-    =/  image  +7.act
-    =/  album  (~(get by albums.this) album-id)
-    ?~  album
+    =,  act
+    ?.  (~(has by albums.this) album-id)
       ~&  >  ["Album not found" album-id]
       `this
-    =/  new-album  %=  u.album
-    images  (snoc images.u.album image)
+    =/  album  (~(got by albums.this) album-id)
+    =/  img=image  [src caption *comments]
+    =/  new-album  %=  album
+    images  (~(put by images.album) img-id img)
     ==
     :-  ~
     this(albums (~(put by albums) album-id new-album))
     ::
       %del
-    =/  album-id  +6.act
-    =/  image  +7.act
-    =/  album  (~(get by albums.this) album-id)
-    ?~  album
+    =,  act
+    ?.  (~(has by albums.this) album-id)
       ~&  >  ["Album not found" album-id]
       `this
-    =/  idx  (find [image]~ images.u.album)
-    ?~  idx
-      ~&  >  ["Image not found" idx]
+    =/  album  (~(got by albums) album-id)
+    =/  img-list  ~(key by images.album)
+    ?.  (~(has in img-list) img-id)
+      ~&  >  ["Image not found" img-id]
       `this
-    =/  new-album  %=  u.album
-    images  (oust [u.idx 1] images.u.album)
+    =/  new-album  %=  album
+    images  (~(del by images.album) img-id)
     ==
     :-  ~
     this(albums (~(put by albums) album-id new-album))
     ::  
       %comment
-    =/  =album-id  +6.act
-    =/  =image  -.+7.act
-    =/  =comment  +.+7.act
+    =,  act
     =/  album  (~(get by albums.this) album-id)
     ?~  album
       ~&  >  ["Album not found" album-id]
       `this
-    =/  idx  (find [image]~ images.u.album)
-    ?~  idx
-      ~&  >  ["Image not found" idx]
+    =/  img-list  ~(key by images.u.album)
+    ?~  (~(has in img-list) img-id)
+      ~&  >  ["Image not found" img-id]
       `this
     :: make sure we own the album if not poke the owner with the comment
     ?.  =(owner.u.album who.comment)
@@ -99,10 +96,10 @@
     ?~  (find shared.u.album ~[who.comment])
       ~&  >  ["We havent shared the album with this person" who.comment]
       `this
-    =/  old-image  (snag u.idx images.u.album)
+    =/  old-image  (~(got by images.u.album) img-id)
     =/  comments  comments.old-image
     =/  new-image  old-image(comments (put:comment-on comments when.comment comment))
-    =/  new-album  u.album(images (into (oust [u.idx 1] images.u.album) u.idx new-image))
+    =/  new-album  u.album(images (~(put by images.u.album) img-id new-image))
     :-  ~
     this(albums (~(put by albums) album-id new-album))
     ::
