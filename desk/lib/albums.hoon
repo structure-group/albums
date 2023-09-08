@@ -12,6 +12,7 @@
     (en-vase !>(+.u))
   ==
 ++  dejs-action
+  !.
   =,  dejs:format
   |=  jon=json
   ^-  action
@@ -34,28 +35,27 @@
   ++  dejs-add
     %-  ot
       :~  
-        ~[%album-id (ot ~[name+so owner+(se %p)])]
+        [%album-id (ot ~[name+so owner+(se %p)])]
         img-id+so
         src+so
-        ~[%caption (ot ~[who+(se %p) when+sd what+so])]
+        [%caption (ot ~[who+(se %p) when+nu what+so])]
       ==
   ++  dejs-del
-    %-  ot
-      :~  
-        ~[%album-id (ot ~[name+so owner+(se %p)])]
-        img-id+so
+    %-  ot  
+      :~  [%album-id (ot ~[name+so owner+(se %p)])]
+          [%img-id so]
       ==
   ++  dejs-comment
     %-  ot
       :~  
-        ~[%album-id (ot ~[name+so owner+(se %p)])]
+        [%album-id (ot ~[name+so owner+(se %p)])]
         img-id+so
-        ~[%comment (ot ~[who+(se %p) when+sd what+so])]
+        [%comment (ot ~[who+(se %p) when+nu what+so])]
       ==
   ++  dejs-share
     %-  ot
       :~  
-        ~[%album-id (ot ~[name+so owner+(se %p)])]
+        [%album-id (ot ~[name+so owner+(se %p)])]
         receiver+(se %p)
       ==
 
