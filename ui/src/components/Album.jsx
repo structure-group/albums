@@ -1,7 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { albumQuery } from "../state/query";
+import { useState } from "react";
+import AddPhoto from "./AddPhoto";
 export default function Album() {
+  const [addPhoto, setAddPhoto] = useState(false);
   const { ship, albumId } = useParams();
   const album = useQuery({
     queryKey: ["album", ship, albumId],
@@ -10,6 +13,7 @@ export default function Album() {
   console.log(album.data);
   return (
     <div className="p-8 w-full h-full">
+      {addPhoto && <AddPhoto setAddPhoto={setAddPhoto} />}
       <div className="h-full w-full p-8 bg-white rounded-xl flex flex-col space-y-8">
         <div className="flex justify-between">
           <p className="font-semibold">{album?.data?.album?.name || albumId}</p>
@@ -31,12 +35,15 @@ export default function Album() {
             );
           })}
           {ship === `~${window.ship}` && (
-            <div className="flex flex-col items-center justify-center border-[#999999] border rounded-lg w-32 h-32 font-semibold">
+            <div
+              className="flex flex-col items-center justify-center border-[#999999] border rounded-lg w-32 h-32 font-semibold cursor-pointer"
+              onClick={() => setAddPhoto(true)}
+            >
               + Add Photo
             </div>
           )}
         </div>
       </div>
-    </div>
+    </div >
   );
 }
