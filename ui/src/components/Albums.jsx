@@ -7,7 +7,7 @@ export default function Albums() {
     const { credentials } = s3;
     const albums = useQuery({ queryKey: ["albums"], queryFn: albumsQuery });
     console.log(albums.data)
-    return credentials ?
+    return credentials.accessKeyId ?
         <div className="p-8 flex flex-wrap gap-8">
             {albums.data?.map(([id, owner]) => {
                 return <Link to={`/album/${owner}/${id}`} key={`${owner}/${id}`}>

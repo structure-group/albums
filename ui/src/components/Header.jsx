@@ -16,8 +16,8 @@ export default function Header() {
                 "text-[#666666]": location.pathname !== "/shared",
             })}>Shared with Me</Link>
             <Link to="/new" className={cn("px-4 rounded-lg p-2", {
-                "pointer-events-none bg-[#cccccc] text-[#999999]": !credentials,
-                "text-white bg-[#333333]": credentials
+                "pointer-events-none bg-[#cccccc] text-[#999999]": !credentials.accessKeyId,
+                "text-white bg-[#333333]": credentials.accessKeyId
             })}>New Album</Link>
         </div>
     </div>
