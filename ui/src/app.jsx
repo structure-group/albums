@@ -10,6 +10,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Layout from "./components/Layout";
 import Albums from "./components/Albums";
 import Album from "./components/Album";
+import NewAlbum from "./components/New";
 
 export function App() {
   const { s3 } = useStorageState();
@@ -75,7 +76,7 @@ export function App() {
           },
           {
             path: "new",
-            element: <div>New Album</div>,
+            element: <NewAlbum />,
           },
           {
             path: "album/:ship/:albumId",
