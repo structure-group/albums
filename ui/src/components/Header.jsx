@@ -5,7 +5,7 @@ import useStorageState from "../state/storage";
 export default function Header() {
   const { s3 } = useStorageState();
   const location = useLocation();
-  const credentials = s3.credentials;
+  const { credentials } = s3 ?? { credentials: { accessKeyId: "" } };
   return (
     <div className="bg-white border-b border-2 border-indigo-gray flex justify-between px-6 py-4 items-center font-semibold">
       <p>Albums</p>
@@ -30,8 +30,8 @@ export default function Header() {
           to="/new"
           className={cn("px-4 rounded-lg p-2", {
             "pointer-events-none bg-[#cccccc] text-[#999999]":
-              !credentials.accessKeyId,
-            "text-white bg-[#333333]": credentials.accessKeyId,
+              !credentials?.accessKeyId,
+            "text-white bg-[#333333]": credentials?.accessKeyId,
           })}
         >
           New Album
