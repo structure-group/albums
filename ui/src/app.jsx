@@ -21,7 +21,7 @@ export function App() {
     useCallback(async (s3) => {
       return getFiles(s3);
     }, []),
-    useFileStore
+    useFileStore,
   );
 
   useEffect(() => {
@@ -45,7 +45,8 @@ export function App() {
     const hasCredentials =
       credentials?.accessKeyId &&
       credentials?.endpoint &&
-      credentials?.secretAccessKey && configuration;
+      credentials?.secretAccessKey &&
+      configuration;
     if (hasCredentials) {
       createClient(credentials, configuration.region);
 
@@ -58,32 +59,35 @@ export function App() {
     loadFiles(s3);
   }, [loadFiles, s3, client]);
 
-  const router = createBrowserRouter([
+  const router = createBrowserRouter(
+    [
+      {
+        path: "/",
+        element: <Layout />,
+        children: [
+          {
+            path: "",
+            element: <Albums />,
+          },
+          {
+            path: "shared",
+            element: <div>Shared with Me</div>,
+          },
+          {
+            path: "new",
+            element: <div>New Album</div>,
+          },
+          {
+            path: "album/:ship/:albumId",
+            element: <Album />,
+          },
+        ],
+      },
+    ],
     {
-      path: "/",
-      element: <Layout />,
-      children: [
-        {
-          path: "",
-          element: <Albums />
-        },
-        {
-          path: "shared",
-          element: <div>Shared with Me</div>
-        },
-        {
-          path: "new",
-          element: <div>New Album</div>
-        },
-        {
-          path: "album/:ship/:albumId",
-          element: <Album />,
-        }
-      ]
-    }
-  ], {
-    basename: "/apps/albums"
-  })
+      basename: "/apps/albums",
+    },
+  );
 
   return (
     <>

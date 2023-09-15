@@ -7,8 +7,8 @@ module.exports = {
     extend: {
       colors: {
         "indigo-gray": "#dfe1e9",
-        "indigo-white": "#f5f5f5"
-      }
+        "indigo-white": "#f5f5f5",
+      },
     },
   },
   screens: {},
