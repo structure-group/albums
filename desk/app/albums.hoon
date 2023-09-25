@@ -36,7 +36,7 @@
       %create
     =/  name  +.act
     =/  owner  our.bowl
-    =/  =album  [name owner ~[owner] *images]
+    =/  =album  [name owner ~[owner] *images '']
     :-  ~
     this(albums (~(put by albums) [name owner] album))
     ::
@@ -55,6 +55,7 @@
     =/  img=image  [src caption *comments]
     =/  new-album  %=  album
     images  (~(put by images.album) img-id img)
+    cover  src
     ==
     :-  ~
     this(albums (~(put by albums) album-id new-album))
@@ -122,9 +123,14 @@
   =/  now  now.bowl
   ?+  path  (on-peek:def path)
       [%x %list ~]
+    =/  =album-ids  ~(tap in ~(key by albums))
+    =/  album-info  %+  turn  album-ids
+      |=  =album-id
+      =/  =album  (~(got by albums) album-id)
+        [album-id cover.album]
     :^  ~  ~  %albums-update
     !>  ^-  update
-    [%album-id ~(tap in ~(key by albums))]
+    [%album-id album-info]
     ::
       [%x %album name owner ~]
     =/  =name   &3.path

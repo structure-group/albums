@@ -10,7 +10,7 @@
 +$  shared  (list @p)
 +$  album-id  [=name =owner]
 +$  album-ids  (list album-id)
-+$  album  [=name =owner =shared =images]
++$  album  [=name =owner =shared =images cover=src]
 +$  albums  (map album-id album)
 +$  action
   $%  [%create =name] :: Create album
@@ -21,7 +21,7 @@
       [%share =album-id receiver=@p] :: share album with user
   ==
 +$  update
-  $%  [%album-id =album-ids]
+  $%  [%album-id album-info=(list [album-id cover=src])]
       [%album =album]
   ==
 --
