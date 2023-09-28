@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { albumsQuery } from "../state/query";
+import { albumsQuery, contactsQuery, settingsQuery } from "../state/query";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import useStorageState from "../state/storage";
@@ -7,7 +7,17 @@ export default function Albums() {
   const { s3 } = useStorageState();
   const { credentials } = s3 ?? { credentials: { accessKeyId: "" } };
   const albums = useQuery({ queryKey: ["albums"], queryFn: albumsQuery });
-  console.log(albums.data);
+  const contacts = useQuery({
+    queryKey: ["contacts"],
+    queryFn: () => contactsQuery(),
+  });
+  const settings = useQuery({
+    queryKey: ["settings"],
+    queryFn: () => settingsQuery(),
+  });
+  // console.log(contacts.data);
+  const disabledNicknames =
+    settings.data?.calmEngine?.disableNicknames || false;
   return (
     <>
       <Helmet>
@@ -16,7 +26,10 @@ export default function Albums() {
       {credentials?.accessKeyId ? (
         <div className="p-8 flex justify-center md:justify-normal flex-wrap gap-8">
           {albums?.data?.map((album) => {
-            const owner = album?.[0]?.[1] || "";
+            const owner =
+              contacts?.data?.[album?.[0]?.[1]] && !disabledNicknames
+                ? contacts?.data?.[album?.[0]?.[1]]?.nickname
+                : album?.[0]?.[1] || "";
             const id = album?.[0]?.[0] || "";
             const cover = album?.[1] || "";
             return (
