@@ -14,7 +14,7 @@ export default function Albums() {
         <title>Albums</title>
       </Helmet>
       {credentials?.accessKeyId ? (
-        <div className="p-8 flex flex-wrap gap-8">
+        <div className="p-8 flex justify-center md:justify-normal flex-wrap gap-8">
           {albums?.data?.map((album) => {
             const owner = album?.[0]?.[1] || "";
             const id = album?.[0]?.[0] || "";

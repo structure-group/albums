@@ -22,7 +22,15 @@ export default function Album() {
             <p>Viewers</p>
           </div>
         </div>
-        <div className="flex flex-wrap gap-8 w-full h-full min-h-0 overflow-y-auto">
+        <div className="flex flex-wrap justify-center md:justify-normal gap-8 w-full h-full min-h-0 overflow-y-auto">
+          {ship === `~${window.ship}` && (
+            <div
+              className="flex flex-col items-center justify-center border-[#999999] border rounded-lg w-32 h-32 font-semibold cursor-pointer"
+              onClick={() => setAddPhoto(true)}
+            >
+              + Add Photo
+            </div>
+          )}
           {album?.data?.album?.images?.map((image) => {
             return (
               <div className="w-32 h-32" key={image[1]?.src}>
@@ -34,14 +42,6 @@ export default function Album() {
               </div>
             );
           })}
-          {ship === `~${window.ship}` && (
-            <div
-              className="flex flex-col items-center justify-center border-[#999999] border rounded-lg w-32 h-32 font-semibold cursor-pointer"
-              onClick={() => setAddPhoto(true)}
-            >
-              + Add Photo
-            </div>
-          )}
         </div>
       </div>
     </div>

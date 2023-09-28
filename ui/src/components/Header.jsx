@@ -8,7 +8,7 @@ export default function Header() {
   const { credentials } = s3 ?? { credentials: { accessKeyId: "" } };
   return (
     <div className="bg-white border-b border-2 border-indigo-gray flex justify-between px-6 py-4 items-center font-semibold">
-      <p>Albums</p>
+      <p className="hidden lg:block">Albums</p>
       <div className="flex space-x-12 items-center">
         <Link
           to="/"
