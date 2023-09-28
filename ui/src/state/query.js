@@ -5,8 +5,8 @@ export const albumsQuery = async () => {
       app: "albums",
       path: "/list",
     })
-  )?.["album-ids"];
-  return albums;
+  )?.["album-info"];
+  return albums || [];
 };
 
 export const albumQuery = async (id, ship) => {
@@ -14,5 +14,5 @@ export const albumQuery = async (id, ship) => {
     app: "albums",
     path: `/album/${id}/${ship}`,
   });
-  return photos;
+  return photos || [];
 };
