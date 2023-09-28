@@ -16,3 +16,19 @@ export const albumQuery = async (id, ship) => {
   });
   return photos || [];
 };
+
+export const contactsQuery = async () => {
+  const contacts = await api.scry({
+    app: "contacts",
+    path: "/all",
+  });
+  return contacts || {};
+};
+
+export const settingsQuery = async () => {
+  const settings = await api.scry({
+    app: "settings",
+    path: "/desk/garden",
+  });
+  return settings || [];
+};
