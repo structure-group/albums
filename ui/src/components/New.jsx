@@ -2,7 +2,7 @@ import Albums from "./Albums";
 export default function NewAlbum() {
   return (
     <div className="flex w-full h-full">
-      <div className="p-8 h-full bg-white basis-1/2 flex flex-col space-y-8 border-r-2 border-indigo-gray">
+      <div className="p-8 h-full bg-white basis-full md:basis-1/2 flex flex-col space-y-8 border-r-2 border-indigo-gray">
         <h2 className="font-semibold text-lg">New Album</h2>
         <div className="flex flex-col space-y-1">
           <h3 className="text-sm font-semibold">Album Title</h3>
@@ -23,7 +23,7 @@ export default function NewAlbum() {
           </div>
         </div>
       </div>
-      <div className="overflow-x-auto basis-1/2">
+      <div className="overflow-x-auto basis-1/2 hidden md:block">
         <Albums />
       </div>
     </div>
