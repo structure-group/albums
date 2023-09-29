@@ -64,18 +64,18 @@ export default function AddPhoto({ setAddPhoto }) {
   };
 
   const addPhotos = () => {
-    const promises = selectedFiles.map((url) => {
+    const promises = selectedFiles.map((url, i) => {
       return api.poke({
         app: "albums",
         mark: "albums-action",
         json: {
           add: {
             "album-id": { name: albumId, owner: ship },
-            "img-id": String(Math.floor(Date.now() / 1000)),
+            "img-id": String(Math.floor(Date.now() / 1000) + i),
             src: url,
             caption: {
               who: `~${window.ship}`,
-              when: String(Math.floor(Date.now() / 1000)),
+              when: String(Math.floor(Date.now() / 1000) + i),
               what: "",
             },
           },
