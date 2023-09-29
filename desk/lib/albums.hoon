@@ -3,14 +3,30 @@
 |%
 ++  enjs-update
   |=  upd=update
-  ^-  json
+  =,  enjs:format
+  ^-  ^json
   =/  u  ;;(update upd) 
   ?-  -.u  
       %album-id
     (en-vase !>(+.u)) 
       %album
-    (en-vase !>(+.u))
+    =/  =album  +.u
+    %+  frond  'albums'
+    %-  pairs
+    =/  imgs=(list [=img-id =image])  ~(tap by images.album)
+    :~  ['name' (en-vase !>(name.album))]
+        ['owner' (en-vase !>(owner.album))]
+        ['shared' (en-vase !>(shared.album))]
+        :-  'images'
+          :-  %a
+          %+  turn  imgs
+          |=  [=img-id =image]
+          ^-  ^json
+            (en-vase !>([img-id image]))
+        ['cover' (en-vase !>(cover.album))]
+    ==
   ==
+
 ++  dejs-action
   !.
   =,  dejs:format

@@ -3,6 +3,7 @@
 +$  src  @t
 +$  img-id  @t
 +$  owner  @p
++$  write-perm  ?
 +$  comment  [who=@p when=@da what=@t]
 +$  comments  ((mop @da comment) gth)
 +$  image  [=src caption=comment =comments] 

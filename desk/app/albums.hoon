@@ -119,6 +119,7 @@
 ++  on-peek
   |=  =path
   ^-  (unit (unit cage))
+  ~&  >>  path
   ?>  (team:title our.bowl src.bowl)
   =/  now  now.bowl
   ?+  path  (on-peek:def path)
