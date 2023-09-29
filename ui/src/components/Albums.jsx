@@ -3,7 +3,7 @@ import { albumsQuery, contactsQuery, settingsQuery } from "../state/query";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import useStorageState from "../state/storage";
-export default function Albums() {
+export default function Albums({ shared = false }) {
   const { s3 } = useStorageState();
   const { credentials } = s3 ?? { credentials: { accessKeyId: "" } };
   const albums = useQuery({ queryKey: ["albums"], queryFn: albumsQuery });
@@ -18,6 +18,8 @@ export default function Albums() {
   // console.log(contacts.data);
   const disabledNicknames =
     settings.data?.calmEngine?.disableNicknames || false;
+  const ourFilter = (album) => album?.[0]?.[1] === `~${window.ship}`;
+  const sharedFilter = (album) => album?.[0]?.[1] !== `~${window.ship}`;
   return (
     <>
       <Helmet>
@@ -25,7 +27,8 @@ export default function Albums() {
       </Helmet>
       {credentials?.accessKeyId ? (
         <div className="p-8 flex justify-center md:justify-normal flex-wrap gap-8">
-          {albums?.data?.map((album) => {
+          {albums?.data?.filter(shared ? sharedFilter : ourFilter).map((album) => {
+            if (!Array.isArray(album)) return null;
             const owner =
               contacts?.data?.[album?.[0]?.[1]] && !disabledNicknames
                 ? contacts?.data?.[album?.[0]?.[1]]?.nickname
@@ -39,7 +42,7 @@ export default function Albums() {
                   style={{
                     backgroundImage: cover
                       ? `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${cover})`
-                      : "none",
+                      : "linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5))",
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                   }}

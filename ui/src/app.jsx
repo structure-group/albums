@@ -59,7 +59,7 @@ export function App() {
           },
           {
             path: "shared",
-            element: <div>Shared with Me</div>,
+            element: <Albums shared />,
           },
           {
             path: "new",
