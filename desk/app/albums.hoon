@@ -83,7 +83,7 @@
       ~&  >  ["Album not found" album-id]
       `this
     =/  img-list  ~(key by images.u.album)
-    ?~  (~(has in img-list) img-id)
+    ?.  (~(has in img-list) img-id)
       ~&  >  ["Image not found" img-id]
       `this
     :: make sure we own the album if not poke the owner with the comment
@@ -94,7 +94,11 @@
       :_  this 
       :~  [%pass /comment %agent [owner.u.album dap.bowl] %poke %albums-action !>(cad)]
       ==
-    ?~  (find shared.u.album ~[who.comment])
+    =/  shared=(list @p)  
+      %+  turn  shared.u.album
+      |=  [who=@p ?]
+      who
+    ?~  (find shared ~[who.comment])
       ~&  >  ["We havent shared the album with this person" who.comment]
       `this
     =/  old-image  (~(got by images.u.album) img-id)

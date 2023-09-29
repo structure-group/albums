@@ -15,7 +15,7 @@
     %+  turn  album-info
     |=  [=album-id cover=src]
     ^-  ^json
-      (en-vase !>([album-id cover])) 
+      (en-vase !>([name=name.album-id owner=owner.album-id cover=cover])) 
       %album
     =/  =album  +.u
     %+  frond  'albums'
