@@ -6,6 +6,7 @@ import AddPhoto from "./AddPhoto";
 import Contact from "./Contact";
 import Lightbox from "./Lightbox";
 import cn from 'classnames'
+import ContactSearch from "./ContactSearch";
 
 export default function Album() {
   const [addPhoto, setAddPhoto] = useState(false);
@@ -44,17 +45,18 @@ export default function Album() {
       )}
       {subview === "shared" && (
         <div className="flex h-full">
-          <div className="p-8 h-full min-h-0 bg-white basis-full lg:basis-1/2 flex flex-col space-y-8 border-r-2 border-indigo-gray">
+          <div className="p-8 h-full min-h-0 bg-white basis-full lg:basis-1/2 flex flex-col border-r-2 border-indigo-gray">
             <Link to=".">
               <p className="font-semibold w-full truncate block lg:hidden">
                 {"<-"} Back to {album?.data?.album?.name || albumId}
               </p>
             </Link>
             <div className="flex flex-col space-y-4 overflow-y-auto h-full w-full min-h-0 min-w-0 relative">
-              <input
-                type="text"
-                className="p-2 w-full text-sm bg-indigo-white rounded-md "
-                placeholder="Search for people to invite to album..."
+              <ContactSearch
+                contacts={contacts}
+                disabledNicknames={disabledNicknames}
+                disabledAvatars={disabledAvatars}
+                group={shared}
               />
               {shared.map((share) => {
                 console.log(contacts.data?.[share[0]])
@@ -64,6 +66,8 @@ export default function Album() {
                     contact={contacts.data?.[share[0]] || {}}
                     disabledNicknames={disabledNicknames}
                     disabledAvatars={disabledAvatars}
+                    key={share[0]}
+                    writer={share[1]}
                   />
                 );
               })}
