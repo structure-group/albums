@@ -28,7 +28,7 @@
   ==
 
 ++  dejs-action
-  !.
+  ::!.
   =,  dejs:format
   |=  jon=json
   ^-  action
@@ -73,6 +73,7 @@
       :~  
         [%album-id (ot ~[name+so owner+(se %p)])]
         receiver+(se %p)
+        write-perm+bo 
       ==
 
   --

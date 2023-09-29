@@ -8,7 +8,7 @@
 +$  comments  ((mop @da comment) gth)
 +$  image  [=src caption=comment =comments] 
 +$  images  (map img-id image)
-+$  shared  (list @p)
++$  shared  (list [who=@p =write-perm])
 +$  album-id  [=name =owner]
 +$  album-ids  (list album-id)
 +$  album  [=name =owner =shared =images cover=src]
@@ -19,7 +19,7 @@
       [%add =album-id =img-id =src caption=comment] :: add an image
       [%del =album-id =img-id] :: delete an image
       [%comment =album-id =img-id =comment] :: add comment to an image
-      [%share =album-id receiver=@p] :: share album with user
+      [%share =album-id receiver=@p =write-perm] :: share album with user
   ==
 +$  update
   $%  [%album-id album-info=(list [album-id cover=src])]

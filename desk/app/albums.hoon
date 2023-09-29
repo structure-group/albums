@@ -36,7 +36,7 @@
       %create
     =/  name  +.act
     =/  owner  our.bowl
-    =/  =album  [name owner ~[owner] *images '']
+    =/  =album  [name owner ~[[owner %.y]] *images '']
     :-  ~
     this(albums (~(put by albums) [name owner] album))
     ::
