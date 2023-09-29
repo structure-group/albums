@@ -31,7 +31,7 @@ export default function Header() {
           className={cn("px-4 rounded-lg p-2", {
             "pointer-events-none bg-[#cccccc] text-[#999999]":
               !credentials?.accessKeyId,
-            "text-white bg-[#333333]": credentials?.accessKeyId,
+            "text-white bg-indigo-black": credentials?.accessKeyId,
           })}
         >
           New Album

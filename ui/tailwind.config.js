@@ -8,6 +8,7 @@ module.exports = {
       colors: {
         "indigo-gray": "#dfe1e9",
         "indigo-white": "#f5f5f5",
+        "indigo-black": "#333333",
       },
     },
   },
