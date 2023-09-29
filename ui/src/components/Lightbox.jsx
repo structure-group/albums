@@ -16,7 +16,11 @@ export default function Lightbox({ photo, setLightboxPhoto }) {
         comment: {
           "album-id": { name: albumId, owner: ship },
           "img-id": photo[0],
-          comment: { who: `~${window.ship}`, when: String(Math.floor(Date.now() / 1000)), what: comment },
+          comment: {
+            who: `~${window.ship}`,
+            when: String(Math.floor(Date.now() / 1000)),
+            what: comment,
+          },
         },
       },
     });
