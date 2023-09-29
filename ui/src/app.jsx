@@ -66,7 +66,7 @@ export function App() {
             element: <NewAlbum />,
           },
           {
-            path: "album/:ship/:albumId",
+            path: "album/:ship/:albumId/:subview?",
             element: <Album />,
           },
         ],
