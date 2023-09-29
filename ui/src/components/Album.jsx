@@ -10,6 +10,7 @@ export default function Album() {
     queryKey: ["album", ship, albumId],
     queryFn: () => albumQuery(albumId, ship),
   });
+  const images = album?.data?.albums?.images?.sort((a, b) => Number(b[0]) - Number(a[0])) || [];
   console.log(album.data);
   return (
     <div className="p-8 w-full h-full">
@@ -31,9 +32,9 @@ export default function Album() {
               + Add Photo
             </div>
           )}
-          {album?.data?.album?.images?.map((image) => {
+          {images?.map((image) => {
             return (
-              <div className="w-32 h-32" key={image[1]?.src}>
+              <div className="w-32 h-32" key={image[0]}>
                 <img
                   src={image[1]?.src}
                   alt=""
