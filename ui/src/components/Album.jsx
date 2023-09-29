@@ -34,7 +34,7 @@ export default function Album() {
   const shared = album?.data?.albums?.shared || [];
   console.log(album.data);
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full min-h-0 flex flex-col">
       {addPhoto && <AddPhoto setAddPhoto={setAddPhoto} />}
       {lightboxPhoto !== null && (
         <Lightbox
@@ -83,7 +83,7 @@ export default function Album() {
         </div>
       )}
       {!subview && (
-        <div className="h-full p-8">
+        <div className="h-full bg-indigo-white flex flex-col min-h-0 p-8">
           <Gallery
             ship={ship}
             albumId={albumId}
@@ -101,8 +101,8 @@ export default function Album() {
 
 function Gallery({ ship, albumId, subview, setAddPhoto, setLightboxPhoto, images, album }) {
   return (
-    <div className="min-h-0 h-full w-full p-8 bg-white rounded-xl flex flex-col space-y-8">
-      <div className="flex justify-between">
+    <div className="h-full w-full p-8 bg-white rounded-xl flex flex-col space-y-8 overflow-y-auto min-h-0">
+      <div className="flex justify-between rounded-md bg-white">
         <Link to={`/album/${ship}/${albumId}`}>
           <p className="font-semibold">
             {album?.data?.album?.name || albumId}
@@ -117,7 +117,7 @@ function Gallery({ ship, albumId, subview, setAddPhoto, setLightboxPhoto, images
           </Link>
         </div>
       </div>
-      <div className="flex flex-wrap justify-center md:justify-normal gap-8 w-full h-full min-h-0 overflow-y-auto">
+      <div className="flex flex-wrap justify-center md:justify-normal gap-8 w-full max-h-full min-h-0">
         {ship === `~${window.ship}` && (
           <div
             className="flex flex-col items-center justify-center border-[#999999] border rounded-lg w-32 h-32 font-semibold cursor-pointer"
