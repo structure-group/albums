@@ -15,7 +15,6 @@ export default function Albums({ shared = false }) {
     queryKey: ["settings"],
     queryFn: () => settingsQuery(),
   });
-  // console.log(contacts.data);
   const disabledNicknames =
     settings.data?.calmEngine?.disableNicknames || false;
   const ourFilter = (album) => album?.[0]?.[1] === `~${window.ship}`;
@@ -27,32 +26,39 @@ export default function Albums({ shared = false }) {
       </Helmet>
       {credentials?.accessKeyId ? (
         <div className="p-8 flex justify-center md:justify-normal flex-wrap gap-8">
-          {albums?.data?.filter(shared ? sharedFilter : ourFilter).map((album) => {
-            if (!Array.isArray(album)) return null;
-            const owner =
-              contacts?.data?.[album?.[0]?.[1]] && !disabledNicknames
-                ? contacts?.data?.[album?.[0]?.[1]]?.nickname
-                : album?.[0]?.[1] || "";
-            const id = album?.[0]?.[0] || "";
-            const cover = album?.[1] || "";
-            return (
-              <Link to={`/album/${owner}/${id}`} key={`${owner}/${id}`}>
-                <div
-                  className="w-64 h-64 bg-gray-200 rounded-xl flex flex-col items-center justify-center"
-                  style={{
-                    backgroundImage: cover
-                      ? `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${cover})`
-                      : "linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5))",
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                  }}
+          {albums?.data
+            ?.filter(shared ? sharedFilter : ourFilter)
+            .map((album) => {
+              if (!Array.isArray(album)) return null;
+              const owner =
+                contacts?.data?.[album?.[0]?.[1]] && !disabledNicknames
+                  ? contacts?.data?.[album?.[0]?.[1]]?.nickname
+                  : album?.[0]?.[1] || "";
+              const id = album?.[0]?.[0] || "";
+              const cover = album?.[1] || "";
+              return (
+                <Link
+                  to={`/album/${album?.[0]?.[1]}/${id}`}
+                  key={`${album?.[0]?.[1]}/${id}`}
                 >
-                  <p className="text-2xl font-semibold text-white">{id}</p>
-                  <p className="text-sm text-white">{owner}</p>
-                </div>
-              </Link>
-            );
-          })}
+                  <div
+                    className="w-64 h-64 bg-gray-200 rounded-xl flex flex-col items-center justify-center"
+                    style={{
+                      backgroundImage: cover
+                        ? `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${cover})`
+                        : "linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5))",
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  >
+                    <p className="text-2xl font-semibold text-white">{id}</p>
+                    <p className="text-sm text-white truncate w-full p-4">
+                      {owner}
+                    </p>
+                  </div>
+                </Link>
+              );
+            })}
         </div>
       ) : (
         <div className="h-full w-full flex flex-col items-center justify-center">
