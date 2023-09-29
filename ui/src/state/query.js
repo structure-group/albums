@@ -28,7 +28,7 @@ export const contactsQuery = async () => {
 export const settingsQuery = async () => {
   const settings = await api.scry({
     app: "settings",
-    path: "/desk/garden",
+    path: "/desk/landscape",
   });
   return settings || [];
 };
