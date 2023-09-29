@@ -41,20 +41,19 @@ export default function Albums({ shared = false }) {
                   to={`/album/${album?.[0]?.[1]}/${id}`}
                   key={`${album?.[0]?.[1]}/${id}`}
                 >
-                  <div
-                    className="w-64 h-64 bg-gray-200 rounded-xl flex flex-col items-center justify-center"
-                    style={{
-                      backgroundImage: cover
-                        ? `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${cover})`
-                        : "linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5))",
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                    }}
-                  >
-                    <p className="text-2xl font-semibold text-white">{id}</p>
-                    <p className="text-sm text-white truncate w-full p-4">
-                      {owner}
-                    </p>
+                  <div className="flex flex-col items-center w-64 space-y-2">
+                    <div
+                      className="w-64 h-64 bg-gray-200 rounded-xl flex flex-col items-center justify-center"
+                      style={{
+                        backgroundImage: cover
+                          ? `url(${cover})`
+                          : "none",
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                      }}
+                    >
+                    </div>
+                    <p className="font-semibold">{id}</p>
                   </div>
                 </Link>
               );
