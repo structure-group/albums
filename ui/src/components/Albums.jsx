@@ -21,22 +21,16 @@ export default function Albums({ shared = false }) {
             .map((album) => {
               const { name, owner, cover } = album;
               return (
-                <Link
-                  to={`/album/${owner}/${name}`}
-                  key={`${owner}/${name}`}
-                >
+                <Link to={`/album/${owner}/${name}`} key={`${owner}/${name}`}>
                   <div className="flex flex-col items-center w-64 space-y-2">
                     <div
                       className="w-64 h-64 bg-gray-200 rounded-xl flex flex-col items-center justify-center"
                       style={{
-                        backgroundImage: cover
-                          ? `url(${cover})`
-                          : "none",
+                        backgroundImage: cover ? `url(${cover})` : "none",
                         backgroundSize: "cover",
                         backgroundPosition: "center",
                       }}
-                    >
-                    </div>
+                    ></div>
                     <p className="font-semibold">{name}</p>
                   </div>
                 </Link>
