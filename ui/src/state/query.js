@@ -5,7 +5,7 @@ export const albumsQuery = async () => {
       app: "albums",
       path: "/list",
     })
-  )?.["album-info"];
+  )?.["album-id"];
   return albums || [];
 };
 
