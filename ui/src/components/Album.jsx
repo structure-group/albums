@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { useParams, Link } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { albumQuery, contactsQuery, settingsQuery } from "../state/query";
 import { useState } from "react";
 import AddPhoto from "./AddPhoto";
@@ -200,14 +200,26 @@ function Gallery({
   images,
   album,
 }) {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const nuke = async () => {
+    await api.poke({
+      app: "albums",
+      mark: "albums-action",
+      json: { "nuke": { "name": albumId, "owner": ship } }
+    })
+    queryClient.invalidateQueries(["albums"]);
+    navigate("/");
+  }
+
   return (
     <div className="h-full w-full p-8 bg-white rounded-xl flex flex-col space-y-8 overflow-y-auto min-h-0">
       <div className="flex justify-between rounded-md bg-white">
         <Link to={`/album/${ship}/${albumId}`}>
           <p className="font-semibold">{album?.data?.album?.name || albumId}</p>
         </Link>
-        <div className="flex space-x-8 font-semibold text-[#666666]">
-          <p>Edit</p>
+        <div className="flex space-x-8 font-semibold text-[#666666] items-center">
           <Link to={`/album/${ship}/${albumId}/shared`}>
             <p
               className={cn({
@@ -217,6 +229,12 @@ function Gallery({
               Participants
             </p>
           </Link>
+          {ship === `~${window.ship}` && <button
+            className="text-red-500 font-semibold rounded-md"
+            onClick={() => nuke()}
+          >
+            Delete
+          </button>}
         </div>
       </div>
       <div className="flex flex-wrap justify-center md:justify-normal gap-8 w-full max-h-full min-h-0">
