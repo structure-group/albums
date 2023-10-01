@@ -5,12 +5,14 @@ import { useState } from "react";
 import AddPhoto from "./AddPhoto";
 import Contact from "./Contact";
 import Lightbox from "./Lightbox";
-import cn from 'classnames'
+import cn from "classnames";
 import ContactSearch from "./ContactSearch";
+import { api } from "../state/api";
 
 export default function Album() {
   const [addPhoto, setAddPhoto] = useState(false);
   const [lightboxPhoto, setLightboxPhoto] = useState(null);
+  const [selectedMembers, setSelectedMembers] = useState([]);
   const { ship, albumId, subview } = useParams();
   const album = useQuery({
     queryKey: ["album", ship, albumId],
@@ -34,6 +36,29 @@ export default function Album() {
     [];
   const shared = album?.data?.albums?.shared || [];
   console.log(album.data);
+
+  const inviteSelected = () => {
+    const promises = selectedMembers.map((member) => {
+      return api.poke({
+        app: "albums",
+        mark: "albums-action",
+        json: { "share": { "album-id": { "name": albumId, "owner": ship }, "receiver": member[0], "write-perm": Boolean(member[1]) } }
+      });
+    })
+    Promise.all(promises).then(() => {
+      queryClient.invalidateQueries(["album", ship, albumId]);
+      setSelectedMembers([]);
+    });
+  }
+  const editMember = (member, writePerm) => {
+    api.poke({
+      app: "albums",
+      mark: "albums-action",
+      json: { "share": { "album-id": { "name": albumId, "owner": ship }, "receiver": member, "write-perm": Boolean(writePerm) } }
+    }).then(() => {
+      queryClient.invalidateQueries(["album", ship, albumId]);
+    });
+  }
   return (
     <div className="w-full h-full min-h-0 flex flex-col">
       {addPhoto && <AddPhoto setAddPhoto={setAddPhoto} />}
@@ -52,23 +77,86 @@ export default function Album() {
               </p>
             </Link>
             <div className="flex flex-col space-y-4 overflow-y-auto h-full w-full min-h-0 min-w-0 relative">
-              <ContactSearch
+              {ship === `~${window.ship}` && <ContactSearch
                 contacts={contacts}
                 disabledNicknames={disabledNicknames}
                 disabledAvatars={disabledAvatars}
                 group={shared}
-              />
+                selectedMembers={selectedMembers}
+                setSelectedMembers={setSelectedMembers}
+              />}
+              {selectedMembers.length > 0 && <div className="flex flex-col space-y-4 p-4 border rounded-md">
+                <h2 className="font-semibold text-sm">Members to Invite</h2>
+                {selectedMembers.map((member) => {
+                  return (
+                    <div
+                      className="flex items-center justify-between space-x-2 w-full"
+                      key={member[0]}
+                    >
+                      <Contact
+                        ship={member[0]}
+                        contact={contacts.data?.[member[0]] || {}}
+                        disabledNicknames={disabledNicknames}
+                        disabledAvatars={disabledAvatars}
+                      />
+                      <select
+                        className="bg-indigo-white border border-indigo-gray rounded-md text-xs font-semibold px-2 py-1"
+                        value={member[1]}
+                        onChange={(e) => {
+                          setSelectedMembers((prev) =>
+                            prev.map((m) =>
+                              m[0] === member[0]
+                                ? [m[0], e.target.value]
+                                : [m[0], m[1]]
+                            )
+                          );
+                        }}
+                      >
+                        <option value={false}>Viewer</option>
+                        <option value={true}>Writer</option>
+                      </select>
+                      <button
+                        className="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-md"
+                        onClick={() =>
+                          setSelectedMembers((prev) =>
+                            prev.filter((m) => m[0] !== member[0])
+                          )
+                        }
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  );
+                })}
+                <button
+                  className="w-full bg-black text-white text-sm font-semibold rounded-md py-1 hover:bg-indigo-black"
+                  onClick={() => inviteSelected()}
+                >
+                  Invite
+                </button>
+              </div>}
               {shared.map((share) => {
-                console.log(contacts.data?.[share[0]])
                 return (
-                  <Contact
-                    ship={share[0]}
-                    contact={contacts.data?.[share[0]] || {}}
-                    disabledNicknames={disabledNicknames}
-                    disabledAvatars={disabledAvatars}
-                    key={share[0]}
-                    writer={share[1]}
-                  />
+                  <div className="flex w-full items-center justify-between">
+                    <Contact
+                      ship={share[0]}
+                      contact={contacts.data?.[share[0]] || {}}
+                      disabledNicknames={disabledNicknames}
+                      disabledAvatars={disabledAvatars}
+                      key={share[0]}
+                    />
+                    <select
+                      className="bg-indigo-white border border-indigo-gray rounded-md text-xs font-semibold px-2 py-1"
+                      value={share[1]}
+                      onChange={(e) => {
+                        editMember(share[0], e.target.value);
+                      }}
+                      disabled={ship !== `~${window.ship}`}
+                    >
+                      <option value={false}>Viewer</option>
+                      <option value={true}>Writer</option>
+                    </select>
+                  </div>
                 );
               })}
             </div>
@@ -103,21 +191,31 @@ export default function Album() {
   );
 }
 
-function Gallery({ ship, albumId, subview, setAddPhoto, setLightboxPhoto, images, album }) {
+function Gallery({
+  ship,
+  albumId,
+  subview,
+  setAddPhoto,
+  setLightboxPhoto,
+  images,
+  album,
+}) {
   return (
     <div className="h-full w-full p-8 bg-white rounded-xl flex flex-col space-y-8 overflow-y-auto min-h-0">
       <div className="flex justify-between rounded-md bg-white">
         <Link to={`/album/${ship}/${albumId}`}>
-          <p className="font-semibold">
-            {album?.data?.album?.name || albumId}
-          </p>
+          <p className="font-semibold">{album?.data?.album?.name || albumId}</p>
         </Link>
         <div className="flex space-x-8 font-semibold text-[#666666]">
           <p>Edit</p>
           <Link to={`/album/${ship}/${albumId}/shared`}>
-            <p className={cn({
-              "text-indigo-black": subview === "shared",
-            })}>Participants</p>
+            <p
+              className={cn({
+                "text-indigo-black": subview === "shared",
+              })}
+            >
+              Participants
+            </p>
           </Link>
         </div>
       </div>
@@ -147,5 +245,5 @@ function Gallery({ ship, albumId, subview, setAddPhoto, setLightboxPhoto, images
         })}
       </div>
     </div>
-  )
+  );
 }
