@@ -12,7 +12,7 @@ import { api } from "../state/api";
 import { albumQuery } from "../state/query";
 import useStorageState from "../state/storage";
 
-export default function AddPhoto({ setAddPhoto }) {
+export default function AddPhoto({ setAddPhoto, addPhotos }) {
   const { files, client, getFiles } = useFileStore();
   const { s3 } = useStorageState();
   const { ship, albumId } = useParams();
@@ -91,31 +91,6 @@ export default function AddPhoto({ setAddPhoto }) {
       </div>
     );
   };
-
-  const addPhotos = () => {
-    const promises = selectedFiles.map((url, i) => {
-      return api.poke({
-        app: "albums",
-        mark: "albums-action",
-        json: {
-          add: {
-            "album-id": { name: albumId, owner: ship },
-            "img-id": String(Math.floor(Date.now() / 1000) + i),
-            src: url,
-            caption: {
-              who: `~${window.ship}`,
-              when: unixToDa(Date.now()),
-              what: "",
-            },
-          },
-        },
-      });
-    });
-    Promise.all(promises).then(() => {
-      queryClient.invalidateQueries(["album", ship, albumId]);
-      setAddPhoto(false);
-    });
-  };
   return (
     <div className="absolute top-0 left-0 bg-[rgba(0,0,0,0.25)] w-full h-full flex flex-col items-center justify-center">
       <Foco onClickOutside={() => setAddPhoto(false)}>
@@ -187,7 +162,7 @@ export default function AddPhoto({ setAddPhoto }) {
             <button
               className="text-sm font-semibold bg-black hover:bg-indigo-black text-white w-full rounded-md py-1 disabled:bg-indigo-white disabled:text-indigo-gray"
               disabled={selectedFiles.length === 0}
-              onClick={() => addPhotos()}
+              onClick={() => addPhotos(selectedFiles, queryClient)}
             >
               Add to Album
             </button>
