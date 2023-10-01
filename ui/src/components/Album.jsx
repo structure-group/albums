@@ -8,6 +8,7 @@ import Lightbox from "./Lightbox";
 import cn from "classnames";
 import ContactSearch from "./ContactSearch";
 import { api } from "../state/api";
+import { unixToDa } from "@urbit/api";
 
 export default function Album() {
   const [addPhoto, setAddPhoto] = useState(false);
@@ -26,7 +27,6 @@ export default function Album() {
     queryKey: ["settings"],
     queryFn: () => settingsQuery(),
   });
-  console.log(settings.data);
   const disabledNicknames =
     settings.data?.desk?.calmEngine?.disableNicknames || false;
   const disabledAvatars =
@@ -36,6 +36,30 @@ export default function Album() {
     [];
   const shared = album?.data?.albums?.shared || [];
   console.log(album.data);
+  const addPhotos = (selectedFiles, queryClient) => {
+    const promises = selectedFiles.map((url, i) => {
+      return api.poke({
+        app: "albums",
+        mark: "albums-action",
+        json: {
+          add: {
+            "album-id": { name: albumId, owner: ship },
+            "img-id": String(Math.floor(Date.now() / 1000) + i),
+            src: url,
+            caption: {
+              who: `~${window.ship}`,
+              when: unixToDa(Date.now()),
+              what: "",
+            },
+          },
+        },
+      });
+    });
+    Promise.all(promises).then(() => {
+      queryClient.invalidateQueries(["album", ship, albumId]);
+      setAddPhoto(false);
+    });
+  };
 
   const inviteSelected = () => {
     const promises = selectedMembers.map((member) => {
@@ -75,7 +99,7 @@ export default function Album() {
   };
   return (
     <div className="w-full h-full min-h-0 flex flex-col">
-      {addPhoto && <AddPhoto setAddPhoto={setAddPhoto} />}
+      {addPhoto && <AddPhoto addPhotos={addPhotos} setAddPhoto={setAddPhoto} />}
       {lightboxPhoto !== null && (
         <Lightbox
           photo={images[lightboxPhoto]}
