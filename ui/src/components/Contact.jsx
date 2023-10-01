@@ -6,7 +6,7 @@ export default function Contact({
   disabledNicknames,
   disabledAvatars,
   className = "",
-  onMouseDown = () => { },
+  onMouseDown = () => {},
 }) {
   return (
     <div

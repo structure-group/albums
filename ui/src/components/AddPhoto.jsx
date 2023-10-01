@@ -138,16 +138,17 @@ export default function AddPhoto({ setAddPhoto }) {
                 input.onchange = (e) => {
                   const files = Array.from(e.target.files);
                   const promises = files.map(async (file) => {
-                    await client
-                      .send(
-                        new PutObjectCommand({
-                          Bucket: s3.configuration.currentBucket,
-                          Key: `/structure-albums/${deSig(dateToDa(new Date()))}-${file.name}`,
-                          Body: file,
-                          ACL: "public-read",
-                          ContentType: file.type,
-                        })
-                      );
+                    await client.send(
+                      new PutObjectCommand({
+                        Bucket: s3.configuration.currentBucket,
+                        Key: `/structure-albums/${deSig(
+                          dateToDa(new Date()),
+                        )}-${file.name}`,
+                        Body: file,
+                        ACL: "public-read",
+                        ContentType: file.type,
+                      }),
+                    );
                   });
                   Promise.allSettled(promises).then(() => {
                     getFiles(s3);

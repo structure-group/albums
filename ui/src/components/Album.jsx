@@ -42,23 +42,37 @@ export default function Album() {
       return api.poke({
         app: "albums",
         mark: "albums-action",
-        json: { "share": { "album-id": { "name": albumId, "owner": ship }, "receiver": member[0], "write-perm": Boolean(member[1]) } }
+        json: {
+          share: {
+            "album-id": { name: albumId, owner: ship },
+            receiver: member[0],
+            "write-perm": Boolean(member[1]),
+          },
+        },
       });
-    })
+    });
     Promise.all(promises).then(() => {
       queryClient.invalidateQueries(["album", ship, albumId]);
       setSelectedMembers([]);
     });
-  }
+  };
   const editMember = (member, writePerm) => {
-    api.poke({
-      app: "albums",
-      mark: "albums-action",
-      json: { "share": { "album-id": { "name": albumId, "owner": ship }, "receiver": member, "write-perm": Boolean(writePerm) } }
-    }).then(() => {
-      queryClient.invalidateQueries(["album", ship, albumId]);
-    });
-  }
+    api
+      .poke({
+        app: "albums",
+        mark: "albums-action",
+        json: {
+          share: {
+            "album-id": { name: albumId, owner: ship },
+            receiver: member,
+            "write-perm": Boolean(writePerm),
+          },
+        },
+      })
+      .then(() => {
+        queryClient.invalidateQueries(["album", ship, albumId]);
+      });
+  };
   return (
     <div className="w-full h-full min-h-0 flex flex-col">
       {addPhoto && <AddPhoto setAddPhoto={setAddPhoto} />}
@@ -77,64 +91,68 @@ export default function Album() {
               </p>
             </Link>
             <div className="flex flex-col space-y-4 overflow-y-auto h-full w-full min-h-0 min-w-0 relative">
-              {ship === `~${window.ship}` && <ContactSearch
-                contacts={contacts}
-                disabledNicknames={disabledNicknames}
-                disabledAvatars={disabledAvatars}
-                group={shared}
-                selectedMembers={selectedMembers}
-                setSelectedMembers={setSelectedMembers}
-              />}
-              {selectedMembers.length > 0 && <div className="flex flex-col space-y-4 p-4 border rounded-md">
-                <h2 className="font-semibold text-sm">Members to Invite</h2>
-                {selectedMembers.map((member) => {
-                  return (
-                    <div
-                      className="flex items-center justify-between space-x-2 w-full"
-                      key={member[0]}
-                    >
-                      <Contact
-                        ship={member[0]}
-                        contact={contacts.data?.[member[0]] || {}}
-                        disabledNicknames={disabledNicknames}
-                        disabledAvatars={disabledAvatars}
-                      />
-                      <select
-                        className="bg-indigo-white border border-indigo-gray rounded-md text-xs font-semibold px-2 py-1"
-                        value={member[1]}
-                        onChange={(e) => {
-                          setSelectedMembers((prev) =>
-                            prev.map((m) =>
-                              m[0] === member[0]
-                                ? [m[0], e.target.value]
-                                : [m[0], m[1]]
+              {ship === `~${window.ship}` && (
+                <ContactSearch
+                  contacts={contacts}
+                  disabledNicknames={disabledNicknames}
+                  disabledAvatars={disabledAvatars}
+                  group={shared}
+                  selectedMembers={selectedMembers}
+                  setSelectedMembers={setSelectedMembers}
+                />
+              )}
+              {selectedMembers.length > 0 && (
+                <div className="flex flex-col space-y-4 p-4 border rounded-md">
+                  <h2 className="font-semibold text-sm">Members to Invite</h2>
+                  {selectedMembers.map((member) => {
+                    return (
+                      <div
+                        className="flex items-center justify-between space-x-2 w-full"
+                        key={member[0]}
+                      >
+                        <Contact
+                          ship={member[0]}
+                          contact={contacts.data?.[member[0]] || {}}
+                          disabledNicknames={disabledNicknames}
+                          disabledAvatars={disabledAvatars}
+                        />
+                        <select
+                          className="bg-indigo-white border border-indigo-gray rounded-md text-xs font-semibold px-2 py-1"
+                          value={member[1]}
+                          onChange={(e) => {
+                            setSelectedMembers((prev) =>
+                              prev.map((m) =>
+                                m[0] === member[0]
+                                  ? [m[0], e.target.value]
+                                  : [m[0], m[1]],
+                              ),
+                            );
+                          }}
+                        >
+                          <option value={false}>Viewer</option>
+                          <option value={true}>Writer</option>
+                        </select>
+                        <button
+                          className="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-md"
+                          onClick={() =>
+                            setSelectedMembers((prev) =>
+                              prev.filter((m) => m[0] !== member[0]),
                             )
-                          );
-                        }}
-                      >
-                        <option value={false}>Viewer</option>
-                        <option value={true}>Writer</option>
-                      </select>
-                      <button
-                        className="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-md"
-                        onClick={() =>
-                          setSelectedMembers((prev) =>
-                            prev.filter((m) => m[0] !== member[0])
-                          )
-                        }
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  );
-                })}
-                <button
-                  className="w-full bg-black text-white text-sm font-semibold rounded-md py-1 hover:bg-indigo-black"
-                  onClick={() => inviteSelected()}
-                >
-                  Invite
-                </button>
-              </div>}
+                          }
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    );
+                  })}
+                  <button
+                    className="w-full bg-black text-white text-sm font-semibold rounded-md py-1 hover:bg-indigo-black"
+                    onClick={() => inviteSelected()}
+                  >
+                    Invite
+                  </button>
+                </div>
+              )}
               {shared.map((share) => {
                 return (
                   <div className="flex w-full items-center justify-between">
@@ -207,11 +225,11 @@ function Gallery({
     await api.poke({
       app: "albums",
       mark: "albums-action",
-      json: { "nuke": { "name": albumId, "owner": ship } }
-    })
+      json: { nuke: { name: albumId, owner: ship } },
+    });
     queryClient.invalidateQueries(["albums"]);
     navigate("/");
-  }
+  };
 
   return (
     <div className="h-full w-full p-8 bg-white rounded-xl flex flex-col space-y-8 overflow-y-auto min-h-0">
@@ -229,12 +247,14 @@ function Gallery({
               Participants
             </p>
           </Link>
-          {ship === `~${window.ship}` && <button
-            className="text-red-500 font-semibold rounded-md"
-            onClick={() => nuke()}
-          >
-            Delete
-          </button>}
+          {ship === `~${window.ship}` && (
+            <button
+              className="text-red-500 font-semibold rounded-md"
+              onClick={() => nuke()}
+            >
+              Delete
+            </button>
+          )}
         </div>
       </div>
       <div className="flex flex-wrap justify-center md:justify-normal gap-8 w-full max-h-full min-h-0">
