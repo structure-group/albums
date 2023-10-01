@@ -15,7 +15,7 @@ export default function Albums({ shared = false }) {
         <title>Albums</title>
       </Helmet>
       {credentials?.accessKeyId ? (
-        <div className="p-8 flex justify-center md:justify-normal flex-wrap gap-8">
+        <div className="p-8 flex justify-center md:justify-normal flex-wrap gap-8 overflow-y-auto">
           {albums?.data
             ?.filter(shared ? sharedFilter : ourFilter)
             .map((album) => {
