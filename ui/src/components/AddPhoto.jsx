@@ -1,6 +1,6 @@
 import Foco from "react-foco";
 import { useFileStore } from "../state/useFileStore";
-import { daToDate } from "@urbit/api";
+import { daToDate, unixToDa } from "@urbit/api";
 import { compareDesc } from "date-fns";
 import { FixedSizeGrid as Grid } from "react-window";
 import { useEffect, useState } from "react";
@@ -29,8 +29,7 @@ export default function AddPhoto({ setAddPhoto }) {
         setColumns(2);
         setPromptWidth(window.innerWidth - 72);
         setPromptHeight(window.innerHeight - 72);
-      }
-      else if (window.innerWidth < 768) {
+      } else if (window.innerWidth < 768) {
         setColumns(3);
         setPromptWidth(window.innerWidth - 72);
         setPromptHeight(window.innerHeight - 72);
@@ -102,7 +101,7 @@ export default function AddPhoto({ setAddPhoto }) {
             src: url,
             caption: {
               who: `~${window.ship}`,
-              when: String(Math.floor(Date.now() / 1000) + i),
+              when: unixToDa(Date.now()),
               what: "",
             },
           },
@@ -117,11 +116,13 @@ export default function AddPhoto({ setAddPhoto }) {
   return (
     <div className="absolute top-0 left-0 bg-[rgba(0,0,0,0.25)] w-full h-full flex flex-col items-center justify-center">
       <Foco onClickOutside={() => setAddPhoto(false)}>
-        <div className="bg-white rounded-xl flex flex-col items-center justify-center z-10 p-4"
+        <div
+          className="bg-white rounded-xl flex flex-col items-center justify-center z-10 p-4"
           style={{
             width: promptWidth + 32,
             height: promptHeight + 32,
-          }}>
+          }}
+        >
           <p className="font-semibold">Your Images</p>
           <Grid
             className="self-center"
