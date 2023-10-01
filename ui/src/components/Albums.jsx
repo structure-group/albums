@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { albumsQuery, contactsQuery, settingsQuery } from "../state/query";
+import { albumsQuery } from "../state/query";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import useStorageState from "../state/storage";
@@ -7,18 +7,8 @@ export default function Albums({ shared = false }) {
   const { s3 } = useStorageState();
   const { credentials } = s3 ?? { credentials: { accessKeyId: "" } };
   const albums = useQuery({ queryKey: ["albums"], queryFn: albumsQuery });
-  const contacts = useQuery({
-    queryKey: ["contacts"],
-    queryFn: () => contactsQuery(),
-  });
-  const settings = useQuery({
-    queryKey: ["settings"],
-    queryFn: () => settingsQuery(),
-  });
-  const disabledNicknames =
-    settings.data?.calmEngine?.disableNicknames || false;
-  const ourFilter = (album) => album?.[0]?.[1] === `~${window.ship}`;
-  const sharedFilter = (album) => album?.[0]?.[1] !== `~${window.ship}`;
+  const ourFilter = (album) => album?.owner === `~${window.ship}`;
+  const sharedFilter = (album) => album?.owner !== `~${window.ship}`;
   return (
     <>
       <Helmet>
@@ -29,17 +19,11 @@ export default function Albums({ shared = false }) {
           {albums?.data
             ?.filter(shared ? sharedFilter : ourFilter)
             .map((album) => {
-              if (!Array.isArray(album)) return null;
-              const owner =
-                contacts?.data?.[album?.[0]?.[1]] && !disabledNicknames
-                  ? contacts?.data?.[album?.[0]?.[1]]?.nickname
-                  : album?.[0]?.[1] || "";
-              const id = album?.[0]?.[0] || "";
-              const cover = album?.[1] || "";
+              const { name, owner, cover } = album;
               return (
                 <Link
-                  to={`/album/${album?.[0]?.[1]}/${id}`}
-                  key={`${album?.[0]?.[1]}/${id}`}
+                  to={`/album/${owner}/${name}`}
+                  key={`${owner}/${name}`}
                 >
                   <div className="flex flex-col items-center w-64 space-y-2">
                     <div
@@ -53,7 +37,7 @@ export default function Albums({ shared = false }) {
                       }}
                     >
                     </div>
-                    <p className="font-semibold">{id}</p>
+                    <p className="font-semibold">{name}</p>
                   </div>
                 </Link>
               );
