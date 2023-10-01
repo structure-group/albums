@@ -4,7 +4,7 @@ export default function Contact({ ship, contact, disabledNicknames, disabledAvat
     return (
         <div className={cn("flex space-x-2 items-center w-full", className)}>
             {!disabledAvatars && contact?.avatar ? (
-                <img src={contact.avatar} className="h-8 w-8 rounded-sm" />
+                <img src={contact.avatar} className="h-8 w-8 rounded-md" />
             )
                 : <Sigil
                     ship={ship}
