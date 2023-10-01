@@ -2,12 +2,28 @@ import Foco from "react-foco";
 import { useState } from "react";
 import { api } from "../state/api";
 import { useParams } from "react-router-dom";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { contactsQuery, settingsQuery } from "../state/query";
+import { daToDate } from "@urbit/api";
+import Contact from "./Contact";
 export default function Lightbox({ photo, setLightboxPhoto }) {
   const [comment, setComment] = useState("");
   const { ship, albumId } = useParams();
   const queryClient = useQueryClient();
-  console.log(photo);
+  const contacts = useQuery({
+    queryKey: ["contacts"],
+    queryFn: () => contactsQuery(),
+  });
+  const settings = useQuery({
+    queryKey: ["settings"],
+    queryFn: () => settingsQuery(),
+  });
+  const disabledNicknames =
+    settings.data?.desk?.calmEngine?.disableNicknames || false;
+  const disabledAvatars =
+    settings.data?.desk?.calmEngine?.disableAvatars || false;
+  const comments = photo[1]?.comments;
+  console.log(comments);
   const addComment = async () => {
     await api.poke({
       app: "albums",
@@ -49,9 +65,32 @@ export default function Lightbox({ photo, setLightboxPhoto }) {
             alt=""
             className="min-w-0 min-h-0 max-h-[90vh] object-contain"
           />
-          <div className="bg-white relative rounded-tr-md rounded-br-md p-4 flex flex-col justify-end lg:w-full max-h-32 lg:max-h-[90vh] overflow-y-auto basis-1/3">
+          <div className="bg-white relative rounded-tr-md rounded-br-md p-4 flex flex-col min-h-0 justify-end lg:w-full max-h-32 lg:max-h-[90vh] basis-1/3 space-y-4">
+            <div className="flex flex-col min-h-0 overflow-y-auto space-y-8">
+              {comments?.map((comment) => {
+                const { who, when, what } = comment[1] || {
+                  who: "~hastuc-dibtux",
+                  when: "~2018.7.17..23.15.09..5be5",
+                  what: "unknown"
+                };
+                return (
+                  <div className="flex flex-col space-y-1">
+                    <Contact
+                      ship={who}
+                      contact={contacts?.data?.[who] || {}}
+                      disabledNicknames={disabledNicknames}
+                      disabledAvatars={disabledAvatars}
+                    />
+                    <p className="text-xs text-gray-400">
+                      {daToDate(when || "~2018.7.17..23.15.09..5be5").toLocaleString()}
+                    </p>
+                    <p className="text-sm">{what}</p>
+                  </div>
+                );
+              })}
+            </div>
             <textarea
-              className="w-full sticky bottom-0 h-16 resize-none border border-indigo-gray p-2 rounded-md"
+              className="w-full sticky bottom-0 h-16 resize-none border border-indigo-gray p-2 rounded-md shrink-0"
               placeholder="Add a comment..."
               value={comment}
               onChange={(e) => setComment(e.target.value)}
