@@ -4,7 +4,7 @@ import { api } from "../state/api";
 import { useParams } from "react-router-dom";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { contactsQuery, settingsQuery } from "../state/query";
-import { daToDate } from "@urbit/api";
+import { daToDate, unixToDa } from "@urbit/api";
 import Contact from "./Contact";
 export default function Lightbox({ photo, setLightboxPhoto }) {
   const [comment, setComment] = useState("");
@@ -34,7 +34,7 @@ export default function Lightbox({ photo, setLightboxPhoto }) {
           "img-id": photo[0],
           comment: {
             who: `~${window.ship}`,
-            when: String(Math.floor(Date.now() / 1000)),
+            when: unixToDa(Date.now()),
             what: comment,
           },
         },
@@ -71,7 +71,7 @@ export default function Lightbox({ photo, setLightboxPhoto }) {
                 const { who, when, what } = comment[1] || {
                   who: "~hastuc-dibtux",
                   when: "~2018.7.17..23.15.09..5be5",
-                  what: "unknown"
+                  what: "unknown",
                 };
                 return (
                   <div className="flex flex-col space-y-1">
@@ -82,7 +82,9 @@ export default function Lightbox({ photo, setLightboxPhoto }) {
                       disabledAvatars={disabledAvatars}
                     />
                     <p className="text-xs text-gray-400">
-                      {daToDate(when || "~2018.7.17..23.15.09..5be5").toLocaleString()}
+                      {daToDate(
+                        when || "~2018.7.17..23.15.09..5be5",
+                      ).toLocaleString()}
                     </p>
                     <p className="text-sm">{what}</p>
                   </div>
