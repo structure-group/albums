@@ -3,23 +3,45 @@ import { useFileStore } from "../state/useFileStore";
 import { daToDate } from "@urbit/api";
 import { compareDesc } from "date-fns";
 import { FixedSizeGrid as Grid } from "react-window";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import cn from "classnames";
 import { api } from "../state/api";
-import { v4 as uuidv4 } from "uuid";
 import { albumQuery } from "../state/query";
 
 export default function AddPhoto({ setAddPhoto }) {
   const { files } = useFileStore();
   const { ship, albumId } = useParams();
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [columns, setColumns] = useState(5);
+  const [promptWidth, setPromptWidth] = useState(568);
+  const [promptHeight, setPromptHeight] = useState(368);
   const queryClient = useQueryClient();
   const album = useQuery({
     queryKey: ["album", ship, albumId],
     queryFn: () => albumQuery(albumId, ship),
   }).data?.albums;
+
+  useEffect(() => {
+    const resize = () => {
+      if (window.innerWidth < 768) {
+        setColumns(3);
+        setPromptWidth(window.innerWidth - 128);
+        setPromptHeight(window.innerHeight - 128);
+      } else if (window.innerWidth < 1024) {
+        setColumns(3);
+        setPromptWidth(340);
+      } else {
+        setColumns(5);
+        setPromptWidth(568);
+      }
+    };
+    resize();
+    window.addEventListener("resize", resize);
+    return () => window.removeEventListener("resize", resize);
+  }, []);
+
   const sortedFiles = files
     .filter((f) => imageExtensions.includes(f.extension))
     .sort((a, b) => {
@@ -87,20 +109,23 @@ export default function AddPhoto({ setAddPhoto }) {
       setAddPhoto(false);
     });
   };
-
   return (
     <div className="absolute top-0 left-0 bg-[rgba(0,0,0,0.25)] w-full h-full flex flex-col items-center justify-center">
       <Foco onClickOutside={() => setAddPhoto(false)}>
-        <div className="bg-white rounded-xl w-[600px] h-[400px] flex flex-col items-center justify-center z-10 p-4">
+        <div className="bg-white rounded-xl flex flex-col items-center justify-center z-10 p-4"
+          style={{
+            width: promptWidth + 32,
+            height: promptHeight + 32,
+          }}>
           <p className="font-semibold">Your Images</p>
           <Grid
             className="self-center"
-            columnCount={5}
+            columnCount={columns}
             columnWidth={113}
-            height={368}
+            height={promptHeight}
             rowCount={sortedFiles.length / 3}
             rowHeight={100}
-            width={568}
+            width={columns * 113}
           >
             {Cell}
           </Grid>
