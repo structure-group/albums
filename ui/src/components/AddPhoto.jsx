@@ -1,6 +1,7 @@
 import Foco from "react-foco";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { useFileStore } from "../state/useFileStore";
-import { daToDate, unixToDa } from "@urbit/api";
+import { daToDate, dateToDa, unixToDa, deSig } from "@urbit/api";
 import { compareDesc } from "date-fns";
 import { FixedSizeGrid as Grid } from "react-window";
 import { useEffect, useState } from "react";
@@ -9,9 +10,11 @@ import { useParams } from "react-router-dom";
 import cn from "classnames";
 import { api } from "../state/api";
 import { albumQuery } from "../state/query";
+import useStorageState from "../state/storage";
 
 export default function AddPhoto({ setAddPhoto }) {
-  const { files } = useFileStore();
+  const { files, client, getFiles } = useFileStore();
+  const { s3 } = useStorageState();
   const { ship, albumId } = useParams();
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [columns, setColumns] = useState(5);
@@ -123,7 +126,45 @@ export default function AddPhoto({ setAddPhoto }) {
             height: promptHeight + 32,
           }}
         >
-          <p className="font-semibold">Your Images</p>
+          <div className="w-full flex items-center justify-between mb-2">
+            <p className="font-semibold">Your Images</p>
+            <button
+              className="bg-black text-white p-1 rounded-md text-sm font-semibold hover:bg-indigo-black"
+              onClick={() => {
+                const input = document.createElement("input");
+                input.type = "file";
+                input.multiple = true;
+                input.accept = "image/*";
+                input.onchange = (e) => {
+                  const files = Array.from(e.target.files);
+                  const promises = files.map(async (file) => {
+                    await client
+                      .send(
+                        new PutObjectCommand({
+                          Bucket: s3.configuration.currentBucket,
+                          Key: `/structure-albums/${deSig(dateToDa(new Date()))}-${file.name}`,
+                          Body: file,
+                          ACL: "public-read",
+                          ContentType: file.type,
+                        })
+                      );
+                  });
+                  Promise.allSettled(promises).then(() => {
+                    getFiles(s3);
+                  });
+                };
+                try {
+                  input.click();
+                } catch (e) {
+                  console.log(e);
+                } finally {
+                  getFiles(s3);
+                }
+              }}
+            >
+              Upload
+            </button>
+          </div>
           <Grid
             className="self-center"
             columnCount={columns}
@@ -137,16 +178,17 @@ export default function AddPhoto({ setAddPhoto }) {
           </Grid>
           <div className="flex space-x-2 pt-2 w-full">
             <button
-              className="text-sm font-semibold bg-white text-black w-full rounded-md py-1 hover:bg-gray-200"
+              className="text-sm font-semibold bg-white text-black w-full rounded-md py-1 hover:bg-indigo-white"
               onClick={() => setAddPhoto(false)}
             >
               Cancel
             </button>
             <button
-              className="text-sm font-semibold bg-black text-white w-full rounded-md py-1"
+              className="text-sm font-semibold bg-black hover:bg-indigo-black text-white w-full rounded-md py-1 disabled:bg-indigo-white disabled:text-indigo-gray"
+              disabled={selectedFiles.length === 0}
               onClick={() => addPhotos()}
             >
-              Add
+              Add to Album
             </button>
           </div>
         </div>
