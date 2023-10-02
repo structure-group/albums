@@ -3,7 +3,7 @@ import { useState } from "react";
 import AddPhoto from "./AddPhoto";
 import { api } from "../state/api";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
-import { unixToDa } from "@urbit/api";
+import { decToUd, unixToDa } from "@urbit/api";
 import ContactSearch from "./ContactSearch";
 import Contact from "./Contact";
 import { contactsQuery, settingsQuery } from "../state/query";
@@ -58,7 +58,7 @@ export default function NewAlbum() {
               src: url,
               caption: {
                 who: `~${window.ship}`,
-                when: unixToDa(Date.now()),
+                when: decToUd(`${unixToDa(Date.now())}`),
                 what: "",
               },
             },

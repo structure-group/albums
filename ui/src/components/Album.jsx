@@ -36,7 +36,6 @@ export default function Album() {
     [];
   const shared = album?.data?.albums?.shared || [];
   console.log(album.data);
-  console.log(decToUd(`${unixToDa(Date.now())}`));
   const addPhotos = (selectedFiles, queryClient) => {
     const promises = selectedFiles.map((url, i) => {
       return api.poke({

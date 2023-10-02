@@ -24,7 +24,6 @@ export default function Lightbox({ photo, setLightboxPhoto }) {
     settings.data?.desk?.calmEngine?.disableAvatars || false;
   const comments = photo[1]?.comments;
   console.log(comments);
-  console.log(decToUd(`${unixToDa(Date.now())}`));
   const addComment = async () => {
     await api.poke({
       app: "albums",
