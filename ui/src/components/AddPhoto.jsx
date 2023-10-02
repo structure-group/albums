@@ -62,7 +62,7 @@ export default function AddPhoto({ setAddPhoto, addPhotos }) {
       return compareDesc(dateA, dateB);
     });
   const Cell = ({ columnIndex, rowIndex, style }) => {
-    const url = sortedFiles[rowIndex * 5 + columnIndex].url;
+    const url = sortedFiles[rowIndex * 5 + columnIndex]?.url || "";
     return (
       <div
         className={cn("p-1 cursor-pointer border", {
@@ -87,7 +87,7 @@ export default function AddPhoto({ setAddPhoto, addPhotos }) {
           height: style.height - 1,
         }}
       >
-        <img src={url} className="h-full w-full object-contain" />
+        {url ? <img src={url} className="h-full w-full object-contain" /> : <div className="pointer-events-none h-full w-full" />}
       </div>
     );
   };
