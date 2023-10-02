@@ -21,9 +21,15 @@
     %+  frond  'albums'
     %-  pairs
     =/  imgs=(list [=img-id =image])  ~(tap by images.album)
+    =/  shared=(list [who=@p write-perm=?])  ~(tap by shared.album)
     :~  ['name' (en-vase !>(name.album))]
         ['owner' (en-vase !>(owner.album))]
-        ['shared' (en-vase !>(shared.album))]
+        :-  'shared'
+          :-  %a
+          %+  turn  shared
+          |=  [who=@p write-perm=?]
+          ^-  json
+            (en-vase !>([who write-perm]))
         :-  'images'
           :-  %a
           %+  turn  imgs
@@ -35,7 +41,7 @@
   ==
 
 ++  dejs-action
-  ::!.
+  !:
   =,  dejs:format
   |=  jon=json
   ^-  action
@@ -61,7 +67,7 @@
         [%album-id (ot ~[name+so owner+(se %p)])]
         img-id+so
         src+so
-        [%caption (ot ~[who+(se %p) when+nu what+so])]
+        [%caption (ot ~[who+(se %p) when+sd what+so])]
       ==
   ++  dejs-del
     %-  ot  
@@ -73,7 +79,7 @@
       :~  
         [%album-id (ot ~[name+so owner+(se %p)])]
         img-id+so
-        [%comment (ot ~[who+(se %p) when+nu what+so])]
+        [%comment (ot ~[who+(se %p) when+sd what+so])]
       ==
   ++  dejs-share
     %-  ot

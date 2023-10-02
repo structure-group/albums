@@ -8,7 +8,7 @@
 +$  comments  ((mop @da comment) gth)
 +$  image  [=src caption=comment =comments] 
 +$  images  (map img-id image)
-+$  shared  (list [who=@p =write-perm])
++$  shared  (map who=@p =write-perm)
 +$  album-id  [=name =owner]
 +$  album-ids  (list album-id)
 +$  album  [=name =owner =shared =images cover=src]

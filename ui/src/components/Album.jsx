@@ -8,7 +8,7 @@ import Lightbox from "./Lightbox";
 import cn from "classnames";
 import ContactSearch from "./ContactSearch";
 import { api } from "../state/api";
-import { unixToDa } from "@urbit/api";
+import { decToUd, unixToDa } from "@urbit/api";
 
 export default function Album() {
   const [addPhoto, setAddPhoto] = useState(false);
@@ -36,6 +36,7 @@ export default function Album() {
     [];
   const shared = album?.data?.albums?.shared || [];
   console.log(album.data);
+  console.log(decToUd(`${unixToDa(Date.now())}`));
   const addPhotos = (selectedFiles, queryClient) => {
     const promises = selectedFiles.map((url, i) => {
       return api.poke({
@@ -48,7 +49,7 @@ export default function Album() {
             src: url,
             caption: {
               who: `~${window.ship}`,
-              when: unixToDa(Date.now()),
+              when: decToUd(`${unixToDa(Date.now())}`),
               what: "",
             },
           },

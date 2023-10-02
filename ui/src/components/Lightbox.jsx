@@ -4,7 +4,7 @@ import { api } from "../state/api";
 import { useParams } from "react-router-dom";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { contactsQuery, settingsQuery } from "../state/query";
-import { daToDate, unixToDa } from "@urbit/api";
+import { daToDate, unixToDa, decToUd } from "@urbit/api";
 import Contact from "./Contact";
 export default function Lightbox({ photo, setLightboxPhoto }) {
   const [comment, setComment] = useState("");
@@ -24,6 +24,7 @@ export default function Lightbox({ photo, setLightboxPhoto }) {
     settings.data?.desk?.calmEngine?.disableAvatars || false;
   const comments = photo[1]?.comments;
   console.log(comments);
+  console.log(decToUd(`${unixToDa(Date.now())}`));
   const addComment = async () => {
     await api.poke({
       app: "albums",
@@ -34,7 +35,7 @@ export default function Lightbox({ photo, setLightboxPhoto }) {
           "img-id": photo[0],
           comment: {
             who: `~${window.ship}`,
-            when: unixToDa(Date.now()),
+            when: decToUd(`${unixToDa(Date.now())}`),
             what: comment,
           },
         },
