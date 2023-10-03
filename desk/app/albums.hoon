@@ -94,12 +94,15 @@
     ?.  (~(has in img-list) img-id)
       ~&  >  ["Image not found" img-id]
       `this
-    =/  new-album  %=  album
-    images  (~(del by images.album) img-id)
-    ==
+    =/  =image  (~(got by images.album) img-id)
+    =.  images.album  (~(del by images.album) img-id)
+    =.  cover.album  
+      ?.  =(src.image cover.album)  cover.album
+        ?:  =(0 (lent ~(val by images.album)))  ''
+        src:(snag 0 ~(val by images.album))
     =/  =wire  /share/(scot %p owner.album-id)/[name.album-id]
-    :-  ~[[%give %fact ~[wire] %albums-update !>(`update`[%album new-album])]]
-    this(albums (~(put by albums) album-id new-album))
+    :-  ~[[%give %fact ~[wire] %albums-update !>(`update`[%album album])]]
+    this(albums (~(put by albums) album-id album))
     ::  
       %comment
     =,  act
