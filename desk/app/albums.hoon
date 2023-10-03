@@ -115,12 +115,10 @@
       ~&  >  ["Image not found" img-id]
       `this
     :: make sure we own the album if not poke the owner with the comment
-    ?.  =(owner.u.album who.comment)
+    ?.  =(owner.u.album our.bowl)
       ~&  >  ["We don't own the album" who.comment owner.u.album]
-      =/  cad  [%comment album-id image comment ~] 
-      ::`this
       :_  this 
-      :~  [%pass /comment %agent [owner.u.album dap.bowl] %poke %albums-action !>(cad)]
+      :~  [%pass /comment %agent [owner.u.album dap.bowl] %poke %albums-action !>(act)]
       ==
     =/  shared=(list @p)  ~(tap in ~(key by shared.u.album))
     ?~  (find ~[who.comment] shared)
