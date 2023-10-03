@@ -1,5 +1,5 @@
 /-  *albums
-/+  default-agent, dbug, agentio, al=albums, string
+/+  default-agent, dbug, agentio, al=albums, string, verb
 |%
 +$  versioned-state
     $%  state-0
@@ -9,6 +9,7 @@
 ++  comment-on  ((on @da comment) gth)
 ++  image-on  ((on @da image) gth)
 --
+%+  verb  &
 %-  agent:dbug
 =|  state-0
 =*  state  -
@@ -96,7 +97,7 @@
       :~  [%pass /comment %agent [owner.u.album dap.bowl] %poke %albums-action !>(cad)]
       ==
     =/  shared=(list @p)  ~(tap in ~(key by shared.u.album))
-    ?~  (find shared ~[who.comment])
+    ?~  (find ~[who.comment] shared)
       ~&  >  ["We havent shared the album with this person" who.comment]
       `this
     =/  old-image  (~(got by images.u.album) img-id)
@@ -107,9 +108,8 @@
     this(albums (~(put by albums) album-id new-album))
     ::
       %share
-    ~&  >  'share'
     =,  act
-    ?>  =(our.bowl owner.album-id)
+    ?>  =(src.bowl owner.album-id)
     ?:  =(src.bowl our.bowl) :: If we're adding someone to shared list
       =/  new-album  (~(got by albums) album-id)
       =.  shared.new-album  (~(put by shared.new-album) receiver write-perm)
@@ -117,6 +117,7 @@
       :~  [%pass /share %agent [receiver dap.bowl] %poke %albums-action !>(act)]
       ==
     =/  =wire  /share/(scot %p owner.album-id)/[name.album-id]
+    ~&  >  ['share wire' wire]
     :_  this
     :~  [%pass wire %agent [src.bowl dap.bowl] %watch /(scot %p owner.album-id)/[name.album-id]]
     ==
@@ -124,10 +125,12 @@
 ::
 ++  on-agent
   |=  [=(pole knot) =sign:agent:gall]
+  ~&  >  ['agent pole' pole]
   ^-  (quip card _this)
   ?.  ?=([%share owner=@ name=@ ~] pole)  `this
     :: switch on the type of event
     ::
+    ~&  ['agent -.sign' -.sign]
     ?+    -.sign  (on-agent:def pole sign)
       ::
         %fact
@@ -143,23 +146,29 @@
       :_  this
       :~  [%pass pole %agent [src.bowl dap.bowl] %watch /[owner.pole]/[name.pole]]
       ==
+        %watch-ack
+      ?~  p.sign
+        ((slog '%todo-watcher: Subscribe succeeded!' ~) `this)
+      ~&  p.sign
+      ((slog '%todo-watcher: Subscribe failed!' ~) `this)
     ==
 ::
 ++  on-watch
   ::
   |=  =(pole knot)
   ^-  (quip card _this)
+  ~&  >  ['watch pole' pole]
   ?>  (team:title our.bowl src.bowl)
   ?+  pole  (on-watch:def pole)
       [%share owner=@ name=@ ~]
     =/  album=(unit album)  (~(get by albums.this) [name.pole owner.pole])
     ?~  album  `this
     =/  shared=(list @p)  ~(tap in ~(key by shared.u.album))
-    ?~  (find shared ~[src.bowl])
+    ?~  (find ~[src.bowl] shared)
       ~&  >  ["We havent shared the album with this person" src.bowl]
       `this
     :_  this
-    :~  [%give %fact ~ %update !>(u.album)]
+    :~  [%give %fact ~[/'shared'/pole] %update !>(u.album)]
     ==
   ==
 ::

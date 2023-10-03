@@ -35,8 +35,30 @@
           %+  turn  imgs
           |=  [=img-id =image]
           ^-  ^json
-            (en-vase !>([img-id image]))
+            (enjs-images img-id image)
         ['cover' (en-vase !>(cover.album))]
+    ==
+  ==
+
+++  enjs-images
+  |=  [=img-id =image]
+  =,  enjs:format
+  ^-  ^json
+  =/  comments=(list comment)  ~(val by comments.image)
+  :-  %a
+  :~  s+img-id
+    %-  pairs
+    :~  ['src' s+src.image]
+        ['caption' (en-vase !>(caption.image))]
+        :-  'comments'
+        :-  %a  %+  turn  comments
+        |=  [who=@p when=@da what=@t]
+        ^-  ^json
+        =/  =comment  [who when what]
+        :-  %a
+        :~  s+(scot %da when)
+        (en-vase !>(comment))
+        ==
     ==
   ==
 
