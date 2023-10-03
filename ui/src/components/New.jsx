@@ -53,7 +53,7 @@ export default function NewAlbum() {
           mark: "albums-action",
           json: {
             add: {
-              "album-id": { name: title, owner: `~${window.ship}` },
+              "album-id": { name: title.replace(/[^\w\s]/gi, ''), owner: `~${window.ship}` },
               "img-id": String(Math.floor(Date.now() / 1000) + i),
               src: url,
               caption: {
