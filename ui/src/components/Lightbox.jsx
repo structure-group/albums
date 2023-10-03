@@ -6,7 +6,7 @@ import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { contactsQuery, settingsQuery } from "../state/query";
 import { daToDate, unixToDa, decToUd } from "@urbit/api";
 import Contact from "./Contact";
-export default function Lightbox({ photo, setLightboxPhoto }) {
+export default function Lightbox({ photo, setLightboxPhoto, write }) {
   const [comment, setComment] = useState("");
   const { ship, albumId } = useParams();
   const commentBox = useRef(null);
@@ -43,6 +43,20 @@ export default function Lightbox({ photo, setLightboxPhoto }) {
     setComment("");
     queryClient.invalidateQueries(["album", ship, albumId]);
   };
+  const deletePhoto = async () => {
+    await api.poke({
+      app: "albums",
+      mark: "albums-action",
+      json: {
+        del: {
+          "album-id": { name: albumId, owner: ship },
+          "img-id": photo[0],
+        },
+      },
+    });
+    setLightboxPhoto(null);
+    queryClient.invalidateQueries(["album", ship, albumId]);
+  }
 
   useEffect(() => {
     if (commentBox.current) {
@@ -51,12 +65,12 @@ export default function Lightbox({ photo, setLightboxPhoto }) {
   }, [comments]);
 
   return (
-    <div className="fixed top-0 left-0 bg-[rgba(0,0,0,0.25)] w-full h-full flex flex-col items-center justify-center space-y-8">
+    <div className="fixed top-0 left-0 bg-[rgba(0,0,0,0.25)] w-full h-full flex flex-col items-center justify-center space-y-8 p-8">
       <Foco
-        className="flex flex-col items-center justify-center p-8"
+        className="flex flex-col items-center justify-center"
         onClickOutside={() => setLightboxPhoto(null)}
       >
-        <div className="absolute top-0 right-0 w-full flex justify-end space-x-4 z-20 p-4">
+        <div className="absolute top-0 right-0 w-full flex justify-end space-x-4 z-20 p-4 items-center">
           <a
             className="bg-indigo-black text-xs font-semibold px-2 py-1 rounded-md text-white"
             href={photo[1]?.src}
@@ -65,6 +79,17 @@ export default function Lightbox({ photo, setLightboxPhoto }) {
           >
             Source
           </a>
+          {write && (
+            <a
+              className="bg-red-500 text-xs font-semibold px-2 py-1 rounded-md text-white cursor-pointer"
+              onClick={(e) => {
+                e.stopPropagation();
+                deletePhoto();
+              }}
+            >
+              Delete
+            </a>
+          )}
         </div>
         <div className="h-full w-full flex flex-col lg:flex-row justify-center shadow-md">
           <img
@@ -72,7 +97,7 @@ export default function Lightbox({ photo, setLightboxPhoto }) {
             alt=""
             className="min-w-0 min-h-0 max-h-[90vh] object-contain"
           />
-          <div className="bg-white relative rounded-tr-md rounded-br-md p-4 flex flex-col min-h-0 justify-end lg:w-full max-h-32 lg:max-h-[90vh] basis-1/3 space-y-4">
+          <div className="bg-white relative rounded-tr-md rounded-br-md p-4 flex flex-col min-h-0 justify-end lg:w-full max-h-96 lg:max-h-[90vh] basis-1/3 space-y-4">
             <div className="flex flex-col min-h-0 overflow-y-auto space-y-8" ref={commentBox}>
               {comments?.map((comment) => {
                 const { who, when, what } = comment[1] || {

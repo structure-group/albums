@@ -35,7 +35,8 @@ export default function Album() {
     album?.data?.albums?.images?.sort((a, b) => Number(b[0]) - Number(a[0])) ||
     [];
   const shared = album?.data?.albums?.shared || [];
-  console.log(album.data);
+  const our = ship === `~${window.ship}`;
+  const write = album?.data?.albums?.shared.find((e) => e[0] === `~${window.ship}`)?.[1] || false;
   const addPhotos = (selectedFiles, queryClient) => {
     const promises = selectedFiles.map((url, i) => {
       return api.poke({
@@ -104,6 +105,7 @@ export default function Album() {
         <Lightbox
           photo={images[lightboxPhoto]}
           setLightboxPhoto={setLightboxPhoto}
+          write={our || write}
         />
       )}
       {subview === "shared" && (
@@ -212,6 +214,8 @@ export default function Album() {
               setLightboxPhoto={setLightboxPhoto}
               images={images}
               album={album}
+              our={our}
+              write={write}
             />
           </div>
         </div>
@@ -226,6 +230,8 @@ export default function Album() {
             setLightboxPhoto={setLightboxPhoto}
             images={images}
             album={album}
+            our={our}
+            write={write}
           />
         </div>
       )}
@@ -241,6 +247,8 @@ function Gallery({
   setLightboxPhoto,
   images,
   album,
+  our,
+  write
 }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -254,9 +262,6 @@ function Gallery({
     queryClient.invalidateQueries(["albums"]);
     navigate("/");
   };
-  const our = ship === `~${window.ship}`;
-  const write = album?.data?.albums?.shared.find((e) => e[0] === `~${window.ship}`)?.[1] || false;
-
   return (
     <div className="h-full w-full p-8 bg-white rounded-xl flex flex-col space-y-8 overflow-y-auto min-h-0">
       <div className="flex justify-between rounded-md bg-white">
