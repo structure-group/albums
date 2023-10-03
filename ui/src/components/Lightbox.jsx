@@ -1,11 +1,12 @@
 import Foco from "react-foco";
 import { useEffect, useRef, useState } from "react";
-import { api } from "../state/api";
 import { useParams } from "react-router-dom";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { contactsQuery, settingsQuery } from "../state/query";
-import { daToDate, unixToDa, decToUd } from "@urbit/api";
+import { daToDate } from "@urbit/api";
 import Contact from "./Contact";
+import { addComment, deletePhoto } from "../state/actions";
+
 export default function Lightbox({ photo, setLightboxPhoto, write }) {
   const [comment, setComment] = useState("");
   const { ship, albumId } = useParams();
@@ -24,39 +25,6 @@ export default function Lightbox({ photo, setLightboxPhoto, write }) {
   const disabledAvatars =
     settings.data?.desk?.calmEngine?.disableAvatars || false;
   const comments = photo[1]?.comments;
-  const addComment = async () => {
-    await api.poke({
-      app: "albums",
-      mark: "albums-action",
-      json: {
-        comment: {
-          "album-id": { name: albumId, owner: ship },
-          "img-id": photo[0],
-          comment: {
-            who: `~${window.ship}`,
-            when: decToUd(`${unixToDa(Date.now())}`),
-            what: comment,
-          },
-        },
-      },
-    });
-    setComment("");
-    queryClient.invalidateQueries(["album", ship, albumId]);
-  };
-  const deletePhoto = async () => {
-    await api.poke({
-      app: "albums",
-      mark: "albums-action",
-      json: {
-        del: {
-          "album-id": { name: albumId, owner: ship },
-          "img-id": photo[0],
-        },
-      },
-    });
-    setLightboxPhoto(null);
-    queryClient.invalidateQueries(["album", ship, albumId]);
-  }
 
   useEffect(() => {
     if (commentBox.current) {
@@ -84,7 +52,10 @@ export default function Lightbox({ photo, setLightboxPhoto, write }) {
               className="bg-red-500 text-xs font-semibold px-2 py-1 rounded-md text-white cursor-pointer"
               onClick={(e) => {
                 e.stopPropagation();
-                deletePhoto();
+                deletePhoto(albumId, ship, photo).then(() => {
+                  setLightboxPhoto(null);
+                  queryClient.invalidateQueries(["album", ship, albumId]);
+                });
               }}
             >
               Delete
@@ -131,7 +102,10 @@ export default function Lightbox({ photo, setLightboxPhoto, write }) {
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
-                  addComment();
+                  addComment(albumId, ship, photo, comment).then(() => {
+                    setComment("");
+                    queryClient.invalidateQueries(["album", ship, albumId]);
+                  });
                 }
               }}
             />

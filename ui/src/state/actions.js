@@ -1,6 +1,24 @@
 import { api } from "./api";
 import { decToUd, unixToDa } from "@urbit/api";
 
+export const addComment = async (albumId, ship, photo, comment) => {
+    await api.poke({
+        app: "albums",
+        mark: "albums-action",
+        json: {
+            comment: {
+                "album-id": { name: albumId, owner: ship },
+                "img-id": photo[0],
+                comment: {
+                    who: `~${window.ship}`,
+                    when: decToUd(`${unixToDa(Date.now())}`),
+                    what: comment,
+                },
+            },
+        },
+    });
+};
+
 export const addPhotos = (selectedFiles, albumId, ship, setAddPhoto, queryClient) => {
     const promises = selectedFiles.map((url, i) => {
         return api.poke({
@@ -25,6 +43,19 @@ export const addPhotos = (selectedFiles, albumId, ship, setAddPhoto, queryClient
         setAddPhoto(false);
     });
 };
+
+export const deletePhoto = async (albumId, ship, photo) => {
+    await api.poke({
+        app: "albums",
+        mark: "albums-action",
+        json: {
+            del: {
+                "album-id": { name: albumId, owner: ship },
+                "img-id": photo[0],
+            },
+        },
+    });
+}
 
 export const inviteSelected = (selectedMembers, albumId, ship, queryClient) => {
     const promises = selectedMembers.map((member) => {
