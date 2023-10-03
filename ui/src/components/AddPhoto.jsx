@@ -30,8 +30,8 @@ export default function AddPhoto({ setAddPhoto, addPhotos }) {
     const resize = () => {
       if (window.innerWidth < 424) {
         setColumns(2);
-        setPromptWidth(window.innerWidth - 72);
-        setPromptHeight(window.innerHeight - 72);
+        setPromptWidth(window.innerWidth - 128);
+        setPromptHeight(window.innerHeight - 128);
       } else if (window.innerWidth < 768) {
         setColumns(3);
         setPromptWidth(window.innerWidth - 72);
