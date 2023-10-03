@@ -271,14 +271,12 @@ function Gallery({
               Participants
             </p>
           </Link>
-          {ship === `~${window.ship}` && (
-            <button
-              className="text-red-500 font-semibold rounded-md"
-              onClick={() => nuke()}
-            >
-              Delete
-            </button>
-          )}
+          <button
+            className="text-red-500 font-semibold rounded-md"
+            onClick={() => nuke()}
+          >
+            {ship === `~${window.ship}` ? "Delete" : "Remove"}
+          </button>
         </div>
       </div>
       <div className="flex flex-wrap justify-center md:justify-normal gap-8 w-full max-h-full min-h-0">
