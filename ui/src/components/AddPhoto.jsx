@@ -92,7 +92,7 @@ export default function AddPhoto({ setAddPhoto, addPhotos }) {
     );
   };
   return (
-    <div className="absolute top-0 left-0 bg-[rgba(0,0,0,0.25)] w-full h-full flex flex-col items-center justify-center">
+    <div className="absolute top-0 left-0 bg-[rgba(0,0,0,0.25)] w-full h-full flex flex-col items-center justify-center z-40">
       <Foco onClickOutside={() => setAddPhoto(false)}>
         <div
           className="bg-white rounded-xl flex flex-col items-center justify-center z-10 p-4"
