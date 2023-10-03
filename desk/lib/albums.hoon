@@ -78,6 +78,7 @@
         [%del dejs-del]
         [%comment dejs-comment]
         [%share dejs-share]
+        [%unshare dejs-unshare]
     ==
   ++  dejs-create
     %-  ot  ~[name+so]
@@ -110,6 +111,11 @@
         receiver+(se %p)
         write-perm+bo 
       ==
-
+  ++  dejs-unshare
+    %-  ot
+      :~  
+        [%album-id (ot ~[name+so owner+(se %p)])]
+        receiver+(se %p)
+      ==
   --
 --

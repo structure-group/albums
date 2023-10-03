@@ -39,14 +39,18 @@
     =/  owner  our.bowl
     =/  =shared  (malt (limo ~[[owner %.y]]))
     =/  =album  [name owner shared *images '']
-    :-  ~
+    =/  =wire  /share/(scot %p owner)/[name]
+    :-  ~[[%give %fact ~[wire] %albums-update !>(`update`[%album album])]]
     this(albums (~(put by albums) [name owner] album))
     ::
       %nuke
-    =/  album-id  +.act
+    =/  =album-id  +.act
     ~&  >>  album-id
-    :-  ~
-    this(albums (~(del by albums) album-id))
+    =/  =wire  /share/(scot %p owner.album-id)/[name.album-id]
+    =/  album=album  (~(got by albums) album-id)
+    :_  this(albums (~(del by albums) album-id))
+    %+  turn  ~(tap in ~(key by shared.album))
+    |=(who=@p [%give %kick ~[wire] `who])
     ::
       %add
     =,  act
@@ -54,12 +58,22 @@
       ~&  >  ["Album not found" album-id]
       `this
     =/  album  (~(got by albums) album-id)
+    ?.  =(our.bowl owner.album-id)
+      :_  this
+      :~  [%pass /add %agent [owner.album dap.bowl] %poke %albums-action !>(act)]
+      == 
+    =/  shared=(unit write-perm)  (~(get by shared.album) src.bowl)
+    ?~  shared  `this
+    ?.  =(u.shared %.y)
+      ~&  >  ["We havent shared the album with this person" src.bowl]
+      `this
     =/  img=image  [src caption *comments]
     =/  new-album  %=  album
     images  (~(put by images.album) img-id img)
     cover  src
     ==
-    :-  ~
+    =/  =wire  /share/(scot %p owner.album-id)/[name.album-id]
+    :-  ~[[%give %fact ~[wire] %albums-update !>(`update`[%album new-album])]]
     this(albums (~(put by albums) album-id new-album))
     ::
       %del
@@ -68,14 +82,24 @@
       ~&  >  ["Album not found" album-id]
       `this
     =/  album  (~(got by albums) album-id)
-    =/  img-list  ~(key by images.album)
+    ?.  =(our.bowl owner.album-id)
+      :_  this
+      :~  [%pass /del %agent [owner.album dap.bowl] %poke %albums-action !>(act)]
+      == 
+    =/  shared=(unit write-perm)  (~(get by shared.album) src.bowl)
+    ?~  shared  `this
+    ?.  =(u.shared %.y)
+      ~&  >  ["We havent shared the album with this person" src.bowl]
+      `this
+=/  img-list  ~(key by images.album)
     ?.  (~(has in img-list) img-id)
       ~&  >  ["Image not found" img-id]
       `this
     =/  new-album  %=  album
     images  (~(del by images.album) img-id)
     ==
-    :-  ~
+    =/  =wire  /share/(scot %p owner.album-id)/[name.album-id]
+    :-  ~[[%give %fact ~[wire] %albums-update !>(`update`[%album new-album])]]
     this(albums (~(put by albums) album-id new-album))
     ::  
       %comment
@@ -104,7 +128,8 @@
     =/  comments  comments.old-image
     =/  new-image  old-image(comments (put:comment-on comments when.comment comment))
     =/  new-album  u.album(images (~(put by images.u.album) img-id new-image))
-    :-  ~
+    =/  =wire  /share/(scot %p owner.album-id)/[name.album-id]
+    :-  ~[[%give %fact ~[wire] %albums-update !>(`update`[%album new-album])]]
     this(albums (~(put by albums) album-id new-album))
     ::
       %share
@@ -112,29 +137,39 @@
     ?>  =(src.bowl owner.album-id)
     ?:  =(src.bowl our.bowl) :: If we're adding someone to shared list
       =/  new-album  (~(got by albums) album-id)
+      =/  =wire  /share/(scot %p owner.album-id)/[name.album-id]
       =.  shared.new-album  (~(put by shared.new-album) receiver write-perm)
       :_  this(albums (~(put by albums) album-id new-album))
-      :~  [%pass /share %agent [receiver dap.bowl] %poke %albums-action !>(act)]
+      :~  [%pass wire %agent [receiver dap.bowl] %poke %albums-action !>(act)]
       ==
     =/  =wire  /share/(scot %p owner.album-id)/[name.album-id]
     ~&  >  ['share wire' wire]
     :_  this
-    :~  [%pass wire %agent [src.bowl dap.bowl] %watch /(scot %p owner.album-id)/[name.album-id]]
+    :~  [%pass wire %agent [src.bowl dap.bowl] %watch wire]
+    ==
+    ::
+      %unshare
+    =,  act
+    ?>  =(src.bowl owner.album-id)
+    =/  =wire  /share/(scot %p owner.album-id)/[name.album-id]
+    =/  new-album  (~(got by albums) album-id)
+    =.  shared.new-album  (~(del by shared.new-album) receiver)
+    :_  this(albums (~(put by albums) album-id new-album))
+    :~  [%give %kick ~[wire] `receiver]
     ==
   ==
 ::
 ++  on-agent
   |=  [=(pole knot) =sign:agent:gall]
-  ~&  >  ['agent pole' pole]
   ^-  (quip card _this)
   ?.  ?=([%share owner=@ name=@ ~] pole)  `this
     :: switch on the type of event
     ::
-    ~&  ['agent -.sign' -.sign]
+    ~&  >  ['on-agent -.sign' -.sign]
     ?+    -.sign  (on-agent:def pole sign)
       ::
         %fact
-      ?>  ?=(%update p.cage.sign)
+      ?>  ?=(%albums-update p.cage.sign)
       =/  =update  !<(update q.cage.sign)
       ?.  ?=(%album -.update)  `this
       :-  ~
@@ -144,13 +179,12 @@
       ::
         %kick
       :_  this
-      :~  [%pass pole %agent [src.bowl dap.bowl] %watch /[owner.pole]/[name.pole]]
+      :~  [%pass pole %agent [src.bowl dap.bowl] %watch /'share'/[owner.pole]/[name.pole]]
       ==
-        %watch-ack
-      ?~  p.sign
-        ((slog '%todo-watcher: Subscribe succeeded!' ~) `this)
-      ~&  p.sign
-      ((slog '%todo-watcher: Subscribe failed!' ~) `this)
+        ::%watch-ack
+      ::?~  p.sign
+        ::((slog '%albums: Subscribe succeeded!' ~) `this)
+      ::((slog '%albums: Subscribe failed!' ~) `this)
     ==
 ::
 ++  on-watch
@@ -158,17 +192,17 @@
   |=  =(pole knot)
   ^-  (quip card _this)
   ~&  >  ['watch pole' pole]
-  ?>  (team:title our.bowl src.bowl)
+  ::?>  (team:title our.bowl src.bowl)
   ?+  pole  (on-watch:def pole)
       [%share owner=@ name=@ ~]
-    =/  album=(unit album)  (~(get by albums.this) [name.pole owner.pole])
+    =/  album=(unit album)  (~(get by albums.this) [name.pole +:(slaw %p `@ta`owner.pole)])
     ?~  album  `this
     =/  shared=(list @p)  ~(tap in ~(key by shared.u.album))
     ?~  (find ~[src.bowl] shared)
       ~&  >  ["We havent shared the album with this person" src.bowl]
       `this
     :_  this
-    :~  [%give %fact ~[/'shared'/pole] %update !>(u.album)]
+    :~  [%give %fact ~[pole] %albums-update !>([%album u.album])]
     ==
   ==
 ::
