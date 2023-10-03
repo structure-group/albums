@@ -1,14 +1,13 @@
 import Foco from "react-foco";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { useFileStore } from "../state/useFileStore";
-import { daToDate, dateToDa, unixToDa, deSig } from "@urbit/api";
+import { daToDate, dateToDa, deSig } from "@urbit/api";
 import { compareDesc } from "date-fns";
 import { FixedSizeGrid as Grid } from "react-window";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import cn from "classnames";
-import { api } from "../state/api";
 import { albumQuery } from "../state/query";
 import useStorageState from "../state/storage";
 
@@ -21,10 +20,11 @@ export default function AddPhoto({ setAddPhoto, addPhotos }) {
   const [promptWidth, setPromptWidth] = useState(568);
   const [promptHeight, setPromptHeight] = useState(368);
   const queryClient = useQueryClient();
-  const album = useQuery({
+  const { data } = useQuery({
     queryKey: ["album", ship, albumId],
-    queryFn: () => albumQuery(albumId, ship),
-  }).data?.albums;
+    queryFn: () => albumId ? albumQuery(albumId, ship) : null,
+  });
+  const album = data?.albums;
 
   useEffect(() => {
     const resize = () => {
