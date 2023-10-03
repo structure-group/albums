@@ -15,6 +15,7 @@ export default function Album() {
   const [lightboxPhoto, setLightboxPhoto] = useState(null);
   const [selectedMembers, setSelectedMembers] = useState([]);
   const { ship, albumId, subview } = useParams();
+  const queryClient = useQueryClient();
   const album = useQuery({
     queryKey: ["album", ship, albumId],
     queryFn: () => albumQuery(albumId, ship),
@@ -98,6 +99,20 @@ export default function Album() {
         queryClient.invalidateQueries(["album", ship, albumId]);
       });
   };
+  const unshare = (member) => {
+    api.poke({
+      app: "albums",
+      mark: "albums-action",
+      json: {
+        unshare: {
+          "album-id": { name: albumId, owner: ship },
+          receiver: member,
+        },
+      },
+    }).then(() => {
+      queryClient.invalidateQueries(["album", ship, albumId]);
+    });
+  }
   return (
     <div className="w-full h-full min-h-0 flex flex-col">
       {addPhoto && <AddPhoto addPhotos={addPhotos} setAddPhoto={setAddPhoto} />}
@@ -181,7 +196,7 @@ export default function Album() {
               )}
               {shared.map((share) => {
                 return (
-                  <div className="flex w-full items-center justify-between">
+                  <div className="flex w-full items-center justify-between space-x-2">
                     <Contact
                       ship={share[0]}
                       contact={contacts.data?.[share[0]] || {}}
@@ -200,6 +215,14 @@ export default function Album() {
                       <option value={false}>Viewer</option>
                       <option value={true}>Writer</option>
                     </select>
+                    {ship === `~${window.ship}` && share[0] !== ship && (
+                      <a
+                        className="bg-red-500 text-white px-2 text-xs py-1 font-semibold rounded-md cursor-pointer hover:bg-red-400"
+                        onClick={() => unshare(share[0])}
+                      >
+                        Remove
+                      </a>
+                    )}
                   </div>
                 );
               })}
