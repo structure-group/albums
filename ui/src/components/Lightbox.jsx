@@ -12,18 +12,16 @@ export default function Lightbox({ photo, setLightboxPhoto, write }) {
   const { ship, albumId } = useParams();
   const commentBox = useRef(null);
   const queryClient = useQueryClient();
-  const contacts = useQuery({
+  const { data: contactsData } = useQuery({
     queryKey: ["contacts"],
     queryFn: () => contactsQuery(),
   });
-  const settings = useQuery({
+  const { data: settingsData } = useQuery({
     queryKey: ["settings"],
     queryFn: () => settingsQuery(),
   });
-  const disabledNicknames =
-    settings.data?.desk?.calmEngine?.disableNicknames || false;
-  const disabledAvatars =
-    settings.data?.desk?.calmEngine?.disableAvatars || false;
+  const { disableNicknames } = settingsData?.desk?.calmEngine || false;
+  const { disableAvatars } = settingsData?.desk?.calmEngine || false;
   const comments = photo[1]?.comments;
 
   useEffect(() => {
@@ -80,9 +78,9 @@ export default function Lightbox({ photo, setLightboxPhoto, write }) {
                   <div className="flex flex-col space-y-1" key={when}>
                     <Contact
                       ship={who}
-                      contact={contacts?.data?.[who] || {}}
-                      disabledNicknames={disabledNicknames}
-                      disabledAvatars={disabledAvatars}
+                      contact={contactsData?.[who] || {}}
+                      disableNicknames={disableNicknames}
+                      disableAvatars={disableAvatars}
                     />
                     <p className="text-xs text-gray-400">
                       {daToDate(

@@ -24,28 +24,26 @@ export default function Album() {
   const [selectedMembers, setSelectedMembers] = useState([]);
   const { ship, albumId, subview } = useParams();
   const queryClient = useQueryClient();
-  const album = useQuery({
+  const { data: album } = useQuery({
     queryKey: ["album", ship, albumId],
     queryFn: () => albumQuery(albumId, ship),
   });
-  const contacts = useQuery({
+  const { data: contactsData } = useQuery({
     queryKey: ["contacts"],
     queryFn: () => contactsQuery(),
   });
-  const settings = useQuery({
+  const { data: settingsData } = useQuery({
     queryKey: ["settings"],
     queryFn: () => settingsQuery(),
   });
-  const disabledNicknames =
-    settings.data?.desk?.calmEngine?.disableNicknames || false;
-  const disabledAvatars =
-    settings.data?.desk?.calmEngine?.disableAvatars || false;
+  const { disableNicknames } = settingsData?.desk?.calmEngine || false;
+  const { disableAvatars } = settingsData?.desk?.calmEngine || false;
   const images =
-    album?.data?.albums?.images?.sort((a, b) => Number(b[0]) - Number(a[0])) ||
+    album?.albums?.images?.sort((a, b) => Number(b[0]) - Number(a[0])) ||
     [];
-  const shared = album?.data?.albums?.shared || [];
+  const shared = album?.albums?.shared || [];
   const our = ship === `~${window.ship}`;
-  const write = album?.data?.albums?.shared.find((e) => e[0] === `~${window.ship}`)?.[1] || false;
+  const write = album?.albums?.shared.find((e) => e[0] === `~${window.ship}`)?.[1] || false;
 
   const handlers = {
     BACK: useCallback(() => {
@@ -86,15 +84,15 @@ export default function Album() {
             <div className="p-8 h-full min-h-0 bg-white basis-full lg:basis-1/2 flex flex-col border-r-2 border-indigo-gray">
               <Link to=".">
                 <p className="font-semibold w-full truncate block lg:hidden">
-                  {"<-"} Back to {album?.data?.album?.name || albumId}
+                  {"<-"} Back to {album?.albums?.name || albumId}
                 </p>
               </Link>
               <div className="flex flex-col space-y-4 overflow-y-auto h-full w-full min-h-0 min-w-0 relative">
                 {ship === `~${window.ship}` && (
                   <ContactSearch
-                    contacts={contacts}
-                    disabledNicknames={disabledNicknames}
-                    disabledAvatars={disabledAvatars}
+                    contacts={contactsData}
+                    disableNicknames={disableNicknames}
+                    disableAvatars={disableAvatars}
                     group={shared}
                     selectedMembers={selectedMembers}
                     setSelectedMembers={setSelectedMembers}
@@ -111,9 +109,9 @@ export default function Album() {
                         >
                           <Contact
                             ship={member[0]}
-                            contact={contacts.data?.[member[0]] || {}}
-                            disabledNicknames={disabledNicknames}
-                            disabledAvatars={disabledAvatars}
+                            contact={contactsData?.[member[0]] || {}}
+                            disableNicknames={disableNicknames}
+                            disableAvatars={disableAvatars}
                           />
                           <select
                             className="bg-indigo-white border border-indigo-gray rounded-md text-xs font-semibold px-2 py-1"
@@ -159,12 +157,12 @@ export default function Album() {
                 )}
                 {shared.map((share) => {
                   return (
-                    <div className="flex w-full items-center justify-between space-x-2">
+                    <div className="flex w-full items-center justify-between space-x-2" key={share[0]}>
                       <Contact
                         ship={share[0]}
-                        contact={contacts.data?.[share[0]] || {}}
-                        disabledNicknames={disabledNicknames}
-                        disabledAvatars={disabledAvatars}
+                        contact={contactsData?.[share[0]] || {}}
+                        disableNicknames={disableNicknames}
+                        disableAvatars={disableAvatars}
                         key={share[0]}
                       />
                       <select
@@ -257,7 +255,7 @@ function Gallery({
     <div className="h-full w-full p-8 bg-white rounded-xl flex flex-col space-y-8 overflow-y-auto min-h-0">
       <div className="flex justify-between rounded-md bg-white">
         <Link to={`/album/${ship}/${albumId}`}>
-          <p className="font-semibold">{album?.data?.album?.name || albumId}</p>
+          <p className="font-semibold">{album?.album?.name || albumId}</p>
         </Link>
         <div className="flex space-x-8 font-semibold text-[#666666] items-center">
           <Link to={`/album/${ship}/${albumId}/shared`}>
