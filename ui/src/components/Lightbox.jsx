@@ -1,5 +1,5 @@
 import Foco from "react-foco";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api } from "../state/api";
 import { useParams } from "react-router-dom";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
@@ -9,6 +9,7 @@ import Contact from "./Contact";
 export default function Lightbox({ photo, setLightboxPhoto }) {
   const [comment, setComment] = useState("");
   const { ship, albumId } = useParams();
+  const commentBox = useRef(null);
   const queryClient = useQueryClient();
   const contacts = useQuery({
     queryKey: ["contacts"],
@@ -23,7 +24,6 @@ export default function Lightbox({ photo, setLightboxPhoto }) {
   const disabledAvatars =
     settings.data?.desk?.calmEngine?.disableAvatars || false;
   const comments = photo[1]?.comments;
-  console.log(comments);
   const addComment = async () => {
     await api.poke({
       app: "albums",
@@ -43,6 +43,13 @@ export default function Lightbox({ photo, setLightboxPhoto }) {
     setComment("");
     queryClient.invalidateQueries(["album", ship, albumId]);
   };
+
+  useEffect(() => {
+    if (commentBox.current) {
+      commentBox.current.scrollTop = commentBox.current.scrollHeight;
+    }
+  }, [comments]);
+
   return (
     <div className="fixed top-0 left-0 bg-[rgba(0,0,0,0.25)] w-full h-full flex flex-col items-center justify-center space-y-8">
       <Foco
@@ -66,7 +73,7 @@ export default function Lightbox({ photo, setLightboxPhoto }) {
             className="min-w-0 min-h-0 max-h-[90vh] object-contain"
           />
           <div className="bg-white relative rounded-tr-md rounded-br-md p-4 flex flex-col min-h-0 justify-end lg:w-full max-h-32 lg:max-h-[90vh] basis-1/3 space-y-4">
-            <div className="flex flex-col min-h-0 overflow-y-auto space-y-8">
+            <div className="flex flex-col min-h-0 overflow-y-auto space-y-8" ref={commentBox}>
               {comments?.map((comment) => {
                 const { who, when, what } = comment[1] || {
                   who: "~hastuc-dibtux",
