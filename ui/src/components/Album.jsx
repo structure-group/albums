@@ -254,6 +254,8 @@ function Gallery({
     queryClient.invalidateQueries(["albums"]);
     navigate("/");
   };
+  const our = ship === `~${window.ship}`;
+  const write = album?.data?.albums?.shared.find((e) => e[0] === `~${window.ship}`)?.[1] || false;
 
   return (
     <div className="h-full w-full p-8 bg-white rounded-xl flex flex-col space-y-8 overflow-y-auto min-h-0">
@@ -275,12 +277,12 @@ function Gallery({
             className="text-red-500 font-semibold rounded-md"
             onClick={() => nuke()}
           >
-            {ship === `~${window.ship}` ? "Delete" : "Remove"}
+            {our ? "Delete" : "Remove"}
           </button>
         </div>
       </div>
       <div className="flex flex-wrap justify-center md:justify-normal gap-8 w-full max-h-full min-h-0">
-        {ship === `~${window.ship}` && (
+        {(our || write) && (
           <div
             className="flex flex-col items-center justify-center border-[#999999] border rounded-lg w-32 h-32 font-semibold cursor-pointer"
             onClick={() => setAddPhoto(true)}
