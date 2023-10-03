@@ -106,7 +106,7 @@ export default function Lightbox({ photo, setLightboxPhoto, write }) {
                   what: "unknown",
                 };
                 return (
-                  <div className="flex flex-col space-y-1">
+                  <div className="flex flex-col space-y-1" key={when}>
                     <Contact
                       ship={who}
                       contact={contacts?.data?.[who] || {}}
