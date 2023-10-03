@@ -8,6 +8,7 @@ import ContactSearch from "./ContactSearch";
 import Contact from "./Contact";
 import { contactsQuery, settingsQuery } from "../state/query";
 import { useNavigate } from "react-router-dom";
+import { inviteSelected } from "../state/actions";
 
 export default function NewAlbum() {
   const [title, setTitle] = useState("");
@@ -74,26 +75,6 @@ export default function NewAlbum() {
     }
   }
 
-  const inviteSelected = () => {
-    const promises = selectedMembers.map((member) => {
-      return api.poke({
-        app: "albums",
-        mark: "albums-action",
-        json: {
-          share: {
-            "album-id": { name: stripTitle, owner: `~${window.ship}` },
-            receiver: member[0],
-            "write-perm": Boolean(member[1]),
-          },
-        },
-      });
-    });
-    Promise.all(promises).then(() => {
-      queryClient.invalidateQueries(["album", ship, stripTitle]);
-      navigate(`/album/~${window.ship}/${stripTitle}`)
-    });
-  };
-
   return (
     <div className="flex w-full h-full">
       {addPhoto && <AddPhoto addPhotos={addPhotos} setAddPhoto={setAddPhoto} />}
@@ -139,14 +120,16 @@ export default function NewAlbum() {
           :
           <>
             <h2 className="font-semibold text-lg">Share Album</h2>
-            <ContactSearch
-              contacts={contacts}
-              disabledNicknames={disabledNicknames}
-              disabledAvatars={disabledAvatars}
-              group={[]}
-              selectedMembers={selectedMembers}
-              setSelectedMembers={setSelectedMembers}
-            />
+            <div className="w-full relative">
+              <ContactSearch
+                contacts={contacts}
+                disabledNicknames={disabledNicknames}
+                disabledAvatars={disabledAvatars}
+                group={[]}
+                selectedMembers={selectedMembers}
+                setSelectedMembers={setSelectedMembers}
+              />
+            </div>
             {selectedMembers.length > 0 && (
               <div className="flex flex-col space-y-4 p-4 border rounded-md">
                 <h2 className="font-semibold text-sm">Members to Invite</h2>
@@ -193,20 +176,16 @@ export default function NewAlbum() {
                 })}
                 <button
                   className="w-full bg-black text-white text-sm font-semibold rounded-md py-1 hover:bg-indigo-black"
-                  onClick={() => inviteSelected()}
+                  onClick={() => {
+                    inviteSelected(selectedMembers, stripTitle, `~${window.ship}`, queryClient)
+                    navigate(`/album/~${window.ship}/${stripTitle}`)
+                  }}
                 >
                   Invite
                 </button>
               </div>
             )}
-            {selectedMembers.length > 0 ? (
-              <button
-                className="bg-black hover:bg-indigo-black text-white w-full text-center font-semibold text-sm"
-                onClick={inviteSelected()}
-              >
-                Share
-              </button>
-            ) : (
+            {selectedMembers.length === 0 && (
               <button
                 className="font-semibold text-sm bg-black hover:bg-indigo-black text-white w-full py-1 px-2 text-center rounded-md"
                 onClick={() => navigate(`/album/~${window.ship}/${stripTitle}`)}

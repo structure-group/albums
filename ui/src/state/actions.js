@@ -26,7 +26,7 @@ export const addPhotos = (selectedFiles, albumId, ship, setAddPhoto, queryClient
     });
 };
 
-export const inviteSelected = (selectedMembers, setSelectedMembers, albumId, ship, queryClient) => {
+export const inviteSelected = (selectedMembers, albumId, ship, queryClient) => {
     const promises = selectedMembers.map((member) => {
         return api.poke({
             app: "albums",
@@ -42,7 +42,6 @@ export const inviteSelected = (selectedMembers, setSelectedMembers, albumId, shi
     });
     Promise.all(promises).then(() => {
         queryClient.invalidateQueries(["album", ship, albumId]);
-        setSelectedMembers([]);
     });
 };
 

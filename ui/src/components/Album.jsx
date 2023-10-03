@@ -143,7 +143,10 @@ export default function Album() {
                     })}
                     <button
                       className="w-full bg-black text-white text-sm font-semibold rounded-md py-1 hover:bg-indigo-black"
-                      onClick={() => inviteSelected(selectedMembers, setSelectedMembers, albumId, ship, queryClient)}
+                      onClick={() => {
+                        inviteSelected(selectedMembers, albumId, ship, queryClient)
+                        setSelectedMembers([]);
+                      }}
                     >
                       Invite
                     </button>
