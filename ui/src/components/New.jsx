@@ -29,6 +29,7 @@ export default function NewAlbum() {
     settings.data?.desk?.calmEngine?.disableNicknames || false;
   const disabledAvatars =
     settings.data?.desk?.calmEngine?.disableAvatars || false;
+  const stripTitle = title.replace(/[^\w\s]/gi, '').replace(/\s+/g, '-').toLowerCase();
 
   const addPhotos = (photos) => {
     setSelectedPhotos([...selectedPhotos, ...photos]);
@@ -41,7 +42,7 @@ export default function NewAlbum() {
         app: "albums",
         mark: "albums-action",
         json: {
-          "create": { name: title.replace(/[^\w\s]/gi, '') }
+          "create": { name: stripTitle }
         }
       })
     } catch (e) {
@@ -53,7 +54,7 @@ export default function NewAlbum() {
           mark: "albums-action",
           json: {
             add: {
-              "album-id": { name: title.replace(/[^\w\s]/gi, ''), owner: `~${window.ship}` },
+              "album-id": { name: stripTitle, owner: `~${window.ship}` },
               "img-id": String(Math.floor(Date.now() / 1000) + i),
               src: url,
               caption: {
@@ -67,7 +68,7 @@ export default function NewAlbum() {
       });
       Promise.all(promises).then(() => {
         queryClient.invalidateQueries(["albums"]);
-        queryClient.invalidateQueries(["album", `~${window.ship}`, title.replace(/[^\w\s]/gi, '')]);
+        queryClient.invalidateQueries(["album", `~${window.ship}`, stripTitle]);
         setShareStep(true);
       });
     }
@@ -80,7 +81,7 @@ export default function NewAlbum() {
         mark: "albums-action",
         json: {
           share: {
-            "album-id": { name: title.replace(/[^\w\s]/gi, ''), owner: `~${window.ship}` },
+            "album-id": { name: stripTitle, owner: `~${window.ship}` },
             receiver: member[0],
             "write-perm": Boolean(member[1]),
           },
@@ -88,8 +89,8 @@ export default function NewAlbum() {
       });
     });
     Promise.all(promises).then(() => {
-      queryClient.invalidateQueries(["album", ship, albumId]);
-      navigate(`/album/~${window.ship}/${title.replace(/[^\w\s]/gi, '')}`)
+      queryClient.invalidateQueries(["album", ship, stripTitle]);
+      navigate(`/album/~${window.ship}/${stripTitle}`)
     });
   };
 
@@ -208,7 +209,7 @@ export default function NewAlbum() {
             ) : (
               <button
                 className="font-semibold text-sm bg-black hover:bg-indigo-black text-white w-full py-1 px-2 text-center rounded-md"
-                onClick={() => navigate(`/album/~${window.ship}/${title.replace(/[^\w\s]/gi, '')}`)}
+                onClick={() => navigate(`/album/~${window.ship}/${stripTitle}`)}
               >
                 Finish
               </button>
