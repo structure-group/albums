@@ -9,7 +9,6 @@
   ?-  -.u  
       %album-id
     =/  album-info=(list [=album-id cover=src])  +.u
-    ~&  +.u
     %+  frond  'album-id'
     :-  %a
     %+  turn  album-info

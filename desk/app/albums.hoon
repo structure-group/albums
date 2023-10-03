@@ -9,7 +9,7 @@
 ++  comment-on  ((on @da comment) gth)
 ++  image-on  ((on @da image) gth)
 --
-%+  verb  &
+::%+  verb  &
 %-  agent:dbug
 =|  state-0
 =*  state  -
@@ -45,7 +45,6 @@
     ::
       %nuke
     =/  =album-id  +.act
-    ~&  >>  album-id
     =/  =wire  /share/(scot %p owner.album-id)/[name.album-id]
     =/  album=album  (~(got by albums) album-id)
     :_  this(albums (~(del by albums) album-id))
@@ -91,7 +90,7 @@
     ?.  =(u.shared %.y)
       ~&  >  ["We havent shared the album with this person" src.bowl]
       `this
-=/  img-list  ~(key by images.album)
+    =/  img-list  ~(key by images.album)
     ?.  (~(has in img-list) img-id)
       ~&  >  ["Image not found" img-id]
       `this
@@ -143,7 +142,6 @@
       :~  [%pass wire %agent [receiver dap.bowl] %poke %albums-action !>(act)]
       ==
     =/  =wire  /share/(scot %p owner.album-id)/[name.album-id]
-    ~&  >  ['share wire' wire]
     :_  this
     :~  [%pass wire %agent [src.bowl dap.bowl] %watch wire]
     ==
@@ -165,7 +163,6 @@
   ?.  ?=([%share owner=@ name=@ ~] pole)  `this
     :: switch on the type of event
     ::
-    ~&  >  ['on-agent -.sign' -.sign]
     ?+    -.sign  (on-agent:def pole sign)
       ::
         %fact
@@ -191,7 +188,6 @@
   ::
   |=  =(pole knot)
   ^-  (quip card _this)
-  ~&  >  ['watch pole' pole]
   ::?>  (team:title our.bowl src.bowl)
   ?+  pole  (on-watch:def pole)
       [%share owner=@ name=@ ~]
