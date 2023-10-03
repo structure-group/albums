@@ -177,7 +177,9 @@ export default function NewAlbum() {
                 <button
                   className="w-full bg-black text-white text-sm font-semibold rounded-md py-1 hover:bg-indigo-black"
                   onClick={() => {
-                    inviteSelected(selectedMembers, stripTitle, `~${window.ship}`, queryClient)
+                    inviteSelected(selectedMembers, stripTitle, `~${window.ship}`).then(() => {
+                      queryClient.invalidateQueries(["album", `~${window.ship}`, stripTitle]);
+                    });
                     navigate(`/album/~${window.ship}/${stripTitle}`)
                   }}
                 >

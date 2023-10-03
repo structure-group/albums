@@ -64,7 +64,10 @@ export default function Album() {
   };
 
   const addPhotosToAlbum = async (files) => {
-    await addPhotos(files, albumId, ship, setAddPhoto, queryClient);
+    addPhotos(files, albumId, ship).then(() => {
+      queryClient.invalidateQueries(["album", ship, albumId]);
+      setAddPhoto(false);
+    });
   }
   return (
     <>
@@ -144,8 +147,10 @@ export default function Album() {
                     <button
                       className="w-full bg-black text-white text-sm font-semibold rounded-md py-1 hover:bg-indigo-black"
                       onClick={() => {
-                        inviteSelected(selectedMembers, albumId, ship, queryClient)
-                        setSelectedMembers([]);
+                        inviteSelected(selectedMembers, albumId, ship).then(() => {
+                          queryClient.invalidateQueries(["album", ship, albumId]);
+                          setSelectedMembers([]);
+                        });
                       }}
                     >
                       Invite
@@ -166,7 +171,9 @@ export default function Album() {
                         className="bg-indigo-white border border-indigo-gray rounded-md text-xs font-semibold px-2 py-1"
                         value={share[1]}
                         onChange={(e) => {
-                          editMember(share[0], albumId, ship, e.target.value, queryClient);
+                          editMember(share[0], albumId, ship, e.target.value).then(() => {
+                            queryClient.invalidateQueries(["album", ship, albumId]);
+                          });
                         }}
                         disabled={ship !== `~${window.ship}`}
                       >
@@ -176,7 +183,9 @@ export default function Album() {
                       {ship === `~${window.ship}` && share[0] !== ship && (
                         <a
                           className="bg-red-500 text-white px-2 text-xs py-1 font-semibold rounded-md cursor-pointer hover:bg-red-400"
-                          onClick={() => unshare(share[0], albumId, ship, queryClient)}
+                          onClick={() => unshare(share[0], albumId, ship).then(() => {
+                            queryClient.invalidateQueries(["album", ship, albumId]);
+                          })}
                         >
                           Remove
                         </a>

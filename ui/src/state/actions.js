@@ -19,7 +19,7 @@ export const addComment = async (albumId, ship, photo, comment) => {
     });
 };
 
-export const addPhotos = (selectedFiles, albumId, ship, setAddPhoto, queryClient) => {
+export const addPhotos = (selectedFiles, albumId, ship) => {
     const promises = selectedFiles.map((url, i) => {
         return api.poke({
             app: "albums",
@@ -38,10 +38,7 @@ export const addPhotos = (selectedFiles, albumId, ship, setAddPhoto, queryClient
             },
         });
     });
-    Promise.all(promises).then(() => {
-        queryClient.invalidateQueries(["album", ship, albumId]);
-        setAddPhoto(false);
-    });
+    return Promise.all(promises)
 };
 
 export const deletePhoto = async (albumId, ship, photo) => {
@@ -57,7 +54,7 @@ export const deletePhoto = async (albumId, ship, photo) => {
     });
 }
 
-export const inviteSelected = (selectedMembers, albumId, ship, queryClient) => {
+export const inviteSelected = (selectedMembers, albumId, ship) => {
     const promises = selectedMembers.map((member) => {
         return api.poke({
             app: "albums",
@@ -71,13 +68,11 @@ export const inviteSelected = (selectedMembers, albumId, ship, queryClient) => {
             },
         });
     });
-    Promise.all(promises).then(() => {
-        queryClient.invalidateQueries(["album", ship, albumId]);
-    });
+    return Promise.all(promises)
 };
 
-export const editMember = (member, albumId, ship, writePerm, queryClient) => {
-    api
+export const editMember = (member, albumId, ship, writePerm) => {
+    return api
         .poke({
             app: "albums",
             mark: "albums-action",
@@ -89,13 +84,10 @@ export const editMember = (member, albumId, ship, writePerm, queryClient) => {
                 },
             },
         })
-        .then(() => {
-            queryClient.invalidateQueries(["album", ship, albumId]);
-        });
 };
 
-export const unshare = (member, albumId, ship, queryClient) => {
-    api.poke({
+export const unshare = (member, albumId, ship) => {
+    return api.poke({
         app: "albums",
         mark: "albums-action",
         json: {
@@ -104,7 +96,5 @@ export const unshare = (member, albumId, ship, queryClient) => {
                 receiver: member,
             },
         },
-    }).then(() => {
-        queryClient.invalidateQueries(["album", ship, albumId]);
     });
 }
