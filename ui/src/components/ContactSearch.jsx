@@ -18,7 +18,7 @@ export default function ContactSearch({
     ([ship, contact]) =>
       !groupMembers.some((e) => deSig(e) === deSig(ship)) &&
       searchQuery !== "" &&
-      (ship.includes(searchQuery) || contact?.nickname?.includes(searchQuery)),
+      (ship.includes(searchQuery) || contact?.nickname?.includes(searchQuery))
   );
   return (
     <div className="w-full">
@@ -75,7 +75,7 @@ export default function ContactSearch({
                 onMouseDown={(e) => {
                   if (
                     !selectedMembers.some(
-                      (e) => e[0] === `~${deSig(searchQuery)}`,
+                      (e) => e[0] === `~${deSig(searchQuery)}`
                     )
                   ) {
                     e.preventDefault();
@@ -92,12 +92,11 @@ export default function ContactSearch({
             searchQuery !== "" &&
             !ob.isValidPatp(`~${deSig(searchQuery)}`)) ||
             isInGroup) && (
-              <p className="text-sm text-gray-400 text-center">No results</p>
-            )}
+            <p className="text-sm text-gray-400 text-center">No results</p>
+          )}
           {searchQuery === "" && (
             <p className="text-sm text-gray-400 text-center">...</p>
-          )
-          }
+          )}
         </div>
       )}
     </div>

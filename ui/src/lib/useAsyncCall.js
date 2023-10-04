@@ -19,7 +19,7 @@ export function useAsyncCall(cb, store) {
           setStatus("error");
         });
     },
-    [cb],
+    [cb]
   );
 
   return {

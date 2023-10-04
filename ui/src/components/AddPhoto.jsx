@@ -22,7 +22,7 @@ export default function AddPhoto({ setAddPhoto, addPhotos }) {
   const queryClient = useQueryClient();
   const { data } = useQuery({
     queryKey: ["album", ship, albumId],
-    queryFn: () => albumId ? albumQuery(albumId, ship) : null,
+    queryFn: () => (albumId ? albumQuery(albumId, ship) : null),
   });
   const album = data?.albums;
 
@@ -67,7 +67,7 @@ export default function AddPhoto({ setAddPhoto, addPhotos }) {
       <div
         className={cn("p-1 cursor-pointer border", {
           "pointer-events-none opacity-25": album?.images?.some(
-            (image) => image[1]?.src === url,
+            (image) => image[1]?.src === url
           ),
           "border-black": selectedFiles.some((file) => file === url),
           "border-transparent": !selectedFiles.some((file) => file === url),
@@ -87,7 +87,11 @@ export default function AddPhoto({ setAddPhoto, addPhotos }) {
           height: style.height - 1,
         }}
       >
-        {url ? <img src={url} className="h-full w-full object-contain" /> : <div className="pointer-events-none h-full w-full" />}
+        {url ? (
+          <img src={url} className="h-full w-full object-contain" />
+        ) : (
+          <div className="pointer-events-none h-full w-full" />
+        )}
       </div>
     );
   };
@@ -117,12 +121,12 @@ export default function AddPhoto({ setAddPhoto, addPhotos }) {
                       new PutObjectCommand({
                         Bucket: s3.configuration.currentBucket,
                         Key: `/structure-albums/${deSig(
-                          dateToDa(new Date()),
+                          dateToDa(new Date())
                         )}-${file.name}`,
                         Body: file,
                         ACL: "public-read",
                         ContentType: file.type,
-                      }),
+                      })
                     );
                   });
                   Promise.allSettled(promises).then(() => {

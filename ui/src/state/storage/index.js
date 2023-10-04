@@ -63,7 +63,7 @@ const useStorageState = createState(
           set({ loaded: true });
         }
       }),
-  ],
+  ]
 );
 
 export default useStorageState;

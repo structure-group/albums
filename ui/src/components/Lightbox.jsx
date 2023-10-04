@@ -67,7 +67,10 @@ export default function Lightbox({ photo, setLightboxPhoto, write }) {
             className="min-w-0 min-h-0 max-h-[90vh] object-contain"
           />
           <div className="bg-white relative rounded-tr-md rounded-br-md p-4 flex flex-col min-h-0 justify-end lg:w-full max-h-96 lg:max-h-[90vh] basis-1/3 space-y-4">
-            <div className="flex flex-col min-h-0 overflow-y-auto space-y-8" ref={commentBox}>
+            <div
+              className="flex flex-col min-h-0 overflow-y-auto space-y-8"
+              ref={commentBox}
+            >
               {comments?.map((comment) => {
                 const { who, when, what } = comment[1] || {
                   who: "~hastuc-dibtux",
@@ -84,7 +87,7 @@ export default function Lightbox({ photo, setLightboxPhoto, write }) {
                     />
                     <p className="text-xs text-gray-400">
                       {daToDate(
-                        when || "~2018.7.17..23.15.09..5be5",
+                        when || "~2018.7.17..23.15.09..5be5"
                       ).toLocaleString()}
                     </p>
                     <p className="text-sm">{what}</p>

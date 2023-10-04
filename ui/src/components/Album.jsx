@@ -9,14 +9,18 @@ import cn from "classnames";
 import ContactSearch from "./ContactSearch";
 import { api } from "../state/api";
 import { GlobalHotKeys } from "react-hotkeys";
-import { addPhotos, editMember, inviteSelected, unshare } from "../state/actions";
+import {
+  addPhotos,
+  editMember,
+  inviteSelected,
+  unshare,
+} from "../state/actions";
 
 const keyMap = {
   BACK: "ArrowLeft",
   FORWARD: "ArrowRight",
   ESCAPE: "Escape",
 };
-
 
 export default function Album() {
   const [addPhoto, setAddPhoto] = useState(false);
@@ -39,11 +43,11 @@ export default function Album() {
   const { disableNicknames } = settingsData?.desk?.calmEngine || false;
   const { disableAvatars } = settingsData?.desk?.calmEngine || false;
   const images =
-    album?.albums?.images?.sort((a, b) => Number(b[0]) - Number(a[0])) ||
-    [];
+    album?.albums?.images?.sort((a, b) => Number(b[0]) - Number(a[0])) || [];
   const shared = album?.albums?.shared || [];
   const our = ship === `~${window.ship}`;
-  const write = album?.albums?.shared.find((e) => e[0] === `~${window.ship}`)?.[1] || false;
+  const write =
+    album?.albums?.shared.find((e) => e[0] === `~${window.ship}`)?.[1] || false;
 
   const handlers = {
     BACK: useCallback(() => {
@@ -66,12 +70,14 @@ export default function Album() {
       queryClient.invalidateQueries(["album", ship, albumId]);
       setAddPhoto(false);
     });
-  }
+  };
   return (
     <>
       <GlobalHotKeys keyMap={keyMap} handlers={handlers} allowChanges={true} />
       <div className="w-full h-full min-h-0 flex flex-col">
-        {addPhoto && <AddPhoto addPhotos={addPhotosToAlbum} setAddPhoto={setAddPhoto} />}
+        {addPhoto && (
+          <AddPhoto addPhotos={addPhotosToAlbum} setAddPhoto={setAddPhoto} />
+        )}
         {lightboxPhoto !== null && (
           <Lightbox
             photo={images[lightboxPhoto]}
@@ -121,8 +127,8 @@ export default function Album() {
                                 prev.map((m) =>
                                   m[0] === member[0]
                                     ? [m[0], e.target.value]
-                                    : [m[0], m[1]],
-                                ),
+                                    : [m[0], m[1]]
+                                )
                               );
                             }}
                           >
@@ -133,7 +139,7 @@ export default function Album() {
                             className="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-md"
                             onClick={() =>
                               setSelectedMembers((prev) =>
-                                prev.filter((m) => m[0] !== member[0]),
+                                prev.filter((m) => m[0] !== member[0])
                               )
                             }
                           >
@@ -145,10 +151,16 @@ export default function Album() {
                     <button
                       className="w-full bg-black text-white text-sm font-semibold rounded-md py-1 hover:bg-indigo-black"
                       onClick={() => {
-                        inviteSelected(selectedMembers, albumId, ship).then(() => {
-                          queryClient.invalidateQueries(["album", ship, albumId]);
-                          setSelectedMembers([]);
-                        });
+                        inviteSelected(selectedMembers, albumId, ship).then(
+                          () => {
+                            queryClient.invalidateQueries([
+                              "album",
+                              ship,
+                              albumId,
+                            ]);
+                            setSelectedMembers([]);
+                          }
+                        );
                       }}
                     >
                       Invite
@@ -157,7 +169,10 @@ export default function Album() {
                 )}
                 {shared.map((share) => {
                   return (
-                    <div className="flex w-full items-center justify-between space-x-2" key={share[0]}>
+                    <div
+                      className="flex w-full items-center justify-between space-x-2"
+                      key={share[0]}
+                    >
                       <Contact
                         ship={share[0]}
                         contact={contactsData?.[share[0]] || {}}
@@ -169,8 +184,17 @@ export default function Album() {
                         className="bg-indigo-white border border-indigo-gray rounded-md text-xs font-semibold px-2 py-1"
                         value={share[1]}
                         onChange={(e) => {
-                          editMember(share[0], albumId, ship, e.target.value).then(() => {
-                            queryClient.invalidateQueries(["album", ship, albumId]);
+                          editMember(
+                            share[0],
+                            albumId,
+                            ship,
+                            e.target.value
+                          ).then(() => {
+                            queryClient.invalidateQueries([
+                              "album",
+                              ship,
+                              albumId,
+                            ]);
                           });
                         }}
                         disabled={ship !== `~${window.ship}`}
@@ -181,9 +205,15 @@ export default function Album() {
                       {ship === `~${window.ship}` && share[0] !== ship && (
                         <a
                           className="bg-red-500 text-white px-2 text-xs py-1 font-semibold rounded-md cursor-pointer hover:bg-red-400"
-                          onClick={() => unshare(share[0], albumId, ship).then(() => {
-                            queryClient.invalidateQueries(["album", ship, albumId]);
-                          })}
+                          onClick={() =>
+                            unshare(share[0], albumId, ship).then(() => {
+                              queryClient.invalidateQueries([
+                                "album",
+                                ship,
+                                albumId,
+                              ]);
+                            })
+                          }
                         >
                           Remove
                         </a>
@@ -237,7 +267,7 @@ function Gallery({
   images,
   album,
   our,
-  write
+  write,
 }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
