@@ -31,7 +31,7 @@ export default function Lightbox({ photo, setLightboxPhoto, write }) {
   }, [comments]);
 
   return (
-    <div className="fixed top-0 left-0 bg-[rgba(0,0,0,0.25)] w-full h-full flex flex-col items-center justify-center space-y-8 p-8">
+    <div className="fixed top-0 left-0 bg-[rgba(0,0,0,0.25)] w-full h-full flex flex-col items-center justify-center space-y-8 p-8 z-40">
       <Foco
         className="flex flex-col items-center justify-center"
         onClickOutside={() => setLightboxPhoto(null)}
