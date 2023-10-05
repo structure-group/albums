@@ -8,6 +8,6 @@
   base+'albums'
   image+'https://s3.figfel-bicseb-dozzod-topdem.nativeplanet.live/bucket/albums/2023.10.05..14.58.50-albums_logo.png'
   :+  %glob-http
-    'https://s3.figfel-bicseb-dozzod-topdem.nativeplanet.live/bucket/albums/2023.10.05..14.58.27-glob-0v2.c2osm.r63p1.idp70.uv07u.1o93t.glob'
-    0v2.c2osm.r63p1.idp70.uv07u.1o93t
+    'https://s3.figfel-bicseb-dozzod-topdem.nativeplanet.live/bucket/albums/2023.10.05..19.06.39-glob-0v6.lrcq7.hjf9f.trq24.3d7el.qsce3.glob'
+    0v6.lrcq7.hjf9f.trq24.3d7el.qsce3
 ==
