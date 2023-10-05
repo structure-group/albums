@@ -14,12 +14,11 @@ export default function ContactSearch({
   const [searchQuery, setSearchQuery] = useState("");
   const groupMembers = group.map((member) => member[0]);
   const isInGroup = groupMembers.some((e) => deSig(e) === deSig(searchQuery));
-  const search = Object.entries(contacts || {}).filter(
+  const search = searchQuery !== "" ? Object.entries(contacts || {}).filter(
     ([ship, contact]) =>
       !groupMembers.some((e) => deSig(e) === deSig(ship)) &&
-      deSig(searchQuery) !== "" &&
       (ship.includes(searchQuery) || contact?.nickname?.includes(searchQuery))
-  );
+  ) : [];
   return (
     <div className="w-full">
       <input
@@ -43,7 +42,7 @@ export default function ContactSearch({
         value={searchQuery}
       />
       {showSearch && (
-        <div className="absolute flex flex-col w-full p-4 border border-indigo-gray max-h-16 overflow-y-auto bg-white rounded-md z-30">
+        <div className="absolute flex flex-col w-full p-4 border border-indigo-gray max-h-32 overflow-y-auto bg-white rounded-md z-30 space-y-4">
           {search.map(([ship, contact]) => {
             return (
               <div key={ship} className="w-full z-20">
