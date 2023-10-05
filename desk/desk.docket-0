@@ -1,10 +1,12 @@
 :~
   title+'Albums'
   info+'A photo sharing app'
-  color+0xd9.b06d
-  version+[0 1 1]
-  website+'https://structure.support/'
+  color+0x9a.acbd
+  version+[0 9 0]
+  website+'https://github.com/structure-group/albums'
   license+'MIT'
   base+'albums'
-  glob-ames+[~wex 0v0]
+  image+'https://s3.figfel-bicseb-dozzod-topdem.nativeplanet.live/bucket/albums/2023.10.05..14.58.50-albums_logo.png'
+  :+  %glob-http
+    'https://s3.figfel-bicseb-dozzod-topdem.nativeplanet.live/bucket/albums/2023.10.05..14.58.27-glob-0v2.c2osm.r63p1.idp70.uv07u.1o93t.glob'
 ==
