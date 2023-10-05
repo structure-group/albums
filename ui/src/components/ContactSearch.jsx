@@ -17,7 +17,7 @@ export default function ContactSearch({
   const search = Object.entries(contacts || {}).filter(
     ([ship, contact]) =>
       !groupMembers.some((e) => deSig(e) === deSig(ship)) &&
-      searchQuery !== "" &&
+      deSig(searchQuery) !== "" &&
       (ship.includes(searchQuery) || contact?.nickname?.includes(searchQuery))
   );
   return (
@@ -92,8 +92,8 @@ export default function ContactSearch({
             searchQuery !== "" &&
             !ob.isValidPatp(`~${deSig(searchQuery)}`)) ||
             isInGroup) && (
-            <p className="text-sm text-gray-400 text-center">No results</p>
-          )}
+              <p className="text-sm text-gray-400 text-center">No results</p>
+            )}
           {searchQuery === "" && (
             <p className="text-sm text-gray-400 text-center">...</p>
           )}
