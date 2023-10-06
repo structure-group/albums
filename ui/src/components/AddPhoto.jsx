@@ -27,16 +27,18 @@ export default function AddPhoto({ setAddPhoto, addPhotos }) {
   const album = data?.albums;
 
   useEffect(() => {
+    const clientWidth = document.documentElement.clientWidth;
+    const clientHeight = document.documentElement.clientHeight;
     const resize = () => {
-      if (window.innerWidth < 424) {
+      if (clientWidth < 424) {
         setColumns(2);
-        setPromptWidth(window.innerWidth - 128);
-        setPromptHeight(window.innerHeight - 128);
-      } else if (window.innerWidth < 768) {
+        setPromptWidth(clientWidth - 128);
+        setPromptHeight(clientHeight - 128);
+      } else if (clientWidth < 768) {
         setColumns(3);
-        setPromptWidth(window.innerWidth - 72);
-        setPromptHeight(window.innerHeight - 72);
-      } else if (window.innerWidth < 1024) {
+        setPromptWidth(clientWidth - 72);
+        setPromptHeight(clientHeight - 72);
+      } else if (clientWidth < 1024) {
         setColumns(3);
         setPromptWidth(340);
       } else {
@@ -44,8 +46,8 @@ export default function AddPhoto({ setAddPhoto, addPhotos }) {
         setPromptWidth(568);
       }
     };
-    resize();
     window.addEventListener("resize", resize);
+    resize();
     return () => window.removeEventListener("resize", resize);
   }, []);
 
