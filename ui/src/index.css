@@ -18,3 +18,20 @@ div#app {
   margin: 0;
   padding: 0;
 }
+
+.toggle {
+  @apply appearance-none relative w-[24px] h-[16px] rounded-full bg-[#cccccc] outline-none;
+}
+
+.toggle::after {
+  @apply absolute left-[2px] top-[2px] w-[12px] h-[12px] rounded-full bg-white transition-all duration-300;
+  content: "";
+}
+
+.toggle:checked::after {
+  @apply left-[10px];
+}
+
+.toggle:checked {
+  @apply bg-indigo-black;
+}
