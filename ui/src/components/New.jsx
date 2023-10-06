@@ -9,10 +9,14 @@ import Contact from "./Contact";
 import { contactsQuery, settingsQuery } from "../state/query";
 import { useNavigate } from "react-router-dom";
 import { inviteSelected } from "../state/actions";
+import cn from "classnames";
 
 export default function NewAlbum() {
   const [title, setTitle] = useState("");
+  const [comments, setComments] = useState(false);
   const [addPhoto, setAddPhoto] = useState(false);
+  const [hoveredPhoto, setHoveredPhoto] = useState(null);
+  const [cover, setCover] = useState(null);
   const [selectedPhotos, setSelectedPhotos] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [shareStep, setShareStep] = useState(false);
@@ -46,12 +50,24 @@ export default function NewAlbum() {
         app: "albums",
         mark: "albums-action",
         json: {
-          create: { name: stripTitle },
+          create: { name: stripTitle, title, "comment-perm": Boolean(comments) },
         },
       });
     } catch (e) {
       console.error(e);
     } finally {
+      if (cover) {
+        await api.poke({
+          app: "albums",
+          mark: "albums-action",
+          json: {
+            cover: {
+              "album-id": { name: stripTitle, owner: `~${window.ship}` },
+              cover,
+            },
+          },
+        });
+      }
       const promises = selectedPhotos.map((url, i) => {
         return api.poke({
           app: "albums",
@@ -95,24 +111,44 @@ export default function NewAlbum() {
                 onChange={(e) => setTitle(e.target.value)}
               />
             </div>
-            <div className="flex flex-col items-start space-y-1">
+            <div className="flex flex-col items-start space-y-2 text-sm">
               <h3 className="text-sm font-semibold">Images</h3>
+              <p className="text-sm">Click a photo to set it as a cover for the album or delete images before creating your album.</p>
               <div className="bg-indigo-white rounded-md border-2 border-dashed border-indigo-gray w-full p-2 flex flex-wrap gap-4 overflow-y-auto max-h-48">
                 {selectedPhotos.length === 0 && (
                   <p className="text-sm">No photos selected</p>
                 )}
-                {selectedPhotos.map((photo) => (
-                  <img
-                    src={photo}
-                    alt="selected"
-                    className="h-20 w-20 object-cover rounded-md cursor-pointer border border-transparent hover:border-red-500"
-                    onClick={() =>
-                      setSelectedPhotos(
-                        selectedPhotos.filter((p) => p !== photo)
-                      )
-                    }
-                  />
-                ))}
+                {selectedPhotos.map((photo) => {
+                  return (
+                    <div
+                      className={cn("h-20 w-20 relative border",
+                        {
+                          "border-indigo-black": cover === photo,
+                          "border-transparent": cover !== photo
+                        }
+                      )}
+                      onMouseEnter={() => setHoveredPhoto(photo)}
+                      onMouseLeave={() => setHoveredPhoto(null)}
+                      onClick={() => setCover(photo)}
+                    >
+                      {hoveredPhoto === photo && (
+                        <div className="absolute overflow-visible z-20 -top-2 -right-2 flex items-center justify-center">
+                          <button
+                            className="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full"
+                            onClick={() => setSelectedPhotos(prev => prev.filter(p => p !== photo))}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      )}
+                      <img
+                        src={photo}
+                        alt="selected"
+                        className="h-full w-full object-cover cursor-pointer overflow-hidden"
+                      />
+                    </div>
+                  )
+                })}
               </div>
               <a
                 className="font-semibold text-sm bg-black hover:bg-indigo-black text-white w-full py-1 px-2 text-center rounded-md cursor-pointer"
@@ -121,12 +157,21 @@ export default function NewAlbum() {
                 Select or upload photos
               </a>
             </div>
-            <button
-              className="font-semibold bg-black hover:bg-indigo-black text-white w-full py-1 px-2 text-center rounded-md"
-              onClick={createAlbum}
-            >
-              Create Album
-            </button>
+            <div className="space-y-2" onClick={() => setComments(!comments)}>
+              <p className="font-semibold text-sm">Comments</p>
+              <div className="flex items-center">
+                <input className="toggle" type="checkbox" checked={comments} />
+                <label className="ml-2 text-sm font-semibold">{comments ? "Enabled" : "Disabled"}</label>
+              </div>
+            </div>
+            <div className="flex justify-end w-full">
+              <button
+                className="font-semibold bg-black hover:bg-indigo-black text-white w-fit py-1 px-2 text-center rounded-md text-sm"
+                onClick={createAlbum}
+              >
+                Create
+              </button>
+            </div>
           </>
         ) : (
           <>
