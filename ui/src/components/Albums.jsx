@@ -9,17 +9,18 @@ export default function Albums({ shared = false }) {
   const albums = useQuery({ queryKey: ["albums"], queryFn: albumsQuery });
   const ourFilter = (album) => album?.owner === `~${window.ship}`;
   const sharedFilter = (album) => album?.owner !== `~${window.ship}`;
+  // console.log(albums.data)
   return (
     <>
       <Helmet>
         <title>Albums</title>
       </Helmet>
-      {credentials?.accessKeyId ? (
+      {(credentials?.accessKeyId || shared) ? (
         <div className="p-8 flex justify-center md:justify-normal flex-wrap gap-8 overflow-y-auto">
           {albums?.data
             ?.filter(shared ? sharedFilter : ourFilter)
             .map((album) => {
-              const { name, owner, cover } = album;
+              const { name, title, owner, cover } = album;
               return (
                 <Link to={`/album/${owner}/${name}`} key={`${owner}/${name}`}>
                   <div className="flex flex-col items-center w-64 space-y-2">
@@ -31,7 +32,7 @@ export default function Albums({ shared = false }) {
                         backgroundPosition: "center",
                       }}
                     ></div>
-                    <p className="font-semibold">{name}</p>
+                    <p className="font-semibold">{title}</p>
                   </div>
                 </Link>
               );
