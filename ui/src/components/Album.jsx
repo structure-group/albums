@@ -2,7 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { albumQuery, contactsQuery, settingsQuery } from "../state/query";
 import useStorageState from "../state/storage";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import AddPhoto from "./AddPhoto";
 import Contact from "./Contact";
 import Lightbox from "./Lightbox";
@@ -12,6 +12,7 @@ import { api } from "../state/api";
 import { GlobalHotKeys } from "react-hotkeys";
 import {
   addPhotos,
+  editAlbum,
   editMember,
   inviteSelected,
   unshare,
@@ -33,6 +34,8 @@ export default function Album() {
     queryKey: ["album", ship, albumId],
     queryFn: () => albumQuery(albumId, ship),
   });
+  const [title, setTitle] = useState("");
+  const [comments, setComments] = useState(false);
   const { data: contactsData } = useQuery({
     queryKey: ["contacts"],
     queryFn: () => contactsQuery(),
@@ -49,6 +52,11 @@ export default function Album() {
   const our = ship === `~${window.ship}`;
   const write =
     album?.albums?.shared.find((e) => e[0] === `~${window.ship}`)?.[1] || false;
+
+  useEffect(() => {
+    setTitle(album?.albums?.title || albumId);
+    setComments(album?.albums?.["comment-perm"] || false);
+  }, [albumId, album]);
 
   const handlers = {
     BACK: useCallback(() => {
@@ -87,15 +95,46 @@ export default function Album() {
             write={our || write}
           />
         )}
-        {subview === "shared" && (
+        {subview === "edit" && (
           <div className="flex h-full">
-            <div className="p-8 h-full min-h-0 bg-white basis-full lg:basis-1/2 flex flex-col border-r-2 border-indigo-gray">
-              <Link to=".">
-                <p className="font-semibold w-full truncate block lg:hidden">
+            <div className="p-8 h-full min-h-0 bg-white basis-full lg:basis-1/2 flex flex-col border-r-2 space-y-8 border-indigo-gray">
+              <Link to={`/album/${ship}/${albumId}`}>
+                <p className="font-semibold w-full truncate block lg:hidden mb-8">
                   {"<-"} Back to {album?.albums?.name || albumId}
                 </p>
               </Link>
-              <div className="flex flex-col space-y-4 overflow-y-auto h-full w-full min-h-0 min-w-0 relative">
+              {ship === `~${window.ship}` && <div className="p-4 rounded-md border space-y-4">
+                <p className="font-semibold text-sm">Edit Album</p>
+                <div className="w-full space-y-2">
+                  <h3 className="text-sm font-semibold">Album Title</h3>
+                  <input
+                    type="text"
+                    className="bg-indigo-white rounded-md p-1 py-2 text-sm w-full"
+                    placeholder="My Great Photos"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2" onClick={() => setComments(!comments)}>
+                  <p className="font-semibold text-sm">Comments</p>
+                  <div className="flex items-center">
+                    <input className="toggle" type="checkbox" checked={comments} />
+                    <label className="ml-2 text-sm font-semibold">{comments ? "Enabled" : "Disabled"}</label>
+                  </div>
+                </div>
+                <div className="w-full flex justify-end">
+                  <button
+                    className="bg-black text-white text-sm font-semibold rounded-md py-1 px-2 hover:bg-indigo-black"
+                    onClick={() => editAlbum(albumId, ship, title, comments).then(() => {
+                      queryClient.invalidateQueries(["album", ship, albumId]);
+                    })}
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>}
+              <div className="flex flex-col space-y-4 overflow-y-auto h-full w-full min-h-0 min-w-0 relative border p-4 rounded-md">
+                <p className="text-sm font-semibold">Participants</p>
                 {ship === `~${window.ship}` && (
                   <ContactSearch
                     contacts={contactsData}
@@ -122,7 +161,7 @@ export default function Album() {
                             disableAvatars={disableAvatars}
                           />
                           <select
-                            className="bg-indigo-white border border-indigo-gray rounded-md text-xs font-semibold px-2 py-1"
+                            className="bg-indigo-white border border-indigo-gray rounded-md text-sm font-semibold px-2 py-1"
                             value={member[1]}
                             onChange={(e) => {
                               setSelectedMembers((prev) =>
@@ -293,32 +332,32 @@ function Gallery({
           <p className="font-semibold">{album?.albums?.title || albumId}</p>
         </Link>
         <div className="flex space-x-8 font-semibold text-[#666666] items-center">
-          <Link to={`/album/${ship}/${albumId}/shared`}>
+          {(our || write) && (credentials?.accessKeyId) && (
+            <p
+              className="cursor-pointer text-green-600"
+              onClick={() => setAddPhoto(true)}
+            >
+              Add Photos
+            </p>
+          )}
+          <Link to={`/album/${ship}/${albumId}/edit`}>
             <p
               className={cn({
-                "text-indigo-black": subview === "shared",
+                "text-indigo-black": subview === "edit",
               })}
             >
-              Participants
+              Edit
             </p>
           </Link>
           <button
             className="text-red-500 font-semibold rounded-md"
             onClick={() => nuke()}
           >
-            {our ? "Delete" : "Remove"}
+            {our ? "Delete" : "Remove"} Album
           </button>
         </div>
       </div>
       <div className="flex flex-wrap justify-center md:justify-normal gap-8 w-full max-h-full min-h-0">
-        {(our || write) && (credentials?.accessKeyId) && (
-          <div
-            className="flex flex-col items-center justify-center border-[#999999] border rounded-lg w-32 h-32 font-semibold cursor-pointer"
-            onClick={() => setAddPhoto(true)}
-          >
-            + Add Photo
-          </div>
-        )}
         {images?.map((image, i) => {
           return (
             <div
