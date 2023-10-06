@@ -35,13 +35,36 @@
   =/  act  !<(action vase)
   ?-    -.act
       %create
-    =/  name  (crip (replace:string " " "-" (trip +.act)))
+    =/  name  (crip (replace:string " " "-" (trip name.act)))
     =/  owner  our.bowl
     =/  =shared  (malt (limo ~[[owner %.y]]))
-    =/  =album  [name owner shared *images '']
+    =/  =album  [name owner title.act comment-perm.act shared *images '']
     =/  =wire  /share/(scot %p owner)/[name]
     :-  ~[[%give %fact ~[wire] %albums-update !>(`update`[%album album])]]
     this(albums (~(put by albums) [name owner] album))
+    ::
+      %edit
+    =,  act
+    ?.  (~(has by albums) album-id)
+      ~&  >  ["Album not found" album-id]
+      `this
+    =/  album  (~(got by albums) album-id)
+    =.  title.album  title
+    =.  comment-perm.album  comment-perm
+    =/  =wire  /share/(scot %p owner.album-id)/[name.album-id]
+    :-  ~[[%give %fact ~[wire] %albums-update !>(`update`[%album album])]]
+    this(albums (~(put by albums) album-id album))
+    ::
+      %cover
+    =,  act
+    ?.  (~(has by albums) album-id)
+      ~&  >  ["Album not found" album-id]
+      `this
+    =/  album  (~(got by albums) album-id)
+    =.  cover.album  cover
+    =/  =wire  /share/(scot %p owner.album-id)/[name.album-id]
+    :-  ~[[%give %fact ~[wire] %albums-update !>(`update`[%album album])]]
+    this(albums (~(put by albums) album-id album))
     ::
       %nuke
     =/  =album-id  +.act
@@ -69,7 +92,6 @@
     =/  img=image  [src caption *comments]
     =/  new-album  %=  album
     images  (~(put by images.album) img-id img)
-    cover  src
     ==
     =/  =wire  /share/(scot %p owner.album-id)/[name.album-id]
     :-  ~[[%give %fact ~[wire] %albums-update !>(`update`[%album new-album])]]
@@ -97,9 +119,7 @@
     =/  =image  (~(got by images.album) img-id)
     =.  images.album  (~(del by images.album) img-id)
     =.  cover.album  
-      ?.  =(src.image cover.album)  cover.album
-        ?:  =(0 (lent ~(val by images.album)))  ''
-        src:(snag 0 ~(val by images.album))
+      ?.  =(src.image cover.album)  cover.album  ''
     =/  =wire  /share/(scot %p owner.album-id)/[name.album-id]
     :-  ~[[%give %fact ~[wire] %albums-update !>(`update`[%album album])]]
     this(albums (~(put by albums) album-id album))
@@ -110,6 +130,7 @@
     ?~  album
       ~&  >  ["Album not found" album-id]
       `this
+    ?.  comment-perm.u.album  `this
     =/  img-list  ~(key by images.u.album)
     ?.  (~(has in img-list) img-id)
       ~&  >  ["Image not found" img-id]
@@ -206,7 +227,7 @@
 ++  on-peek
   |=  =path
   ^-  (unit (unit cage))
-  ?>  (team:title our.bowl src.bowl)
+  ::?>  (team:title our.bowl src.bowl)
   =/  now  now.bowl
   ?+  path  (on-peek:def path)
       [%x %list ~]

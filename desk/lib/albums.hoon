@@ -36,6 +36,8 @@
           ^-  ^json
             (enjs-images img-id image)
         ['cover' (en-vase !>(cover.album))]
+        ['title' (en-vase !>(title.album))]
+        ['comment-perm' (en-vase !>(comment-perm.album))]
     ==
   ==
 
@@ -78,9 +80,16 @@
         [%comment dejs-comment]
         [%share dejs-share]
         [%unshare dejs-unshare]
+        [%edit dejs-edit]
+        [%cover dejs-cover]
     ==
   ++  dejs-create
-    %-  ot  ~[name+so]
+    %-  ot  
+      :~
+        [name+so]
+        [title+so]
+        [comment-perm+bo]
+      ==
   ++  dejs-nuke
     %-  ot  ~[name+so owner+(se %p)]
   ++  dejs-add
@@ -115,6 +124,19 @@
       :~  
         [%album-id (ot ~[name+so owner+(se %p)])]
         receiver+(se %p)
+      ==
+  ++  dejs-cover
+    %-  ot
+      :~
+        [%album-id (ot ~[name+so owner+(se %p)])]
+        [cover+so]
+      ==
+  ++  dejs-edit
+    %-  ot  
+      :~
+        [%album-id (ot ~[name+so owner+(se %p)])]
+        [title+so]
+        [comment-perm+bo]
       ==
   --
 --

@@ -3,7 +3,9 @@
 +$  src  @t
 +$  img-id  @t
 +$  owner  @p
++$  title  @t
 +$  write-perm  ?
++$  comment-perm  ?
 +$  comment  [who=@p when=@da what=@t]
 +$  comments  ((mop @da comment) gth)
 +$  image  [=src caption=comment =comments] 
@@ -11,11 +13,13 @@
 +$  shared  (map who=@p =write-perm)
 +$  album-id  [=name =owner]
 +$  album-ids  (list album-id)
-+$  album  [=name =owner =shared =images cover=src]
++$  album  [=name =owner =title =comment-perm =shared =images cover=src]
 +$  albums  (map album-id album)
 +$  action
-  $%  [%create =name] :: Create album
+  $%  [%create =name =title =comment-perm] :: Create album
       [%nuke =album-id] :: Delete an album
+      [%edit =album-id =title =comment-perm] :: edit an album
+      [%cover =album-id cover=src]
       [%add =album-id =img-id =src caption=comment] :: add an image
       [%del =album-id =img-id] :: delete an image
       [%comment =album-id =img-id =comment] :: add comment to an image
