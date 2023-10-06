@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { albumQuery, contactsQuery, settingsQuery } from "../state/query";
+import useStorageState from "../state/storage";
 import { useCallback, useState } from "react";
 import AddPhoto from "./AddPhoto";
 import Contact from "./Contact";
@@ -80,6 +81,7 @@ export default function Album() {
         )}
         {lightboxPhoto !== null && (
           <Lightbox
+            disableComments={!album?.albums?.["comment-perm"] || false}
             photo={images[lightboxPhoto]}
             setLightboxPhoto={setLightboxPhoto}
             write={our || write}
@@ -271,6 +273,9 @@ function Gallery({
 }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { s3 } = useStorageState();
+  const { credentials } = s3 ?? { credentials: { accessKeyId: "" } };
+
 
   const nuke = async () => {
     await api.poke({
@@ -285,7 +290,7 @@ function Gallery({
     <div className="h-full w-full p-8 bg-white rounded-xl flex flex-col space-y-8 overflow-y-auto min-h-0">
       <div className="flex justify-between rounded-md bg-white">
         <Link to={`/album/${ship}/${albumId}`}>
-          <p className="font-semibold">{album?.album?.name || albumId}</p>
+          <p className="font-semibold">{album?.albums?.title || albumId}</p>
         </Link>
         <div className="flex space-x-8 font-semibold text-[#666666] items-center">
           <Link to={`/album/${ship}/${albumId}/shared`}>
@@ -306,7 +311,7 @@ function Gallery({
         </div>
       </div>
       <div className="flex flex-wrap justify-center md:justify-normal gap-8 w-full max-h-full min-h-0">
-        {(our || write) && (
+        {(our || write) && (credentials?.accessKeyId) && (
           <div
             className="flex flex-col items-center justify-center border-[#999999] border rounded-lg w-32 h-32 font-semibold cursor-pointer"
             onClick={() => setAddPhoto(true)}

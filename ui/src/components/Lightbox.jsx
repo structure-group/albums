@@ -7,7 +7,7 @@ import { daToDate } from "@urbit/api";
 import Contact from "./Contact";
 import { addComment, deletePhoto } from "../state/actions";
 
-export default function Lightbox({ photo, setLightboxPhoto, write }) {
+export default function Lightbox({ photo, disableComments, setLightboxPhoto, write }) {
   const [comment, setComment] = useState("");
   const { ship, albumId } = useParams();
   const commentBox = useRef(null);
@@ -66,7 +66,7 @@ export default function Lightbox({ photo, setLightboxPhoto, write }) {
             alt=""
             className="min-w-0 min-h-0 max-h-[90vh] object-contain"
           />
-          <div className="bg-white relative rounded-tr-md rounded-br-md p-4 flex flex-col min-h-0 justify-end lg:w-full max-h-96 lg:max-h-[90vh] basis-1/3 space-y-4">
+          {!disableComments && <div className="bg-white relative rounded-tr-md rounded-br-md p-4 flex flex-col min-h-0 justify-end lg:w-full max-h-96 lg:max-h-[90vh] basis-1/3 space-y-4">
             <div
               className="flex flex-col min-h-0 overflow-y-auto space-y-8"
               ref={commentBox}
@@ -110,7 +110,7 @@ export default function Lightbox({ photo, setLightboxPhoto, write }) {
                 }
               }}
             />
-          </div>
+          </div>}
         </div>
       </Foco>
     </div>
