@@ -54,6 +54,20 @@ export const deletePhoto = async (albumId, ship, photo) => {
   });
 };
 
+export const editAlbum = async (albumId, ship, title, comments) => {
+  await api.poke({
+    app: "albums",
+    mark: "albums-action",
+    json: {
+      edit: {
+        "album-id": { name: albumId, owner: ship },
+        title,
+        "comment-perm": comments,
+      },
+    },
+  });
+}
+
 export const inviteSelected = (selectedMembers, albumId, ship) => {
   const promises = selectedMembers.map((member) => {
     return api.poke({
