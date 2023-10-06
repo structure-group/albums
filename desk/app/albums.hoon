@@ -235,7 +235,7 @@
     =/  album-info  %+  turn  album-ids
       |=  =album-id
       =/  =album  (~(got by albums) album-id)
-        [album-id cover.album]
+        [album-id cover.album title.album]
     :^  ~  ~  %albums-update
     !>  ^-  update
     [%album-id album-info]
