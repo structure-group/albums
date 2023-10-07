@@ -177,8 +177,9 @@ export default function NewAlbum() {
             </div>
             <div className="flex justify-end w-full">
               <button
-                className="font-semibold bg-black hover:bg-indigo-black text-white w-fit py-1 px-2 text-center rounded-md text-sm"
+                className="font-semibold bg-black hover:bg-indigo-black text-white w-fit py-1 px-2 text-center rounded-md text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={createAlbum}
+                disabled={title.length === 0}
               >
                 Create
               </button>
