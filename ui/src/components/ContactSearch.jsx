@@ -14,11 +14,15 @@ export default function ContactSearch({
   const [searchQuery, setSearchQuery] = useState("");
   const groupMembers = group.map((member) => member[0]);
   const isInGroup = groupMembers.some((e) => deSig(e) === deSig(searchQuery));
-  const search = searchQuery !== "" ? Object.entries(contacts || {}).filter(
-    ([ship, contact]) =>
-      !groupMembers.some((e) => deSig(e) === deSig(ship)) &&
-      (ship.includes(searchQuery) || contact?.nickname?.includes(searchQuery))
-  ) : [];
+  const search =
+    searchQuery !== ""
+      ? Object.entries(contacts || {}).filter(
+          ([ship, contact]) =>
+            !groupMembers.some((e) => deSig(e) === deSig(ship)) &&
+            (ship.includes(searchQuery) ||
+              contact?.nickname?.includes(searchQuery)),
+        )
+      : [];
   return (
     <div className="w-full">
       <input
@@ -74,7 +78,7 @@ export default function ContactSearch({
                 onMouseDown={(e) => {
                   if (
                     !selectedMembers.some(
-                      (e) => e[0] === `~${deSig(searchQuery)}`
+                      (e) => e[0] === `~${deSig(searchQuery)}`,
                     )
                   ) {
                     e.preventDefault();
@@ -91,8 +95,8 @@ export default function ContactSearch({
             searchQuery !== "" &&
             !ob.isValidPatp(`~${deSig(searchQuery)}`)) ||
             isInGroup) && (
-              <p className="text-sm text-gray-400 text-center">No results</p>
-            )}
+            <p className="text-sm text-gray-400 text-center">No results</p>
+          )}
           {searchQuery === "" && (
             <p className="text-sm text-gray-400 text-center">...</p>
           )}

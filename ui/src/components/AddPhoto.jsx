@@ -69,7 +69,7 @@ export default function AddPhoto({ setAddPhoto, addPhotos }) {
       <div
         className={cn("p-1 cursor-pointer border", {
           "pointer-events-none opacity-25": album?.images?.some(
-            (image) => image[1]?.src === url
+            (image) => image[1]?.src === url,
           ),
           "border-black": selectedFiles.some((file) => file === url),
           "border-transparent": !selectedFiles.some((file) => file === url),
@@ -123,12 +123,12 @@ export default function AddPhoto({ setAddPhoto, addPhotos }) {
                       new PutObjectCommand({
                         Bucket: s3.configuration.currentBucket,
                         Key: `/structure-albums/${deSig(
-                          dateToDa(new Date())
+                          dateToDa(new Date()),
                         )}-${file.name}`,
                         Body: file,
                         ACL: "public-read",
                         ContentType: file.type,
-                      })
+                      }),
                     );
                   });
                   Promise.allSettled(promises).then(() => {

@@ -50,7 +50,11 @@ export default function NewAlbum() {
         app: "albums",
         mark: "albums-action",
         json: {
-          create: { name: stripTitle, title, "comment-perm": Boolean(comments) },
+          create: {
+            name: stripTitle,
+            title,
+            "comment-perm": Boolean(comments),
+          },
         },
       });
     } catch (e) {
@@ -113,7 +117,10 @@ export default function NewAlbum() {
             </div>
             <div className="flex flex-col items-start space-y-2 text-sm">
               <h3 className="text-sm font-semibold">Images</h3>
-              <p className="text-sm">Click a photo to set it as a cover for the album or delete images before creating your album.</p>
+              <p className="text-sm">
+                Click a photo to set it as a cover for the album or delete
+                images before creating your album.
+              </p>
               <div className="bg-indigo-white rounded-md border-2 border-dashed border-indigo-gray w-full p-2 flex flex-wrap gap-4 overflow-y-auto max-h-48">
                 {selectedPhotos.length === 0 && (
                   <p className="text-sm">No photos selected</p>
@@ -121,12 +128,10 @@ export default function NewAlbum() {
                 {selectedPhotos.map((photo) => {
                   return (
                     <div
-                      className={cn("h-20 w-20 relative border",
-                        {
-                          "border-indigo-black": cover === photo,
-                          "border-transparent": cover !== photo
-                        }
-                      )}
+                      className={cn("h-20 w-20 relative border", {
+                        "border-indigo-black": cover === photo,
+                        "border-transparent": cover !== photo,
+                      })}
                       onMouseEnter={() => setHoveredPhoto(photo)}
                       onMouseLeave={() => setHoveredPhoto(null)}
                       onClick={() => setCover(photo)}
@@ -135,7 +140,11 @@ export default function NewAlbum() {
                         <div className="absolute overflow-visible z-20 -top-2 -right-2 flex items-center justify-center">
                           <button
                             className="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full"
-                            onClick={() => setSelectedPhotos(prev => prev.filter(p => p !== photo))}
+                            onClick={() =>
+                              setSelectedPhotos((prev) =>
+                                prev.filter((p) => p !== photo),
+                              )
+                            }
                           >
                             Remove
                           </button>
@@ -147,7 +156,7 @@ export default function NewAlbum() {
                         className="h-full w-full object-cover cursor-pointer overflow-hidden"
                       />
                     </div>
-                  )
+                  );
                 })}
               </div>
               <a
@@ -161,7 +170,9 @@ export default function NewAlbum() {
               <p className="font-semibold text-sm">Comments</p>
               <div className="flex items-center">
                 <input className="toggle" type="checkbox" checked={comments} />
-                <label className="ml-2 text-sm font-semibold">{comments ? "Enabled" : "Disabled"}</label>
+                <label className="ml-2 text-sm font-semibold">
+                  {comments ? "Enabled" : "Disabled"}
+                </label>
               </div>
             </div>
             <div className="flex justify-end w-full">
@@ -209,8 +220,8 @@ export default function NewAlbum() {
                             prev.map((m) =>
                               m[0] === member[0]
                                 ? [m[0], e.target.value]
-                                : [m[0], m[1]]
-                            )
+                                : [m[0], m[1]],
+                            ),
                           );
                         }}
                       >
@@ -221,7 +232,7 @@ export default function NewAlbum() {
                         className="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-md"
                         onClick={() =>
                           setSelectedMembers((prev) =>
-                            prev.filter((m) => m[0] !== member[0])
+                            prev.filter((m) => m[0] !== member[0]),
                           )
                         }
                       >
@@ -236,7 +247,7 @@ export default function NewAlbum() {
                     inviteSelected(
                       selectedMembers,
                       stripTitle,
-                      `~${window.ship}`
+                      `~${window.ship}`,
                     ).then(() => {
                       queryClient.invalidateQueries([
                         "album",

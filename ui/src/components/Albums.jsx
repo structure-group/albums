@@ -15,7 +15,7 @@ export default function Albums({ shared = false }) {
       <Helmet>
         <title>Albums</title>
       </Helmet>
-      {(credentials?.accessKeyId || shared) ? (
+      {credentials?.accessKeyId || shared ? (
         <div className="p-8 flex justify-center md:justify-normal flex-wrap gap-8 overflow-y-auto">
           {albums?.data
             ?.filter(shared ? sharedFilter : ourFilter)

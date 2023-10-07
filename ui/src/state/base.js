@@ -24,7 +24,7 @@ export function clearStorageMigration() {
 
 export const storageVersion = parseInt(
   import.meta.env.ALBUM_STORAGE_VERSION,
-  10
+  10,
 );
 
 export const stateSetter = (fn, set, get) => {
@@ -93,7 +93,7 @@ export const createState = (
   properties,
   blacklist,
   subscriptions,
-  clearedState
+  clearedState,
 ) =>
   create(
     (set, get) => ({
@@ -102,7 +102,7 @@ export const createState = (
       },
       initialize: async (api) => {
         await Promise.all(
-          subscriptions.map((sub) => api.subscribe(sub(set, get)))
+          subscriptions.map((sub) => api.subscribe(sub(set, get))),
         );
       },
       set: (fn) => stateSetter(fn, set, get),
@@ -132,7 +132,7 @@ export const createState = (
       name: stateStorageKey(name),
       version: storageVersion,
       migrate: clearStorageMigration,
-    }
+    },
   );
 
 export async function doOptimistically(state, action, call, reduce) {

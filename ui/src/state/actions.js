@@ -52,7 +52,7 @@ export const changeCover = async (name, ship, cover) => {
       },
     },
   });
-}
+};
 
 export const deletePhoto = async (albumId, ship, photo) => {
   await api.poke({
@@ -79,7 +79,7 @@ export const editAlbum = async (albumId, ship, title, comments) => {
       },
     },
   });
-}
+};
 
 export const inviteSelected = (selectedMembers, albumId, ship) => {
   const promises = selectedMembers.map((member) => {

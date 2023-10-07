@@ -7,7 +7,13 @@ import { daToDate } from "@urbit/api";
 import Contact from "./Contact";
 import { addComment, changeCover, deletePhoto } from "../state/actions";
 
-export default function Lightbox({ cover, photo, disableComments, setLightboxPhoto, write }) {
+export default function Lightbox({
+  cover,
+  photo,
+  disableComments,
+  setLightboxPhoto,
+  write,
+}) {
   const [comment, setComment] = useState("");
   const { ship, albumId } = useParams();
   const commentBox = useRef(null);
@@ -54,7 +60,8 @@ export default function Lightbox({ cover, photo, disableComments, setLightboxPho
                   queryClient.invalidateQueries(["album", ship, albumId]);
                   setLightboxPhoto(null);
                 });
-              }}>
+              }}
+            >
               Set Cover
             </a>
           )}
@@ -84,51 +91,53 @@ export default function Lightbox({ cover, photo, disableComments, setLightboxPho
             alt=""
             className="min-w-0 min-h-0 max-h-[90vh] object-contain"
           />
-          {!disableComments && <div className="bg-white relative rounded-tr-md rounded-br-md p-4 flex flex-col min-h-0 justify-end lg:w-full max-h-96 lg:max-h-[90vh] basis-1/3 space-y-4">
-            <div
-              className="flex flex-col min-h-0 overflow-y-auto space-y-8"
-              ref={commentBox}
-            >
-              {comments?.map((comment) => {
-                const { who, when, what } = comment[1] || {
-                  who: "~hastuc-dibtux",
-                  when: "~2018.7.17..23.15.09..5be5",
-                  what: "unknown",
-                };
-                return (
-                  <div className="flex flex-col space-y-1" key={when}>
-                    <Contact
-                      ship={who}
-                      contact={contactsData?.[who] || {}}
-                      disableNicknames={disableNicknames}
-                      disableAvatars={disableAvatars}
-                    />
-                    <p className="text-xs text-gray-400">
-                      {daToDate(
-                        when || "~2018.7.17..23.15.09..5be5"
-                      ).toLocaleString()}
-                    </p>
-                    <p className="text-sm">{what}</p>
-                  </div>
-                );
-              })}
+          {!disableComments && (
+            <div className="bg-white relative rounded-tr-md rounded-br-md p-4 flex flex-col min-h-0 justify-end lg:w-full max-h-96 lg:max-h-[90vh] basis-1/3 space-y-4">
+              <div
+                className="flex flex-col min-h-0 overflow-y-auto space-y-8"
+                ref={commentBox}
+              >
+                {comments?.map((comment) => {
+                  const { who, when, what } = comment[1] || {
+                    who: "~hastuc-dibtux",
+                    when: "~2018.7.17..23.15.09..5be5",
+                    what: "unknown",
+                  };
+                  return (
+                    <div className="flex flex-col space-y-1" key={when}>
+                      <Contact
+                        ship={who}
+                        contact={contactsData?.[who] || {}}
+                        disableNicknames={disableNicknames}
+                        disableAvatars={disableAvatars}
+                      />
+                      <p className="text-xs text-gray-400">
+                        {daToDate(
+                          when || "~2018.7.17..23.15.09..5be5",
+                        ).toLocaleString()}
+                      </p>
+                      <p className="text-sm">{what}</p>
+                    </div>
+                  );
+                })}
+              </div>
+              <textarea
+                className="w-full sticky bottom-0 h-16 resize-none border border-indigo-gray p-2 rounded-md shrink-0"
+                placeholder="Add a comment..."
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addComment(albumId, ship, photo, comment).then(() => {
+                      setComment("");
+                      queryClient.invalidateQueries(["album", ship, albumId]);
+                    });
+                  }
+                }}
+              />
             </div>
-            <textarea
-              className="w-full sticky bottom-0 h-16 resize-none border border-indigo-gray p-2 rounded-md shrink-0"
-              placeholder="Add a comment..."
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  addComment(albumId, ship, photo, comment).then(() => {
-                    setComment("");
-                    queryClient.invalidateQueries(["album", ship, albumId]);
-                  });
-                }
-              }}
-            />
-          </div>}
+          )}
         </div>
       </Foco>
     </div>

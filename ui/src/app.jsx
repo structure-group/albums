@@ -18,7 +18,7 @@ export function App() {
     useCallback(async (s3) => {
       return getFiles(s3);
     }, []),
-    useFileStore
+    useFileStore,
   );
 
   useEffect(() => {
@@ -74,7 +74,7 @@ export function App() {
     ],
     {
       basename: "/apps/albums",
-    }
+    },
   );
 
   return <RouterProvider router={router} />;

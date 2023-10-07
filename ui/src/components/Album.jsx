@@ -146,36 +146,42 @@ function EditFrame({ album, ship, albumId, queryClient, children }) {
             {"<-"} Back to {album?.albums?.name || albumId}
           </p>
         </Link>
-        {ship === `~${window.ship}` && <div className="p-4 rounded-md border space-y-4">
-          <p className="font-semibold text-sm">Edit Album</p>
-          <div className="w-full space-y-2">
-            <h3 className="text-sm font-semibold">Album Title</h3>
-            <input
-              type="text"
-              className="bg-indigo-white rounded-md p-1 py-2 text-sm w-full"
-              placeholder="My Great Photos"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-          </div>
-          <div className="space-y-2" onClick={() => setComments(!comments)}>
-            <p className="font-semibold text-sm">Comments</p>
-            <div className="flex items-center">
-              <input className="toggle" type="checkbox" checked={comments} />
-              <label className="ml-2 text-sm font-semibold">{comments ? "Enabled" : "Disabled"}</label>
+        {ship === `~${window.ship}` && (
+          <div className="p-4 rounded-md border space-y-4">
+            <p className="font-semibold text-sm">Edit Album</p>
+            <div className="w-full space-y-2">
+              <h3 className="text-sm font-semibold">Album Title</h3>
+              <input
+                type="text"
+                className="bg-indigo-white rounded-md p-1 py-2 text-sm w-full"
+                placeholder="My Great Photos"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2" onClick={() => setComments(!comments)}>
+              <p className="font-semibold text-sm">Comments</p>
+              <div className="flex items-center">
+                <input className="toggle" type="checkbox" checked={comments} />
+                <label className="ml-2 text-sm font-semibold">
+                  {comments ? "Enabled" : "Disabled"}
+                </label>
+              </div>
+            </div>
+            <div className="w-full flex justify-end">
+              <button
+                className="bg-black text-white text-sm font-semibold rounded-md py-1 px-2 hover:bg-indigo-black"
+                onClick={() =>
+                  editAlbum(albumId, ship, title, comments).then(() => {
+                    queryClient.invalidateQueries(["album", ship, albumId]);
+                  })
+                }
+              >
+                Save
+              </button>
             </div>
           </div>
-          <div className="w-full flex justify-end">
-            <button
-              className="bg-black text-white text-sm font-semibold rounded-md py-1 px-2 hover:bg-indigo-black"
-              onClick={() => editAlbum(albumId, ship, title, comments).then(() => {
-                queryClient.invalidateQueries(["album", ship, albumId]);
-              })}
-            >
-              Save
-            </button>
-          </div>
-        </div>}
+        )}
         <div className="flex flex-col space-y-4 overflow-y-auto h-full w-full min-h-0 min-w-0 relative border p-4 rounded-md">
           <p className="text-sm font-semibold">Participants</p>
           {ship === `~${window.ship}` && (
@@ -211,8 +217,8 @@ function EditFrame({ album, ship, albumId, queryClient, children }) {
                           prev.map((m) =>
                             m[0] === member[0]
                               ? [m[0], e.target.value]
-                              : [m[0], m[1]]
-                          )
+                              : [m[0], m[1]],
+                          ),
                         );
                       }}
                     >
@@ -223,7 +229,7 @@ function EditFrame({ album, ship, albumId, queryClient, children }) {
                       className="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-md"
                       onClick={() =>
                         setSelectedMembers((prev) =>
-                          prev.filter((m) => m[0] !== member[0])
+                          prev.filter((m) => m[0] !== member[0]),
                         )
                       }
                     >
@@ -235,16 +241,10 @@ function EditFrame({ album, ship, albumId, queryClient, children }) {
               <button
                 className="w-full bg-black text-white text-sm font-semibold rounded-md py-1 hover:bg-indigo-black"
                 onClick={() => {
-                  inviteSelected(selectedMembers, albumId, ship).then(
-                    () => {
-                      queryClient.invalidateQueries([
-                        "album",
-                        ship,
-                        albumId,
-                      ]);
-                      setSelectedMembers([]);
-                    }
-                  );
+                  inviteSelected(selectedMembers, albumId, ship).then(() => {
+                    queryClient.invalidateQueries(["album", ship, albumId]);
+                    setSelectedMembers([]);
+                  });
                 }}
               >
                 Invite
@@ -268,18 +268,11 @@ function EditFrame({ album, ship, albumId, queryClient, children }) {
                   className="bg-indigo-white border border-indigo-gray rounded-md text-xs font-semibold px-2 py-1"
                   value={share[1]}
                   onChange={(e) => {
-                    editMember(
-                      share[0],
-                      albumId,
-                      ship,
-                      e.target.value
-                    ).then(() => {
-                      queryClient.invalidateQueries([
-                        "album",
-                        ship,
-                        albumId,
-                      ]);
-                    });
+                    editMember(share[0], albumId, ship, e.target.value).then(
+                      () => {
+                        queryClient.invalidateQueries(["album", ship, albumId]);
+                      },
+                    );
                   }}
                   disabled={ship !== `~${window.ship}`}
                 >
@@ -291,11 +284,7 @@ function EditFrame({ album, ship, albumId, queryClient, children }) {
                     className="bg-red-500 text-white px-2 text-xs py-1 font-semibold rounded-md cursor-pointer hover:bg-red-400"
                     onClick={() =>
                       unshare(share[0], albumId, ship).then(() => {
-                        queryClient.invalidateQueries([
-                          "album",
-                          ship,
-                          albumId,
-                        ]);
+                        queryClient.invalidateQueries(["album", ship, albumId]);
                       })
                     }
                   >
@@ -311,7 +300,7 @@ function EditFrame({ album, ship, albumId, queryClient, children }) {
         {children}
       </div>
     </div>
-  )
+  );
 }
 
 function Gallery({
@@ -330,7 +319,6 @@ function Gallery({
   const { s3 } = useStorageState();
   const { credentials } = s3 ?? { credentials: { accessKeyId: "" } };
 
-
   const nuke = async () => {
     await api.poke({
       app: "albums",
@@ -347,7 +335,7 @@ function Gallery({
           <p className="font-semibold">{album?.albums?.title || albumId}</p>
         </Link>
         <div className="flex space-x-8 font-semibold text-[#666666] items-center">
-          {(our || write) && (credentials?.accessKeyId) && (
+          {(our || write) && credentials?.accessKeyId && (
             <p
               className="cursor-pointer text-green-600"
               onClick={() => setAddPhoto(true)}
