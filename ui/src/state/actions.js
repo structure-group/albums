@@ -41,6 +41,19 @@ export const addPhotos = (selectedFiles, albumId, ship) => {
   return Promise.all(promises);
 };
 
+export const changeCover = async (name, ship, cover) => {
+  await api.poke({
+    app: "albums",
+    mark: "albums-action",
+    json: {
+      cover: {
+        "album-id": { name, owner: ship },
+        cover,
+      },
+    },
+  });
+}
+
 export const deletePhoto = async (albumId, ship, photo) => {
   await api.poke({
     app: "albums",
