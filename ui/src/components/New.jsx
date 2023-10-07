@@ -13,7 +13,7 @@ import cn from "classnames";
 
 export default function NewAlbum() {
   const [title, setTitle] = useState("");
-  const [comments, setComments] = useState(false);
+  const [comments, setComments] = useState(true);
   const [addPhoto, setAddPhoto] = useState(false);
   const [hoveredPhoto, setHoveredPhoto] = useState(null);
   const [cover, setCover] = useState(null);
