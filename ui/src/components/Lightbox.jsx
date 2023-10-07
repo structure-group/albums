@@ -5,9 +5,9 @@ import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { contactsQuery, settingsQuery } from "../state/query";
 import { daToDate } from "@urbit/api";
 import Contact from "./Contact";
-import { addComment, deletePhoto } from "../state/actions";
+import { addComment, changeCover, deletePhoto } from "../state/actions";
 
-export default function Lightbox({ photo, disableComments, setLightboxPhoto, write }) {
+export default function Lightbox({ cover, photo, disableComments, setLightboxPhoto, write }) {
   const [comment, setComment] = useState("");
   const { ship, albumId } = useParams();
   const commentBox = useRef(null);
@@ -45,11 +45,29 @@ export default function Lightbox({ photo, disableComments, setLightboxPhoto, wri
           >
             Source
           </a>
+          {ship === `~${window.ship}` && (
+            <a
+              className="bg-indigo-black text-xs font-semibold px-2 py-1 rounded-md text-white cursor-pointer"
+              onClick={(e) => {
+                e.stopPropagation();
+                changeCover(albumId, ship, photo[1]?.src).then(() => {
+                  queryClient.invalidateQueries(["album", ship, albumId]);
+                  setLightboxPhoto(null);
+                });
+              }}>
+              Set Cover
+            </a>
+          )}
           {write && (
             <a
               className="bg-red-500 text-xs font-semibold px-2 py-1 rounded-md text-white cursor-pointer"
               onClick={(e) => {
                 e.stopPropagation();
+                if (photo[1]?.src === cover) {
+                  changeCover(albumId, ship, "").then(() => {
+                    queryClient.invalidateQueries(["album", ship, albumId]);
+                  });
+                }
                 deletePhoto(albumId, ship, photo).then(() => {
                   setLightboxPhoto(null);
                   queryClient.invalidateQueries(["album", ship, albumId]);
