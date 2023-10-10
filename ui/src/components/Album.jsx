@@ -221,7 +221,7 @@ function EditFrame({ album, ship, albumId, queryClient, shareMode, children }) {
               setSelectedMembers={setSelectedMembers}
             />
           )}
-          <div className="bg-indigo-white mt-2 p-3 rounded-lg flex flex-col space-y-3">
+          <div className="bg-indigo-white mt-2 p-3 rounded-lg flex flex-col space-y-3 max-h-60 overflow-y-auto">
             {shared.map((share) => {
               return (
                 <div
@@ -251,7 +251,7 @@ function EditFrame({ album, ship, albumId, queryClient, shareMode, children }) {
                   </select> : <p className="font-semibold py-2 px-4 text-[#666666]">Owner</p>}
                   {ship === `~${window.ship}` && share[0] !== ship && (
                     <a
-                      className="bg-red-500 text-white px-4 text-xs py-2 font-semibold rounded-lg cursor-pointer hover:bg-red-400"
+                      className="bg-red-500 text-white px-4 text-sm py-2 font-semibold rounded-lg cursor-pointer hover:bg-red-400"
                       onClick={() =>
                         unshare(share[0], albumId, ship).then(() => {
                           queryClient.invalidateQueries(["album", ship, albumId]);
