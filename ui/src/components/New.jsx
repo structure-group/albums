@@ -14,8 +14,8 @@ import cn from "classnames";
 export default function NewAlbum() {
   const [title, setTitle] = useState("");
   const [comments, setComments] = useState(true);
+  const [clickMode, setClickMode] = useState("cover");
   const [addPhoto, setAddPhoto] = useState(false);
-  const [hoveredPhoto, setHoveredPhoto] = useState(null);
   const [cover, setCover] = useState(null);
   const [selectedPhotos, setSelectedPhotos] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
@@ -101,11 +101,11 @@ export default function NewAlbum() {
   return (
     <div className="flex w-full h-full">
       {addPhoto && <AddPhoto addPhotos={addPhotos} setAddPhoto={setAddPhoto} />}
-      <div className="p-[30px] h-full bg-white basis-full md:basis-1/2 flex flex-col space-y-8 border-r-2 border-indigo-gray overflow-y-auto pb-24">
+      <div className="p-[30px] h-full bg-white basis-full md:basis-1/2 flex flex-col border-r-2 border-indigo-gray overflow-y-auto pb-24">
         {!shareStep ? (
           <>
-            <h2 className="font-semibold text-lg">New Album</h2>
-            <div className="flex flex-col space-y-1">
+            <h2 className="font-semibold text-lg mb-2">New Album</h2>
+            <div className="flex flex-col space-y-1 mb-8">
               <h3 className="text-sm font-semibold">Album Title</h3>
               <input
                 type="text"
@@ -115,12 +115,36 @@ export default function NewAlbum() {
                 onChange={(e) => setTitle(e.target.value)}
               />
             </div>
-            <div className="flex flex-col items-start space-y-2 text-sm">
+            <div className="flex flex-col items-start space-y-2 text-sm mb-8">
               <h3 className="text-sm font-semibold">Images</h3>
-              <p className="text-sm">
-                Click a photo to set it as a cover for the album or delete
-                images before creating your album.
-              </p>
+              <div className="flex justify-between w-full">
+                <div className="flex space-x-2">
+                  <a
+                    className="font-semibold text-sm bg-indigo-black hover:bg-brightness-110 text-white py-1 px-2 text-center rounded-md cursor-pointer"
+                    onClick={() => setAddPhoto(true)}
+                  >
+                    Select Photos
+                  </a>
+                  <a
+                    className={cn("font-semibold text-sm hover:bg-brightness-110 py-1 px-2 text-center rounded-md cursor-pointer", {
+                      "bg-indigo-black text-white": clickMode === "cover",
+                      "bg-indigo-white text-black": clickMode !== "cover",
+                    })}
+                    onClick={() => setClickMode("cover")}
+                  >
+                    Select Cover
+                  </a>
+                </div>
+                <a
+                  className={cn("font-semibold text-sm hover:bg-brightness-110 py-1 px-2 text-center rounded-md cursor-pointer", {
+                    "bg-indigo-red text-white": clickMode === "delete",
+                    "bg-indigo-white text-black": clickMode !== "delete",
+                  })}
+                  onClick={() => setClickMode("delete")}
+                >
+                  Delete
+                </a>
+              </div>
               <div className="bg-indigo-white rounded-md border-2 border-dashed border-indigo-gray w-full p-2 flex flex-wrap gap-4 overflow-y-auto max-h-48">
                 {selectedPhotos.length === 0 && (
                   <p className="text-sm">No photos selected</p>
@@ -128,28 +152,23 @@ export default function NewAlbum() {
                 {selectedPhotos.map((photo) => {
                   return (
                     <div
-                      className={cn("h-20 w-20 relative border", {
-                        "border-indigo-black": cover === photo,
-                        "border-transparent": cover !== photo,
+                      className={cn("h-20 w-20 relative rounded-md overflow-hidden", {
+                        "badge-it": cover === photo,
+                        "": cover !== photo,
                       })}
-                      onMouseEnter={() => setHoveredPhoto(photo)}
-                      onMouseLeave={() => setHoveredPhoto(null)}
-                      onClick={() => setCover(photo)}
+                      onClick={() => {
+                        if (clickMode === "delete") {
+                          setSelectedPhotos((prev) =>
+                            prev.filter((p) => p !== photo),
+                          )
+                          if (cover === photo) {
+                            setCover(null)
+                          }
+                        } else if (clickMode === "cover") {
+                          setCover(photo)
+                        }
+                      }}
                     >
-                      {hoveredPhoto === photo && (
-                        <div className="absolute overflow-visible z-20 -top-2 -right-2 flex items-center justify-center">
-                          <button
-                            className="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full"
-                            onClick={() =>
-                              setSelectedPhotos((prev) =>
-                                prev.filter((p) => p !== photo),
-                              )
-                            }
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      )}
                       <img
                         src={photo}
                         alt="selected"
@@ -159,12 +178,6 @@ export default function NewAlbum() {
                   );
                 })}
               </div>
-              <a
-                className="font-semibold text-sm bg-black hover:bg-indigo-black text-white w-full py-1 px-2 text-center rounded-md cursor-pointer"
-                onClick={() => setAddPhoto(true)}
-              >
-                Select or upload photos
-              </a>
             </div>
             <div className="space-y-2" onClick={() => setComments(!comments)}>
               <p className="font-semibold text-sm">Comments</p>
@@ -175,22 +188,28 @@ export default function NewAlbum() {
                 </label>
               </div>
             </div>
-            <div className="flex justify-end w-full">
+            <div className="flex justify-end w-full space-x-2">
               <button
-                className="font-semibold bg-black hover:bg-indigo-black text-white w-fit py-1 px-2 text-center rounded-md text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                onClick={createAlbum}
+                className="font-semibold bg-indigo-white hover:bg-indigo-gray w-fit py-2 px-4 text-center text-sm rounded-md"
+                onClick={() => navigate("/")}
+              >
+                Cancel
+              </button>
+              <button
+                className="font-semibold bg-black hover:bg-indigo-black text-white w-fit py-2 px-4 text-sm text-center rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={() => createAlbum()}
                 disabled={title.length === 0}
               >
-                Create
+                Create Album
               </button>
             </div>
           </>
         ) : (
           <>
             <h2 className="font-semibold text-lg">Share Album</h2>
-            <div className="w-full relative">
+            <div className="w-full relative my-2">
               <ContactSearch
-                contacts={contacts}
+                contacts={contacts.data}
                 disabledNicknames={disabledNicknames}
                 disabledAvatars={disabledAvatars}
                 group={[]}
@@ -198,53 +217,55 @@ export default function NewAlbum() {
                 setSelectedMembers={setSelectedMembers}
               />
             </div>
-            {selectedMembers.length > 0 && (
-              <div className="flex flex-col space-y-4 p-4 border rounded-md">
-                <h2 className="font-semibold text-sm">Members to Invite</h2>
-                {selectedMembers.map((member) => {
-                  return (
-                    <div
-                      className="flex items-center justify-between space-x-2 w-full"
-                      key={member[0]}
+            <div
+              className="bg-indigo-white mt-2 p-3 rounded-lg flex flex-col space-y-3 max-h-60 overflow-y-auto mb-4"
+            >
+              {selectedMembers.length > 0 && selectedMembers.map((member) => {
+                return (
+                  <div
+                    className="flex items-center justify-between space-x-2 w-full bg-white p-2 rounded-[4px]"
+                    key={member[0]}
+                  >
+                    <Contact
+                      ship={member[0]}
+                      contact={contacts.data?.[member[0]] || {}}
+                      disabledNicknames={disabledNicknames}
+                      disabledAvatars={disabledAvatars}
+                    />
+                    <select
+                      value={member[1]}
+                      onChange={(e) => {
+                        setSelectedMembers((prev) =>
+                          prev.map((m) =>
+                            m[0] === member[0]
+                              ? [m[0], e.target.value]
+                              : [m[0], m[1]],
+                          ),
+                        );
+                      }}
                     >
-                      <Contact
-                        ship={member[0]}
-                        contact={contacts.data?.[member[0]] || {}}
-                        disabledNicknames={disabledNicknames}
-                        disabledAvatars={disabledAvatars}
-                      />
-                      <select
-                        className="bg-indigo-white border border-indigo-gray rounded-md text-xs font-semibold px-2 py-1"
-                        value={member[1]}
-                        onChange={(e) => {
-                          setSelectedMembers((prev) =>
-                            prev.map((m) =>
-                              m[0] === member[0]
-                                ? [m[0], e.target.value]
-                                : [m[0], m[1]],
-                            ),
-                          );
-                        }}
-                      >
-                        <option value={false}>Viewer</option>
-                        <option value={true}>Writer</option>
-                      </select>
-                      <button
-                        className="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-md"
-                        onClick={() =>
-                          setSelectedMembers((prev) =>
-                            prev.filter((m) => m[0] !== member[0]),
-                          )
-                        }
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  );
-                })}
-                <button
-                  className="w-full bg-black text-white text-sm font-semibold rounded-md py-1 hover:bg-indigo-black"
-                  onClick={() => {
+                      <option value={false}>Viewer</option>
+                      <option value={true}>Writer</option>
+                    </select>
+                    <button
+                      className="bg-red-500 text-white px-4 text-sm py-2 font-semibold rounded-lg cursor-pointer hover:bg-red-400"
+                      onClick={() =>
+                        setSelectedMembers((prev) =>
+                          prev.filter((m) => m[0] !== member[0]),
+                        )
+                      }
+                    >
+                      Remove
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="flex w-full justify-end">
+              <button
+                className="bg-indigo-black text-white text-sm font-semibold rounded-md py-2 px-4 hover:brightness-110"
+                onClick={() => {
+                  if (selectedMembers.length > 0) {
                     inviteSelected(
                       selectedMembers,
                       stripTitle,
@@ -256,21 +277,13 @@ export default function NewAlbum() {
                         stripTitle,
                       ]);
                     });
-                    navigate(`/album/~${window.ship}/${stripTitle}`);
-                  }}
-                >
-                  Invite
-                </button>
-              </div>
-            )}
-            {selectedMembers.length === 0 && (
-              <button
-                className="font-semibold text-sm bg-black hover:bg-indigo-black text-white w-full py-1 px-2 text-center rounded-md"
-                onClick={() => navigate(`/album/~${window.ship}/${stripTitle}`)}
+                  }
+                  navigate(`/album/~${window.ship}/${stripTitle}`);
+                }}
               >
                 Finish
               </button>
-            )}
+            </div>
           </>
         )}
       </div>
