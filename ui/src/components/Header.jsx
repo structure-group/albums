@@ -1,3 +1,4 @@
+import AlbumsHeaderIcon from "./icons/AlbumsHeader";
 import { Link, useLocation } from "react-router-dom";
 import cn from "classnames";
 import useStorageState from "../state/storage";
@@ -8,7 +9,12 @@ export default function Header() {
   const { credentials } = s3 ?? { credentials: { accessKeyId: "" } };
   return (
     <div className="bg-white border-b border-2 border-indigo-gray flex justify-between px-6 py-4 items-center font-semibold">
-      <p className="hidden lg:block">Albums</p>
+      <Link to="/">
+        <div className="hidden lg:flex items-center space-x-2 cursor-pointer">
+          <AlbumsHeaderIcon />
+          <p>Albums</p>
+        </div>
+      </Link>
       <div className="flex space-x-12 items-center">
         <Link
           to="/"
