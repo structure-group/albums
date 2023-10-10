@@ -98,7 +98,7 @@ export default function Album() {
           </EditFrame>
         )}
         {!subview && (
-          <div className="h-full bg-indigo-white flex flex-col min-h-0 p-8">
+          <div className="h-full bg-indigo-white flex flex-col min-h-0 p-[30px]">
             <Gallery
               ship={ship}
               albumId={albumId}
@@ -140,7 +140,7 @@ function EditFrame({ album, ship, albumId, queryClient, children }) {
 
   return (
     <div className="flex h-full">
-      <div className="p-8 h-full min-h-0 bg-white basis-full lg:basis-1/2 flex flex-col border-r-2 space-y-8 border-indigo-gray">
+      <div className="p-[30px] h-full min-h-0 bg-white basis-full lg:basis-1/2 flex flex-col border-r-2 space-y-[30px] border-indigo-gray">
         <Link to={`/album/${ship}/${albumId}`}>
           <p className="font-semibold w-full truncate block lg:hidden mb-8">
             {"<-"} Back to {album?.albums?.name || albumId}
@@ -296,7 +296,7 @@ function EditFrame({ album, ship, albumId, queryClient, children }) {
           })}
         </div>
       </div>
-      <div className="overflow-x-auto min-h-0 bg-indigo-white h-full lg:basis-1/2 p-8 hidden lg:flex flex-col">
+      <div className="overflow-x-auto min-h-0 bg-indigo-white h-full lg:basis-1/2 p-[30px] hidden lg:flex flex-col">
         <div style={{ width: "calc(100% + 400px)" }}>
           {children}
         </div>
@@ -331,7 +331,7 @@ function Gallery({
     navigate("/");
   };
   return (
-    <div className="h-full w-full p-8 bg-white rounded-xl flex flex-col space-y-8 overflow-y-auto min-h-0">
+    <div className="h-full w-full p-[30px] bg-white rounded-xl flex flex-col space-y-[30px] overflow-y-auto min-h-0">
       <div className="flex justify-between rounded-md bg-white">
         <Link to={`/album/${ship}/${albumId}`}>
           <p className="font-semibold">{album?.albums?.title || albumId}</p>
@@ -362,7 +362,7 @@ function Gallery({
           </button>
         </div>
       </div>
-      <div className="flex flex-wrap justify-center md:justify-normal gap-8 w-full max-h-full min-h-0">
+      <div className="flex flex-wrap justify-center md:justify-normal gap-[30px] w-full max-h-full min-h-0">
         {images?.map((image, i) => {
           return (
             <div

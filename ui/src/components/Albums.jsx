@@ -16,7 +16,7 @@ export default function Albums({ shared = false }) {
         <title>Albums</title>
       </Helmet>
       {credentials?.accessKeyId || shared ? (
-        <div className="p-8 flex justify-center md:justify-normal flex-wrap gap-8 overflow-y-auto">
+        <div className="p-[30px] flex justify-center md:justify-normal flex-wrap gap-[30px] overflow-y-auto">
           {albums?.data
             ?.filter(shared ? sharedFilter : ourFilter)
             .map((album) => {
@@ -25,7 +25,7 @@ export default function Albums({ shared = false }) {
                 <Link to={`/album/${owner}/${name}`} key={`${owner}/${name}`}>
                   <div className="flex flex-col items-center w-64 space-y-2">
                     <div
-                      className="w-64 h-64 bg-gray-200 rounded-xl flex flex-col items-center justify-center"
+                      className="w-[270px] h-[270px] bg-gray-200 rounded-xl flex flex-col items-center justify-center"
                       style={{
                         backgroundImage: cover ? `url(${cover})` : "none",
                         backgroundSize: "cover",

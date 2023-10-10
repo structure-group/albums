@@ -101,7 +101,7 @@ export default function NewAlbum() {
   return (
     <div className="flex w-full h-full">
       {addPhoto && <AddPhoto addPhotos={addPhotos} setAddPhoto={setAddPhoto} />}
-      <div className="p-8 h-full bg-white basis-full md:basis-1/2 flex flex-col space-y-8 border-r-2 border-indigo-gray overflow-y-auto pb-24">
+      <div className="p-[30px] h-full bg-white basis-full md:basis-1/2 flex flex-col space-y-8 border-r-2 border-indigo-gray overflow-y-auto pb-24">
         {!shareStep ? (
           <>
             <h2 className="font-semibold text-lg">New Album</h2>
