@@ -15,10 +15,10 @@ export default function Header() {
           <p>Albums</p>
         </div>
       </Link>
-      <div className="flex space-x-12 items-center">
+      <div className="flex space-x-[30px] items-center">
         <Link
           to="/"
-          className={cn({
+          className={cn("p-2", {
             "text-[#666666]": location.pathname !== "/",
           })}
         >
@@ -26,7 +26,7 @@ export default function Header() {
         </Link>
         <Link
           to="/shared"
-          className={cn({
+          className={cn("p-2", {
             "text-[#666666]": location.pathname !== "/shared",
           })}
         >
