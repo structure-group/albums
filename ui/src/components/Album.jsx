@@ -77,12 +77,13 @@ export default function Album() {
             write={our || write}
           />
         )}
-        {subview === "edit" && (
+        {(subview === "edit" || subview === "share") && (
           <EditFrame
             album={album}
             ship={ship}
             albumId={albumId}
             queryClient={queryClient}
+            shareMode={subview === "share"}
           >
             <Gallery
               ship={ship}
@@ -117,7 +118,8 @@ export default function Album() {
   );
 }
 
-function EditFrame({ album, ship, albumId, queryClient, children }) {
+function EditFrame({ album, ship, albumId, queryClient, shareMode, children }) {
+  const navigate = useNavigate();
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [title, setTitle] = useState("");
   const [comments, setComments] = useState(false);
@@ -138,17 +140,27 @@ function EditFrame({ album, ship, albumId, queryClient, children }) {
     setComments(album?.albums?.["comment-perm"] || false);
   }, [albumId, album]);
 
+  const nuke = async () => {
+    await api.poke({
+      app: "albums",
+      mark: "albums-action",
+      json: { nuke: { name: albumId, owner: ship } },
+    });
+    queryClient.invalidateQueries(["albums"]);
+    navigate("/");
+  };
+
   return (
     <div className="flex h-full">
-      <div className="p-[30px] h-full min-h-0 bg-white basis-full lg:basis-1/2 flex flex-col border-r-2 space-y-[30px] border-indigo-gray">
+      <div className="p-[30px] h-full min-h-0 bg-white basis-full lg:basis-1/2 flex flex-col border-r-2 border-indigo-gray">
         <Link to={`/album/${ship}/${albumId}`}>
           <p className="font-semibold w-full truncate block lg:hidden mb-8">
             {"<-"} Back to {album?.albums?.name || albumId}
           </p>
         </Link>
-        {ship === `~${window.ship}` && (
-          <div className="p-4 rounded-md border space-y-4">
-            <p className="font-semibold text-sm">Edit Album</p>
+        {ship === `~${window.ship}` && !shareMode && (
+          <div className="space-y-[30px]">
+            <p className="font-semibold text-lg">Edit Album</p>
             <div className="w-full space-y-2">
               <h3 className="text-sm font-semibold">Album Title</h3>
               <input
@@ -168,9 +180,25 @@ function EditFrame({ album, ship, albumId, queryClient, children }) {
                 </label>
               </div>
             </div>
-            <div className="w-full flex justify-end">
+            <div className="space-y-2 flex flex-col">
+              <p className="font-semibold text-sm">Delete</p>
+              <a
+                className="text-indigo-red font-semibold border-b border-indigo-red w-fit text-xs cursor-pointer"
+                onClick={() => nuke()}
+              >
+                Delete album
+              </a>
+            </div>
+            <div className="w-full flex justify-end space-x-2">
+              <Link to={`/album/${ship}/${albumId}`}>
+                <button
+                  className="bg-indigo-white hover:bg-indigo-gray text-black text-sm px-4 py-2 rounded-md font-semibold"
+                >
+                  Cancel
+                </button>
+              </Link>
               <button
-                className="bg-black text-white text-sm font-semibold rounded-md py-1 px-2 hover:bg-indigo-black"
+                className="bg-indigo-black text-white text-sm font-semibold rounded-md py-2 px-4 hover:brightness-110"
                 onClick={() =>
                   editAlbum(albumId, ship, title, comments).then(() => {
                     queryClient.invalidateQueries(["album", ship, albumId]);
@@ -182,7 +210,7 @@ function EditFrame({ album, ship, albumId, queryClient, children }) {
             </div>
           </div>
         )}
-        <div className="flex flex-col space-y-4 overflow-y-auto h-full w-full min-h-0 min-w-0 relative border p-4 rounded-md">
+        {shareMode && <div className="flex flex-col space-y-4 overflow-y-auto h-full w-full min-h-0 min-w-0 relative border p-4 rounded-md">
           <p className="text-sm font-semibold">Participants</p>
           {ship === `~${window.ship}` && (
             <ContactSearch
@@ -294,7 +322,7 @@ function EditFrame({ album, ship, albumId, queryClient, children }) {
               </div>
             );
           })}
-        </div>
+        </div>}
       </div>
       <div className="overflow-x-auto min-h-0 bg-indigo-white h-full lg:basis-1/2 p-[30px] hidden lg:flex flex-col">
         <div style={{ width: "calc(100% + 400px)" }}>
@@ -316,50 +344,38 @@ function Gallery({
   our,
   write,
 }) {
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const { s3 } = useStorageState();
   const { credentials } = s3 ?? { credentials: { accessKeyId: "" } };
 
-  const nuke = async () => {
-    await api.poke({
-      app: "albums",
-      mark: "albums-action",
-      json: { nuke: { name: albumId, owner: ship } },
-    });
-    queryClient.invalidateQueries(["albums"]);
-    navigate("/");
-  };
   return (
     <div className="h-full w-full p-[30px] bg-white rounded-xl flex flex-col space-y-[30px] overflow-y-auto min-h-0">
       <div className="flex justify-between rounded-md bg-white">
         <Link to={`/album/${ship}/${albumId}`}>
           <p className="font-semibold">{album?.albums?.title || albumId}</p>
         </Link>
-        <div className="flex space-x-8 font-semibold text-[#666666] items-center">
+        <div className="flex space-x-[30px] font-semibold text-[#666666] items-center">
           {(our || write) && credentials?.accessKeyId && (
-            <p
-              className="cursor-pointer text-green-600"
+            <button
+              className="cursor-pointer bg-indigo-white text-indigo-black py-2 px-4 text-sm rounded-lg hover:bg-indigo-gray"
               onClick={() => setAddPhoto(true)}
             >
               Add Photos
-            </p>
+            </button>
           )}
           <Link to={`/album/${ship}/${albumId}/edit`}>
-            <p
-              className={cn({
-                "text-indigo-black": subview === "edit",
-              })}
+            <button
+              className={cn("bg-indigo-white text-indigo-black py-2 px-4 text-sm rounded-lg hover:bg-indigo-gray")}
             >
               Edit
-            </p>
+            </button>
           </Link>
-          <button
-            className="text-red-500 font-semibold rounded-md"
-            onClick={() => nuke()}
-          >
-            {our ? "Delete" : "Remove"} Album
-          </button>
+          <Link to={`/album/${ship}/${albumId}/share`}>
+            <button
+              className={cn("bg-indigo-black text-white py-2 px-4 text-sm rounded-lg hover:brightness-110")}
+            >
+              Share
+            </button>
+          </Link>
         </div>
       </div>
       <div className="flex flex-wrap justify-center md:justify-normal gap-[30px] w-full max-h-full min-h-0">
