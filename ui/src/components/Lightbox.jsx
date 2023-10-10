@@ -43,7 +43,7 @@ export default function Lightbox({
   return (
     <div className="fixed top-0 left-0 bg-indigo-black w-full h-full flex flex-col items-center justify-center space-y-[30px] p-[14px] z-40">
       <div className="h-full w-full flex flex-col lg:flex-row justify-center">
-        <div className="min-w-0 min-h-0 flex justify-between basis-3/4 lg:pr-[14px]">
+        <div className="min-w-0 min-h-0 flex justify-between basis-1/2 lg:basis-3/4 lg:pr-[14px]">
           <div
             className={cn("bg-[rgba(0,0,0,0.3)] hover:bg-[rgba(0,0,0,0.1)] flex flex-col justify-center h-full rounded-[10px] px-8",
               { 'hidden': first })}
@@ -70,7 +70,7 @@ export default function Lightbox({
           </div>
         </div>
         <div
-          className="bg-white relative rounded-[10px] p-4 flex flex-col min-h-0 justify-end lg:w-full max-h-96 lg:max-h-full basis-1/4 space-y-4"
+          className="bg-white relative rounded-[10px] p-4 flex flex-col min-h-0 justify-end lg:w-full max-h-96 lg:max-h-full basis-1/2 lg:basis-1/4 space-y-4"
         >
           <div className="grow">
             <div className="border-b pb-2 space-y-2">
