@@ -297,7 +297,9 @@ function EditFrame({ album, ship, albumId, queryClient, children }) {
         </div>
       </div>
       <div className="overflow-x-auto min-h-0 bg-indigo-white h-full lg:basis-1/2 p-8 hidden lg:flex flex-col">
-        {children}
+        <div style={{ width: "calc(100% + 400px)" }}>
+          {children}
+        </div>
       </div>
     </div>
   );

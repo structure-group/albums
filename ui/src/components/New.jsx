@@ -274,8 +274,10 @@ export default function NewAlbum() {
           </>
         )}
       </div>
-      <div className="overflow-x-auto basis-1/2 hidden md:block">
-        <Albums />
+      <div className="basis-1/2 hidden md:block overflow-x-auto">
+        <div style={{ width: "calc(100% + 340px)" }}>
+          <Albums />
+        </div>
       </div>
     </div>
   );
