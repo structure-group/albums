@@ -72,6 +72,9 @@ export default function Album() {
           <Lightbox
             cover={album?.albums?.cover || null}
             disableComments={!album?.albums?.["comment-perm"] || false}
+            handlers={handlers}
+            first={lightboxPhoto === 0}
+            last={lightboxPhoto === images.length - 1}
             photo={images[lightboxPhoto]}
             setLightboxPhoto={setLightboxPhoto}
             write={our || write}
