@@ -19,6 +19,29 @@ div#app {
   padding: 0;
 }
 
+select {
+  @apply appearance-none bg-indigo-white border-none text-gray-500 text-sm py-2 pl-4 pr-9 font-semibold rounded-lg;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23666666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E%0A");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+}
+
+.badge-it {
+  @apply relative;
+}
+
+.badge-it::after {
+  position: absolute;
+  cursor: pointer;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  content: "";
+  background-image: url("data:image/svg+xml,%3Csvg width='15' height='15' viewBox='0 0 15 15' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='7.34888' cy='7.64258' r='6.8064' fill='%23008EFF' stroke='white'/%3E%3Cpath d='M10.0954 4.85986L9.62792 5.32736C8.57776 6.37967 7.4662 7.56817 6.41724 8.6377L5.01474 7.4827L4.50599 7.06333L3.66724 8.08426L4.17599 8.50364L6.04599 10.0436L6.51005 10.4252L6.93287 9.99895C8.11966 8.80963 9.40314 7.42121 10.5629 6.25895L11.0304 5.79145L10.0954 4.85986Z' fill='white'/%3E%3C/svg%3E%0A");
+  background-repeat: no-repeat;
+  background-position: bottom 4px left 4px;
+}
+
 .toggle {
   @apply appearance-none relative w-[24px] h-[16px] rounded-full bg-[#cccccc] outline-none;
 }
