@@ -2,6 +2,7 @@ import { useState } from "react";
 import ob from "urbit-ob";
 import Contact from "./Contact";
 import { deSig } from "@urbit/api";
+import SearchIcon from "./icons/Search";
 export default function ContactSearch({
   contacts,
   group,
@@ -17,17 +18,18 @@ export default function ContactSearch({
   const search =
     searchQuery !== ""
       ? Object.entries(contacts || {}).filter(
-          ([ship, contact]) =>
-            !groupMembers.some((e) => deSig(e) === deSig(ship)) &&
-            (ship.includes(searchQuery) ||
-              contact?.nickname?.includes(searchQuery)),
-        )
+        ([ship, contact]) =>
+          !groupMembers.some((e) => deSig(e) === deSig(ship)) &&
+          (ship.includes(searchQuery) ||
+            contact?.nickname?.includes(searchQuery)),
+      )
       : [];
   return (
-    <div className="w-full">
+    <div className="w-full relative">
+      <SearchIcon className="absolute top-[10px] left-2 z-20" />
       <input
         type="text"
-        className="p-2 w-full text-sm bg-indigo-white rounded-md relative focus:outline-indigo-gray"
+        className="p-2 pl-8 w-full text-sm bg-indigo-white rounded-lg relative focus:outline-indigo-gray"
         placeholder="Search for people to invite to album..."
         onFocus={() => setShowSearch(true)}
         onBlur={() => setShowSearch(false)}
@@ -95,8 +97,8 @@ export default function ContactSearch({
             searchQuery !== "" &&
             !ob.isValidPatp(`~${deSig(searchQuery)}`)) ||
             isInGroup) && (
-            <p className="text-sm text-gray-400 text-center">No results</p>
-          )}
+              <p className="text-sm text-gray-400 text-center">No results</p>
+            )}
           {searchQuery === "" && (
             <p className="text-sm text-gray-400 text-center">...</p>
           )}
