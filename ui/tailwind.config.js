@@ -9,7 +9,7 @@ module.exports = {
         "indigo-gray": "#dfe1e9",
         "indigo-white": "#f5f5f5",
         "indigo-black": "#333333",
-        "indigo-red": "#CD1823"
+        "indigo-red": "#CD1823",
       },
     },
   },

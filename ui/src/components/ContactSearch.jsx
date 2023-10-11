@@ -18,11 +18,11 @@ export default function ContactSearch({
   const search =
     searchQuery !== ""
       ? Object.entries(contacts || {}).filter(
-        ([ship, contact]) =>
-          !groupMembers.some((e) => deSig(e) === deSig(ship)) &&
-          (ship.includes(searchQuery) ||
-            contact?.nickname?.includes(searchQuery)),
-      )
+          ([ship, contact]) =>
+            !groupMembers.some((e) => deSig(e) === deSig(ship)) &&
+            (ship.includes(searchQuery) ||
+              contact?.nickname?.includes(searchQuery)),
+        )
       : [];
   return (
     <div className="w-full relative">
@@ -97,8 +97,8 @@ export default function ContactSearch({
             searchQuery !== "" &&
             !ob.isValidPatp(`~${deSig(searchQuery)}`)) ||
             isInGroup) && (
-              <p className="text-sm text-gray-400 text-center">No results</p>
-            )}
+            <p className="text-sm text-gray-400 text-center">No results</p>
+          )}
           {searchQuery === "" && (
             <p className="text-sm text-gray-400 text-center">...</p>
           )}

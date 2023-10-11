@@ -193,9 +193,7 @@ function EditFrame({ album, ship, albumId, queryClient, shareMode, children }) {
             </div>
             <div className="w-full flex justify-end space-x-2">
               <Link to={`/album/${ship}/${albumId}`}>
-                <button
-                  className="bg-indigo-white hover:bg-indigo-gray text-black text-sm px-4 py-2 rounded-md font-semibold"
-                >
+                <button className="bg-indigo-white hover:bg-indigo-gray text-black text-sm px-4 py-2 rounded-md font-semibold">
                   Cancel
                 </button>
               </Link>
@@ -212,122 +210,142 @@ function EditFrame({ album, ship, albumId, queryClient, shareMode, children }) {
             </div>
           </div>
         )}
-        {shareMode && <div className="flex flex-col overflow-y-auto h-full w-full min-h-0 min-w-0 relative rounded-md">
-          <p className="text-lg font-semibold mb-[30px]">Share</p>
-          {ship === `~${window.ship}` && (
-            <ContactSearch
-              contacts={contactsData}
-              disableNicknames={disableNicknames}
-              disableAvatars={disableAvatars}
-              group={shared}
-              selectedMembers={selectedMembers}
-              setSelectedMembers={setSelectedMembers}
-            />
-          )}
-          <div className="bg-indigo-white mt-2 p-3 rounded-lg flex flex-col space-y-3 max-h-60 overflow-y-auto">
-            {shared.map((share) => {
-              return (
-                <div
-                  className="flex w-full items-center justify-between space-x-2 bg-white p-2 rounded-[4px]"
-                  key={share[0]}
-                >
-                  <Contact
-                    ship={share[0]}
-                    contact={contactsData?.[share[0]] || {}}
-                    disableNicknames={disableNicknames}
-                    disableAvatars={disableAvatars}
+        {shareMode && (
+          <div className="flex flex-col overflow-y-auto h-full w-full min-h-0 min-w-0 relative rounded-md">
+            <p className="text-lg font-semibold mb-[30px]">Share</p>
+            {ship === `~${window.ship}` && (
+              <ContactSearch
+                contacts={contactsData}
+                disableNicknames={disableNicknames}
+                disableAvatars={disableAvatars}
+                group={shared}
+                selectedMembers={selectedMembers}
+                setSelectedMembers={setSelectedMembers}
+              />
+            )}
+            <div className="bg-indigo-white mt-2 p-3 rounded-lg flex flex-col space-y-3 max-h-60 overflow-y-auto">
+              {shared.map((share) => {
+                return (
+                  <div
+                    className="flex w-full items-center justify-between space-x-2 bg-white p-2 rounded-[4px]"
                     key={share[0]}
-                  />
-                  {ship !== share[0] ? <select
-                    value={share[1]}
-                    onChange={(e) => {
-                      editMember(share[0], albumId, ship, e.target.value).then(
-                        () => {
-                          queryClient.invalidateQueries(["album", ship, albumId]);
-                        },
-                      );
-                    }}
-                    disabled={ship !== `~${window.ship}`}
                   >
-                    <option value={false}>Viewer</option>
-                    <option value={true}>Writer</option>
-                  </select> : <p className="font-semibold py-2 px-4 text-[#666666]">Owner</p>}
-                  {ship === `~${window.ship}` && share[0] !== ship && (
-                    <a
-                      className="bg-red-500 text-white px-4 text-sm py-2 font-semibold rounded-lg cursor-pointer hover:bg-red-400"
-                      onClick={() =>
-                        unshare(share[0], albumId, ship).then(() => {
-                          queryClient.invalidateQueries(["album", ship, albumId]);
-                        })
-                      }
+                    <Contact
+                      ship={share[0]}
+                      contact={contactsData?.[share[0]] || {}}
+                      disableNicknames={disableNicknames}
+                      disableAvatars={disableAvatars}
+                      key={share[0]}
+                    />
+                    {ship !== share[0] ? (
+                      <select
+                        value={share[1]}
+                        onChange={(e) => {
+                          editMember(
+                            share[0],
+                            albumId,
+                            ship,
+                            e.target.value,
+                          ).then(() => {
+                            queryClient.invalidateQueries([
+                              "album",
+                              ship,
+                              albumId,
+                            ]);
+                          });
+                        }}
+                        disabled={ship !== `~${window.ship}`}
+                      >
+                        <option value={false}>Viewer</option>
+                        <option value={true}>Writer</option>
+                      </select>
+                    ) : (
+                      <p className="font-semibold py-2 px-4 text-[#666666]">
+                        Owner
+                      </p>
+                    )}
+                    {ship === `~${window.ship}` && share[0] !== ship && (
+                      <a
+                        className="bg-red-500 text-white px-4 text-sm py-2 font-semibold rounded-lg cursor-pointer hover:bg-red-400"
+                        onClick={() =>
+                          unshare(share[0], albumId, ship).then(() => {
+                            queryClient.invalidateQueries([
+                              "album",
+                              ship,
+                              albumId,
+                            ]);
+                          })
+                        }
+                      >
+                        Remove
+                      </a>
+                    )}
+                  </div>
+                );
+              })}
+              {selectedMembers.length > 0 &&
+                selectedMembers.map((member) => {
+                  return (
+                    <div
+                      className="flex items-center justify-between space-x-2 w-full bg-white p-2 rounded-[4px]"
+                      key={member[0]}
                     >
-                      Remove
-                    </a>
-                  )}
-                </div>
-              );
-            })}
-            {selectedMembers.length > 0 && selectedMembers.map((member) => {
-              return (
-                <div
-                  className="flex items-center justify-between space-x-2 w-full bg-white p-2 rounded-[4px]"
-                  key={member[0]}
-                >
-                  <Contact
-                    ship={member[0]}
-                    contact={contactsData?.[member[0]] || {}}
-                    disableNicknames={disableNicknames}
-                    disableAvatars={disableAvatars}
-                  />
-                  <select
-                    value={member[1]}
-                    onChange={(e) => {
-                      setSelectedMembers((prev) =>
-                        prev.map((m) =>
-                          m[0] === member[0]
-                            ? [m[0], e.target.value]
-                            : [m[0], m[1]],
-                        ),
-                      );
-                    }}
-                  >
-                    <option value={false}>Viewer</option>
-                    <option value={true}>Writer</option>
-                  </select>
-                  <button
-                    className="bg-red-500 text-white px-4 text-sm py-2 font-semibold rounded-lg cursor-pointer hover:bg-red-400"
-                    onClick={() =>
-                      setSelectedMembers((prev) =>
-                        prev.filter((m) => m[0] !== member[0]),
-                      )
-                    }
-                  >
-                    Remove
-                  </button>
-                </div>
-              );
-            })}
+                      <Contact
+                        ship={member[0]}
+                        contact={contactsData?.[member[0]] || {}}
+                        disableNicknames={disableNicknames}
+                        disableAvatars={disableAvatars}
+                      />
+                      <select
+                        value={member[1]}
+                        onChange={(e) => {
+                          setSelectedMembers((prev) =>
+                            prev.map((m) =>
+                              m[0] === member[0]
+                                ? [m[0], e.target.value]
+                                : [m[0], m[1]],
+                            ),
+                          );
+                        }}
+                      >
+                        <option value={false}>Viewer</option>
+                        <option value={true}>Writer</option>
+                      </select>
+                      <button
+                        className="bg-red-500 text-white px-4 text-sm py-2 font-semibold rounded-lg cursor-pointer hover:bg-red-400"
+                        onClick={() =>
+                          setSelectedMembers((prev) =>
+                            prev.filter((m) => m[0] !== member[0]),
+                          )
+                        }
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  );
+                })}
+            </div>
+            <div className="w-full flex justify-end mt-2">
+              <button
+                className="bg-indigo-black text-white text-sm font-semibold rounded-md py-2 px-4 hover:brightness-110"
+                onClick={() => {
+                  if (selectedMembers.length > 0) {
+                    inviteSelected(selectedMembers, albumId, ship).then(() => {
+                      queryClient.invalidateQueries(["album", ship, albumId]);
+                      setSelectedMembers([]);
+                    });
+                  }
+                  navigate(`/album/${ship}/${albumId}`);
+                }}
+              >
+                Done
+              </button>
+            </div>
           </div>
-          <div className="w-full flex justify-end mt-2">
-            <button
-              className="bg-indigo-black text-white text-sm font-semibold rounded-md py-2 px-4 hover:brightness-110"
-              onClick={() => {
-                if (selectedMembers.length > 0) {
-                  inviteSelected(selectedMembers, albumId, ship).then(() => {
-                    queryClient.invalidateQueries(["album", ship, albumId]);
-                    setSelectedMembers([]);
-                  });
-                }
-                navigate(`/album/${ship}/${albumId}`)
-              }}
-            >Done</button>
-          </div>
-        </div>}
+        )}
       </div>
       <div className="overflow-x-auto min-h-0 bg-indigo-white h-full lg:basis-1/2 p-[30px] hidden lg:flex flex-col">
-        <div style={{ width: "calc(100% + 400px)" }}>
-          {children}
-        </div>
+        <div style={{ width: "calc(100% + 400px)" }}>{children}</div>
       </div>
     </div>
   );
@@ -371,22 +389,32 @@ function Gallery({
               Add Photos
             </button>
           )}
-          {our && <Link to={`/album/${ship}/${albumId}/edit`}>
+          {our && (
+            <Link to={`/album/${ship}/${albumId}/edit`}>
+              <button
+                className={cn(
+                  "bg-indigo-white text-indigo-black py-2 px-4 text-sm rounded-lg hover:bg-indigo-gray",
+                )}
+              >
+                Edit
+              </button>
+            </Link>
+          )}
+          {!our && (
             <button
-              className={cn("bg-indigo-white text-indigo-black py-2 px-4 text-sm rounded-lg hover:bg-indigo-gray")}
+              className={cn(
+                "bg-indigo-white text-indigo-black py-2 px-4 text-sm rounded-lg hover:bg-indigo-gray",
+              )}
+              onClick={() => nuke()}
             >
-              Edit
+              Unsubscribe
             </button>
-          </Link>}
-          {!our && <button
-            className={cn("bg-indigo-white text-indigo-black py-2 px-4 text-sm rounded-lg hover:bg-indigo-gray")}
-            onClick={() => nuke()}
-          >
-            Unsubscribe
-          </button>}
+          )}
           <Link to={`/album/${ship}/${albumId}/share`}>
             <button
-              className={cn("bg-indigo-black text-white py-2 px-4 text-sm rounded-lg hover:brightness-110")}
+              className={cn(
+                "bg-indigo-black text-white py-2 px-4 text-sm rounded-lg hover:brightness-110",
+              )}
             >
               Share
             </button>

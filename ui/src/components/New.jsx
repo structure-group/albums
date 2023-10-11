@@ -126,20 +126,26 @@ export default function NewAlbum() {
                     Select Photos
                   </a>
                   <a
-                    className={cn("font-semibold text-sm hover:bg-brightness-110 py-1 px-2 text-center rounded-md cursor-pointer", {
-                      "bg-indigo-black text-white": clickMode === "cover",
-                      "bg-indigo-white text-black": clickMode !== "cover",
-                    })}
+                    className={cn(
+                      "font-semibold text-sm hover:bg-brightness-110 py-1 px-2 text-center rounded-md cursor-pointer",
+                      {
+                        "bg-indigo-black text-white": clickMode === "cover",
+                        "bg-indigo-white text-black": clickMode !== "cover",
+                      },
+                    )}
                     onClick={() => setClickMode("cover")}
                   >
                     Select Cover
                   </a>
                 </div>
                 <a
-                  className={cn("font-semibold text-sm hover:bg-brightness-110 py-1 px-2 text-center rounded-md cursor-pointer", {
-                    "bg-indigo-red text-white": clickMode === "delete",
-                    "bg-indigo-white text-black": clickMode !== "delete",
-                  })}
+                  className={cn(
+                    "font-semibold text-sm hover:bg-brightness-110 py-1 px-2 text-center rounded-md cursor-pointer",
+                    {
+                      "bg-indigo-red text-white": clickMode === "delete",
+                      "bg-indigo-white text-black": clickMode !== "delete",
+                    },
+                  )}
                   onClick={() => setClickMode("delete")}
                 >
                   Delete
@@ -152,20 +158,23 @@ export default function NewAlbum() {
                 {selectedPhotos.map((photo) => {
                   return (
                     <div
-                      className={cn("h-20 w-20 relative rounded-md overflow-hidden", {
-                        "badge-it": cover === photo,
-                        "": cover !== photo,
-                      })}
+                      className={cn(
+                        "h-20 w-20 relative rounded-md overflow-hidden",
+                        {
+                          "badge-it": cover === photo,
+                          "": cover !== photo,
+                        },
+                      )}
                       onClick={() => {
                         if (clickMode === "delete") {
                           setSelectedPhotos((prev) =>
                             prev.filter((p) => p !== photo),
-                          )
+                          );
                           if (cover === photo) {
-                            setCover(null)
+                            setCover(null);
                           }
                         } else if (clickMode === "cover") {
-                          setCover(photo)
+                          setCover(photo);
                         }
                       }}
                     >
@@ -217,49 +226,48 @@ export default function NewAlbum() {
                 setSelectedMembers={setSelectedMembers}
               />
             </div>
-            <div
-              className="bg-indigo-white mt-2 p-3 rounded-lg flex flex-col space-y-3 max-h-60 overflow-y-auto mb-4"
-            >
-              {selectedMembers.length > 0 && selectedMembers.map((member) => {
-                return (
-                  <div
-                    className="flex items-center justify-between space-x-2 w-full bg-white p-2 rounded-[4px]"
-                    key={member[0]}
-                  >
-                    <Contact
-                      ship={member[0]}
-                      contact={contacts.data?.[member[0]] || {}}
-                      disabledNicknames={disabledNicknames}
-                      disabledAvatars={disabledAvatars}
-                    />
-                    <select
-                      value={member[1]}
-                      onChange={(e) => {
-                        setSelectedMembers((prev) =>
-                          prev.map((m) =>
-                            m[0] === member[0]
-                              ? [m[0], e.target.value]
-                              : [m[0], m[1]],
-                          ),
-                        );
-                      }}
+            <div className="bg-indigo-white mt-2 p-3 rounded-lg flex flex-col space-y-3 max-h-60 overflow-y-auto mb-4">
+              {selectedMembers.length > 0 &&
+                selectedMembers.map((member) => {
+                  return (
+                    <div
+                      className="flex items-center justify-between space-x-2 w-full bg-white p-2 rounded-[4px]"
+                      key={member[0]}
                     >
-                      <option value={false}>Viewer</option>
-                      <option value={true}>Writer</option>
-                    </select>
-                    <button
-                      className="bg-red-500 text-white px-4 text-sm py-2 font-semibold rounded-lg cursor-pointer hover:bg-red-400"
-                      onClick={() =>
-                        setSelectedMembers((prev) =>
-                          prev.filter((m) => m[0] !== member[0]),
-                        )
-                      }
-                    >
-                      Remove
-                    </button>
-                  </div>
-                );
-              })}
+                      <Contact
+                        ship={member[0]}
+                        contact={contacts.data?.[member[0]] || {}}
+                        disabledNicknames={disabledNicknames}
+                        disabledAvatars={disabledAvatars}
+                      />
+                      <select
+                        value={member[1]}
+                        onChange={(e) => {
+                          setSelectedMembers((prev) =>
+                            prev.map((m) =>
+                              m[0] === member[0]
+                                ? [m[0], e.target.value]
+                                : [m[0], m[1]],
+                            ),
+                          );
+                        }}
+                      >
+                        <option value={false}>Viewer</option>
+                        <option value={true}>Writer</option>
+                      </select>
+                      <button
+                        className="bg-red-500 text-white px-4 text-sm py-2 font-semibold rounded-lg cursor-pointer hover:bg-red-400"
+                        onClick={() =>
+                          setSelectedMembers((prev) =>
+                            prev.filter((m) => m[0] !== member[0]),
+                          )
+                        }
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  );
+                })}
             </div>
             <div className="flex w-full justify-end">
               <button
