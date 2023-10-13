@@ -4,6 +4,7 @@
 +$  img-id  @t
 +$  owner  @p
 +$  title  @t
++$  archive  ?
 +$  write-perm  ?
 +$  comment-perm  ?
 +$  comment  [who=@p when=@da what=@t]
@@ -13,7 +14,7 @@
 +$  shared  (map who=@p =write-perm)
 +$  album-id  [=name =owner]
 +$  album-ids  (list album-id)
-+$  album  [=name =owner =title =comment-perm =shared =images cover=src]
++$  album  [=name =owner =title =comment-perm =shared =images cover=src =archive]
 +$  albums  (map album-id album)
 +$  action
   $%  [%create =name =title =comment-perm] :: Create album
@@ -23,8 +24,9 @@
       [%add =album-id =img-id =src caption=comment] :: add an image
       [%del =album-id =img-id] :: delete an image
       [%comment =album-id =img-id =comment] :: add comment to an image
-      [%share =album-id receiver=@p =write-perm] :: share album with user
+      [%share =album-id =title receiver=@p =write-perm] :: share album with user
       [%unshare =album-id receiver=@p] :: unshare album with user
+      [%archive =album-id] :: unshare album with user
   ==
 +$  update
   $%  [%album-id album-info=(list [album-id cover=src =title])]

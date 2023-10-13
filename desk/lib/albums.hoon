@@ -38,6 +38,7 @@
         ['cover' (en-vase !>(cover.album))]
         ['title' (en-vase !>(title.album))]
         ['comment-perm' (en-vase !>(comment-perm.album))]
+        ['archive' (en-vase !>(archive.album))]
     ==
   ==
 
@@ -116,6 +117,7 @@
     %-  ot
       :~  
         [%album-id (ot ~[name+so owner+(se %p)])]
+        [title+so]
         receiver+(se %p)
         write-perm+bo 
       ==
