@@ -99,8 +99,18 @@
     images  (~(put by images.album) img-id img)
     ==
     =/  =wire  /share/(scot %p owner.album-id)/[name.album-id]
-    :-  ~[[%give %fact ~[wire] %albums-update !>(`update`[%album new-album])]]
-    this(albums (~(put by albums) album-id new-album))
+    =/  con=(list content:hark)  [(crip "{(trip (scot %p src.bowl))} added new photo to {(trip title.new-album)}") ~]
+    =/  =id:hark      (end 7 (shas %albums-notification eny.bowl))
+    =/  =rope:hark    [~ ~ q.byk.bowl /(scot %p our.bowl)/[dap.bowl]]
+    =/  =action:hark  [%add-yarn & & id rope now.bowl con /(scot %p owner.new-album)/[name.new-album]/[img-id] ~]
+    =/  =cage         [%hark-action !>(action)]
+    :_  this(albums (~(put by albums) album-id new-album))
+    ?:  =(owner.album-id src.bowl)
+      :~  [%give %fact ~[wire] %albums-update !>(`update`[%album new-album])]
+      ==
+    :~  [%give %fact ~[wire] %albums-update !>(`update`[%album new-album])]
+        [%pass /hark %agent [our.bowl %hark] %poke cage]
+    ==
     ::
       %del
     =,  act
@@ -155,7 +165,7 @@
     =/  new-image  old-image(comments (put:comment-on comments when.comment comment))
     =/  new-album  u.album(images (~(put by images.u.album) img-id new-image))
     =/  =wire  /share/(scot %p owner.album-id)/[name.album-id]
-    =/  con=(list content:hark)  [(crip "New comment on {(trip title.new-album)}") ~]
+    =/  con=(list content:hark)  [(crip "New comment in album: {(trip title.new-album)}") ~]
     =/  =id:hark      (end 7 (shas %albums-notification eny.bowl))
     =/  =rope:hark    [~ ~ q.byk.bowl /(scot %p our.bowl)/[dap.bowl]]
     =/  =action:hark  [%add-yarn & & id rope now.bowl con /(scot %p owner.album-id)/[name.album-id]/[img-id] ~]
@@ -178,14 +188,8 @@
       :~  [%pass wire %agent [receiver dap.bowl] %poke %albums-action !>(act)]
       ==
     =/  =wire  /share/(scot %p owner.album-id)/[name.album-id]
-    =/  con=(list content:hark)  [(crip "New album shared: {(trip title)}") ~]
-    =/  =id:hark      (end 7 (shas %albums-notification eny.bowl))
-    =/  =rope:hark    [~ ~ q.byk.bowl /(scot %p our.bowl)/[dap.bowl]]
-    =/  =action:hark  [%add-yarn & & id rope now.bowl con /(scot %p owner.album-id)/[name.album-id] ~]
-    =/  =cage         [%hark-action !>(action)]
     :_  this
     :~  [%pass wire %agent [src.bowl dap.bowl] %watch wire]
-        [%pass /hark %agent [our.bowl %hark] %poke cage] 
     ==
     ::
       %unshare
@@ -218,7 +222,15 @@
       ?>  ?=(%albums-update p.cage.sign)
       =/  =update  !<(update q.cage.sign)
       ?.  ?=(%album -.update)  `this
-      :-  ~
+      ?:  (~(has by albums) [name.album.update owner.album.update])
+        :-  ~
+        this(albums (~(put by albums) [name.album.update owner.album.update] album.update))
+      =/  con=(list content:hark)  [(crip "New album shared: {(trip title.album.update)}") ~]
+      =/  =id:hark      (end 7 (shas %albums-notification eny.bowl))
+      =/  =rope:hark    [~ ~ q.byk.bowl /(scot %p our.bowl)/[dap.bowl]]
+      =/  =action:hark  [%add-yarn & & id rope now.bowl con /(scot %p owner.album.update)/[name.album.update] ~]
+      =/  =cage         [%hark-action !>(action)]
+      :-  ~[[%pass /hark %agent [our.bowl %hark] %poke cage]]
       this(albums (~(put by albums) [name.album.update owner.album.update] album.update))
       :: if we've been kicked from the subscription,
       :: automatically resubscribe

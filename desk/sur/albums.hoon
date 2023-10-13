@@ -24,7 +24,7 @@
       [%add =album-id =img-id =src caption=comment] :: add an image
       [%del =album-id =img-id] :: delete an image
       [%comment =album-id =img-id =comment] :: add comment to an image
-      [%share =album-id =title receiver=@p =write-perm] :: share album with user
+      [%share =album-id receiver=@p =write-perm] :: share album with user
       [%unshare =album-id receiver=@p] :: unshare album with user
       [%archive =album-id] :: unshare album with user
   ==

@@ -117,7 +117,6 @@
     %-  ot
       :~  
         [%album-id (ot ~[name+so owner+(se %p)])]
-        [title+so]
         receiver+(se %p)
         write-perm+bo 
       ==
