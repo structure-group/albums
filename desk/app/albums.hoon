@@ -105,6 +105,9 @@
     =/  =action:hark  [%add-yarn & & id rope now.bowl con /(scot %p owner.new-album)/[name.new-album]/[img-id] ~]
     =/  =cage         [%hark-action !>(action)]
     :_  this(albums (~(put by albums) album-id new-album))
+    ?.  .^(? %gu /(scot %p our.bowl)/hark/(scot %da now.bowl)/$)
+      :~  [%give %fact ~[wire] %albums-update !>(`update`[%album new-album])]
+      ==
     ?:  =(owner.album-id src.bowl)
       :~  [%give %fact ~[wire] %albums-update !>(`update`[%album new-album])]
       ==
@@ -171,6 +174,9 @@
     =/  =action:hark  [%add-yarn & & id rope now.bowl con /(scot %p owner.album-id)/[name.album-id]/[img-id] ~]
     =/  =cage         [%hark-action !>(action)]
     :_  this(albums (~(put by albums) album-id new-album))
+      ?.  .^(? %gu /(scot %p our.bowl)/hark/(scot %da now.bowl)/$)
+        :~  [%give %fact ~[wire] %albums-update !>(`update`[%album new-album])]
+        ==
       ?:  =(who.comment our.bowl)
         :~  [%give %fact ~[wire] %albums-update !>(`update`[%album new-album])]
         ==
@@ -230,7 +236,10 @@
       =/  =rope:hark    [~ ~ q.byk.bowl /(scot %p our.bowl)/[dap.bowl]]
       =/  =action:hark  [%add-yarn & & id rope now.bowl con /(scot %p owner.album.update)/[name.album.update] ~]
       =/  =cage         [%hark-action !>(action)]
-      :-  ~[[%pass /hark %agent [our.bowl %hark] %poke cage]]
+      :-  
+      ?.  .^(? %gu /(scot %p our.bowl)/hark/(scot %da now.bowl)/$)
+        ~
+      ~[[%pass /hark %agent [our.bowl %hark] %poke cage]]
       this(albums (~(put by albums) [name.album.update owner.album.update] album.update))
       :: if we've been kicked from the subscription,
       :: automatically resubscribe
