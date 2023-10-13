@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { contactsQuery, settingsQuery } from "../state/query";
-import { daToDate } from "@urbit/api";
+import { daToDate, decToUd, unixToDa } from "@urbit/api";
 import Contact from "./Contact";
 import { addComment, changeCover, deletePhoto } from "../state/actions";
 import cn from "classnames";
@@ -23,6 +23,8 @@ export default function Lightbox({
   album,
 }) {
   const [comment, setComment] = useState("");
+  const [timeToWait, setTimeToWait] = useState("");
+  const [fetch, setFetch] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const { ship, albumId } = useParams();
   const commentBox = useRef(null);
@@ -46,6 +48,22 @@ export default function Lightbox({
       commentBox.current.scrollTop = commentBox.current.scrollHeight;
     }
   }, [comments]);
+
+  useEffect(() => {
+    const isInComments = comments?.some(
+      (comment) => comment[1]?.what === timeToWait && comment[1]?.who === `~${window.ship}`,
+    );
+    fetch !== null && setTimeout(() => {
+      queryClient.invalidateQueries(["album", ship, albumId]);
+    }, fetch + 1000);
+    if (timeToWait !== "" && !fetch) {
+      setFetch(fetch + 1000);
+    }
+    if (isInComments) {
+      setTimeToWait("");
+      setFetch(null)
+    }
+  }, [timeToWait, comments, fetch]);
 
   const showButtons = () => {
     if (left.current) {
@@ -288,7 +306,10 @@ export default function Lightbox({
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
-                    addComment(albumId, ship, photo, comment).then(() => {
+                    const time = decToUd(`${unixToDa(Date.now())}`);
+                    setTimeToWait(comment);
+                    setFetch(0);
+                    addComment(albumId, time, ship, photo, comment).then(() => {
                       setComment("");
                       queryClient.invalidateQueries(["album", ship, albumId]);
                     });

@@ -1,7 +1,7 @@
 import { api } from "./api";
 import { decToUd, unixToDa } from "@urbit/api";
 
-export const addComment = async (albumId, ship, photo, comment) => {
+export const addComment = async (albumId, time, ship, photo, comment) => {
   await api.poke({
     app: "albums",
     mark: "albums-action",
@@ -11,7 +11,7 @@ export const addComment = async (albumId, ship, photo, comment) => {
         "img-id": photo[0],
         comment: {
           who: `~${window.ship}`,
-          when: decToUd(`${unixToDa(Date.now())}`),
+          when: time,
           what: comment,
         },
       },
