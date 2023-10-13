@@ -7,6 +7,7 @@ export default function Contact({
   disableAvatars,
   className = "",
   onMouseDown = () => {},
+  size = 32,
 }) {
   return (
     <div
@@ -14,9 +15,18 @@ export default function Contact({
       onMouseDown={onMouseDown}
     >
       {!disableAvatars && contact?.avatar ? (
-        <img src={contact.avatar} className="h-8 w-8 rounded-md" />
+        <img
+          src={contact.avatar}
+          className="rounded-md"
+          style={{ height: size, width: size }}
+        />
       ) : (
-        <Sigil ship={ship} background="#000000" foreground="#ffffff" />
+        <Sigil
+          size={size}
+          ship={ship}
+          background="#000000"
+          foreground="#ffffff"
+        />
       )}
       <p className="font-semibold max-w-sm truncate min-w-0 text-sm">
         {!disableNicknames && contact?.nickname ? contact.nickname : ship}

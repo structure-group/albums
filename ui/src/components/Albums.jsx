@@ -32,7 +32,9 @@ export default function Albums({ shared = false }) {
                         backgroundPosition: "center",
                       }}
                     ></div>
-                    <p className="font-semibold">{title}</p>
+                    <p className="font-semibold text-sm w-full text-center">
+                      {title}
+                    </p>
                   </div>
                 </Link>
               );

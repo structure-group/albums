@@ -7,20 +7,27 @@ import { daToDate } from "@urbit/api";
 import Contact from "./Contact";
 import { addComment, changeCover, deletePhoto } from "../state/actions";
 import cn from "classnames";
+import Ellipsis from "./icons/Ellipsis";
+import Close from "./icons/Close";
 
 export default function Lightbox({
   cover,
   photo,
+  photoNumber,
   first,
   last,
   handlers,
   disableComments,
   setLightboxPhoto,
   write,
+  album,
 }) {
   const [comment, setComment] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
   const { ship, albumId } = useParams();
   const commentBox = useRef(null);
+  const left = useRef(null);
+  const right = useRef(null);
   const queryClient = useQueryClient();
   const { data: contactsData } = useQuery({
     queryKey: ["contacts"],
@@ -40,16 +47,46 @@ export default function Lightbox({
     }
   }, [comments]);
 
+  const showButtons = () => {
+    if (left.current) {
+      left.current.style.opacity = "1";
+    }
+    if (right.current) {
+      right.current.style.opacity = "1";
+    }
+  };
+
+  const hideButtons = () => {
+    if (left.current) {
+      left.current.style.opacity = "0";
+    }
+    if (right.current) {
+      right.current.style.opacity = "0";
+    }
+  };
+
+  const toggleOpacity = () => {
+    if (left.current) {
+      left.current.style.opacity =
+        left.current.style.opacity === "0" ? "1" : "0";
+    }
+    if (right.current) {
+      right.current.style.opacity =
+        right.current.style.opacity === "0" ? "1" : "0";
+    }
+  };
+
   return (
     <div className="fixed top-0 left-0 bg-indigo-black w-full h-full flex flex-col items-center justify-center space-y-[30px] p-[14px] z-40">
       <div className="h-full w-full flex flex-col lg:flex-row justify-center">
-        <div className="min-w-0 min-h-0 flex justify-between basis-1/2 lg:basis-3/4 lg:pr-[14px]">
+        <div className="min-w-0 min-h-0 flex justify-center lg:justify-between basis-1/2 lg:basis-3/4 lg:pr-[14px]">
           {!first ? (
             <div
               className={cn(
-                "bg-[rgba(0,0,0,0.3)] hover:bg-[rgba(0,0,0,0.1)] flex flex-col justify-center h-full rounded-[10px] px-8",
+                "bg-[rgba(0,0,0,0.3)] hover:bg-[rgba(0,0,0,0.1)] flex flex-col justify-center lg:h-full rounded-[10px] px-8 cursor-pointer absolute left-0 top-1 lg:static h-[calc(50%-8px)] opacity-0 transition-opacity duration-300",
               )}
               onClick={() => handlers.BACK()}
+              ref={left}
             >
               <svg
                 width="14"
@@ -65,19 +102,25 @@ export default function Lightbox({
               </svg>
             </div>
           ) : (
-            <div className="px-8 h-full" />
+            <div className="px-8 h-full absolute lg:static" />
           )}
           <img
             src={photo[1]?.src}
             alt=""
             className="min-w-0 min-h-0 object-contain select-none"
+            onMouseEnter={(e) => showButtons()}
+            onMouseLeave={(e) => {
+              setTimeout(() => hideButtons(), 500);
+            }}
+            onTouchEnd={(e) => toggleOpacity()}
           />
           {!last ? (
             <div
               className={cn(
-                "bg-[rgba(0,0,0,0.3)] hover:bg-[rgba(0,0,0,0.1)] flex flex-col justify-center h-full rounded-[10px] px-8",
+                "bg-[rgba(0,0,0,0.3)] hover:bg-[rgba(0,0,0,0.1)] flex flex-col justify-center lg:h-full rounded-[10px] px-8 cursor-pointer absolute right-0 top-1 lg:static h-[calc(50%-8px)] opacity-0 transition-opacity duration-300",
               )}
               onClick={() => handlers.FORWARD()}
+              ref={right}
             >
               <svg
                 width="14"
@@ -93,89 +136,117 @@ export default function Lightbox({
               </svg>
             </div>
           ) : (
-            <div className="px-8" />
+            <div className="px-8 absolute lg:static" />
           )}
         </div>
         <div className="bg-white relative rounded-[10px] p-4 flex flex-col min-h-0 justify-end lg:w-full max-h-96 lg:max-h-full basis-1/2 lg:basis-1/4 space-y-4">
           <div className="grow">
             <div className="border-b pb-2 space-y-2">
-              <div className="flex w-full justify-end">
-                <Contact
-                  ship={photo[1]?.caption?.who || "~zod"}
-                  contact={contactsData?.[photo[1]?.caption?.who] || {}}
-                  disableNicknames={disableNicknames}
-                  disableAvatars={disableAvatars}
-                />
-                <p
-                  className="text-xs font-semibold cursor-pointer"
+              <div className="flex w-full justify-end items-center">
+                <div className="flex w-full space-x-2 items-center">
+                  <img
+                    src={album?.albums?.cover}
+                    className="h-8 w-8 lg:w-[43px] lg:h-[43px] rounded-md"
+                  />
+                  <div className="flex flex-col font-semibold text-sm">
+                    <p className="text-indigo-black">{album?.albums?.title}</p>
+                    <p className="text-[#999999]">
+                      {photoNumber} of {album?.albums?.images.length}
+                    </p>
+                  </div>
+                </div>
+                <Close
+                  className="cursor-pointer"
                   onClick={() => handlers.ESCAPE()}
-                >
-                  Close
-                </p>
+                />
               </div>
-              <div className="flex justify-between items-center">
-                <p className="text-xs font-semibold text-[#999999]">
-                  {daToDate(photo[1]?.caption?.when).toLocaleString("en-us", {
-                    weekday: "long",
-                    hour12: false,
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </p>
-                <div className="flex justify-end space-x-4 items-center">
-                  <a
-                    className="text-xs font-semibold"
-                    href={photo[1]?.src}
-                    target="_blank"
+              <div className="flex justify-between items-center relative">
+                <div className="flex space-x-2 items-center">
+                  <Contact
+                    ship={photo[1]?.caption?.who || "~zod"}
+                    contact={contactsData?.[photo[1]?.caption?.who] || {}}
+                    disableNicknames={disableNicknames}
+                    disableAvatars={disableAvatars}
+                    size={24}
+                  />
+                  <p className="text-xs font-semibold text-[#999999] shrink-0">
+                    {daToDate(photo[1]?.caption?.when).toLocaleString("en-us", {
+                      weekday: "long",
+                      hour12: false,
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </p>
+                </div>
+                <Ellipsis
+                  className="cursor-pointer"
+                  onClick={() => setShowDropdown(true)}
+                />
+                <Foco
+                  className={
+                    showDropdown ? "block absolute top-0 right-0" : "hidden"
+                  }
+                  onClickOutside={() => setShowDropdown(false)}
+                >
+                  <div
+                    className={
+                      "flex flex-col justify-end items-end bg-indigo-white shadow-sm w-[200px] border border-[#DEE1EA]"
+                    }
                   >
-                    Download
-                  </a>
-                  {ship === `~${window.ship}` && (
                     <a
-                      className="text-xs font-semibold cursor-pointer"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        changeCover(albumId, ship, photo[1]?.src).then(() => {
-                          queryClient.invalidateQueries([
-                            "album",
-                            ship,
-                            albumId,
-                          ]);
-                          setLightboxPhoto(null);
-                        });
-                      }}
+                      className="text-sm w-full p-2 block hover:bg-[#DEE1EA]"
+                      href={photo[1]?.src}
+                      target="_blank"
                     >
-                      Set Cover
+                      Download
                     </a>
-                  )}
-                  {write && (
-                    <a
-                      className="text-indigo-red text-xs font-semibold cursor-pointer"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (photo[1]?.src === cover) {
-                          changeCover(albumId, ship, "").then(() => {
+                    {ship === `~${window.ship}` && (
+                      <a
+                        className="text-sm cursor-pointer block w-full p-2 hover:bg-[#DEE1EA]"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          changeCover(albumId, ship, photo[1]?.src).then(() => {
+                            queryClient.invalidateQueries([
+                              "album",
+                              ship,
+                              albumId,
+                            ]);
+                            setLightboxPhoto(null);
+                          });
+                        }}
+                      >
+                        Set Cover
+                      </a>
+                    )}
+                    {write && (
+                      <a
+                        className="text-sm cursor-pointer block w-full p-2 hover:bg-[#DEE1EA]"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (photo[1]?.src === cover) {
+                            changeCover(albumId, ship, "").then(() => {
+                              queryClient.invalidateQueries([
+                                "album",
+                                ship,
+                                albumId,
+                              ]);
+                            });
+                          }
+                          deletePhoto(albumId, ship, photo).then(() => {
+                            setLightboxPhoto(null);
                             queryClient.invalidateQueries([
                               "album",
                               ship,
                               albumId,
                             ]);
                           });
-                        }
-                        deletePhoto(albumId, ship, photo).then(() => {
-                          setLightboxPhoto(null);
-                          queryClient.invalidateQueries([
-                            "album",
-                            ship,
-                            albumId,
-                          ]);
-                        });
-                      }}
-                    >
-                      Delete
-                    </a>
-                  )}
-                </div>
+                        }}
+                      >
+                        Delete
+                      </a>
+                    )}
+                  </div>
+                </Foco>
               </div>
             </div>
           </div>

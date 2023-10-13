@@ -1,8 +1,8 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import { albumQuery, contactsQuery, settingsQuery } from "../state/query";
 import useStorageState from "../state/storage";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import AddPhoto from "./AddPhoto";
 import Contact from "./Contact";
 import Lightbox from "./Lightbox";
@@ -70,12 +70,14 @@ export default function Album() {
         )}
         {lightboxPhoto !== null && (
           <Lightbox
+            album={album}
             cover={album?.albums?.cover || null}
             disableComments={!album?.albums?.["comment-perm"] || false}
             handlers={handlers}
             first={lightboxPhoto === 0}
             last={lightboxPhoto === images.length - 1}
             photo={images[lightboxPhoto]}
+            photoNumber={lightboxPhoto + 1}
             setLightboxPhoto={setLightboxPhoto}
             write={our || write}
           />
@@ -124,6 +126,7 @@ function EditFrame({ album, ship, albumId, queryClient, shareMode, children }) {
   const navigate = useNavigate();
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [title, setTitle] = useState("");
+  const panel = useRef(null);
   const [comments, setComments] = useState(false);
   const { data: contactsData } = useQuery({
     queryKey: ["contacts"],
@@ -154,7 +157,10 @@ function EditFrame({ album, ship, albumId, queryClient, shareMode, children }) {
 
   return (
     <div className="flex h-full">
-      <div className="p-[30px] h-full min-h-0 bg-white basis-full lg:basis-1/2 flex flex-col border-r-2 border-indigo-gray">
+      <div
+        className="p-[30px] h-full min-h-0 bg-white basis-full lg:basis-1/2 flex flex-col border-r-2 border-indigo-gray slide-in"
+        ref={panel}
+      >
         <Link to={`/album/${ship}/${albumId}`}>
           <p className="font-semibold w-full truncate block lg:hidden mb-8">
             {"<-"} Back to {album?.albums?.name || albumId}
@@ -192,16 +198,28 @@ function EditFrame({ album, ship, albumId, queryClient, shareMode, children }) {
               </a>
             </div>
             <div className="w-full flex justify-end space-x-2">
-              <Link to={`/album/${ship}/${albumId}`}>
-                <button className="bg-indigo-white hover:bg-indigo-gray text-black text-sm px-4 py-2 rounded-md font-semibold">
-                  Cancel
-                </button>
-              </Link>
+              <button
+                className="bg-indigo-white hover:bg-indigo-gray text-black text-sm px-4 py-2 rounded-md font-semibold"
+                onClick={() => {
+                  panel.current.classList.add("slide-out");
+                  setTimeout(() => {
+                    navigate(`/album/${ship}/${albumId}`);
+                  }, 100);
+                }}
+              >
+                Cancel
+              </button>
               <button
                 className="bg-indigo-black text-white text-sm font-semibold rounded-md py-2 px-4 hover:brightness-110"
                 onClick={() =>
                   editAlbum(albumId, ship, title, comments).then(() => {
                     queryClient.invalidateQueries(["album", ship, albumId]);
+                    panel.current.classList.add("slide-out");
+                    setTimeout(() => {
+                      navigate(`/album/${ship}/${albumId}`, {
+                        state: { saved: true },
+                      });
+                    }, 100);
                   })
                 }
               >
@@ -335,7 +353,10 @@ function EditFrame({ album, ship, albumId, queryClient, shareMode, children }) {
                       setSelectedMembers([]);
                     });
                   }
-                  navigate(`/album/${ship}/${albumId}`);
+                  panel.current.classList.add("slide-out");
+                  setTimeout(() => {
+                    navigate(`/album/${ship}/${albumId}`);
+                  }, 100);
                 }}
               >
                 Done
@@ -361,6 +382,8 @@ function Gallery({
   our,
   write,
 }) {
+  const location = useLocation();
+  const { saved } = location.state || { saved: false };
   const { s3 } = useStorageState();
   const { credentials } = s3 ?? { credentials: { accessKeyId: "" } };
 
@@ -375,69 +398,78 @@ function Gallery({
   };
 
   return (
-    <div className="h-full w-full p-[30px] bg-white rounded-xl flex flex-col space-y-[30px] overflow-y-auto min-h-0">
-      <div className="flex justify-between rounded-md bg-white">
-        <Link to={`/album/${ship}/${albumId}`}>
-          <p className="font-semibold">{album?.albums?.title || albumId}</p>
-        </Link>
-        <div className="flex space-x-[30px] font-semibold text-[#666666] items-center">
-          {(our || write) && credentials?.accessKeyId && (
-            <button
-              className="cursor-pointer bg-indigo-white text-indigo-black py-2 px-4 text-sm rounded-lg hover:bg-indigo-gray"
-              onClick={() => setAddPhoto(true)}
-            >
-              Add Photos
-            </button>
-          )}
-          {our && (
-            <Link to={`/album/${ship}/${albumId}/edit`}>
+    <>
+      {saved && (
+        <div className="fixed w-screen h-screen top-0 left-0 flex justify-center items-center wait-and-fade">
+          <div className="bg-white shadow-md rounded-md p-4 text-sm text-black">
+            Changes saved!
+          </div>
+        </div>
+      )}
+      <div className="h-full w-full p-[30px] bg-white rounded-xl flex flex-col space-y-[30px] overflow-y-auto min-h-0">
+        <div className="flex flex-col space-y-2 md:space-y-0 lg:flex-row lg:justify-between rounded-md bg-white">
+          <Link to={`/album/${ship}/${albumId}`}>
+            <p className="font-semibold">{album?.albums?.title || albumId}</p>
+          </Link>
+          <div className="flex space-x-[15px] font-semibold text-[#666666] items-center">
+            {(our || write) && credentials?.accessKeyId && (
+              <button
+                className="cursor-pointer bg-indigo-white text-indigo-black py-2 px-4 text-sm rounded-lg hover:bg-indigo-gray"
+                onClick={() => setAddPhoto(true)}
+              >
+                Add Photos
+              </button>
+            )}
+            {our && (
+              <Link to={`/album/${ship}/${albumId}/edit`}>
+                <button
+                  className={cn(
+                    "bg-indigo-white text-indigo-black py-2 px-4 text-sm rounded-lg hover:bg-indigo-gray",
+                  )}
+                >
+                  Edit
+                </button>
+              </Link>
+            )}
+            {!our && (
               <button
                 className={cn(
                   "bg-indigo-white text-indigo-black py-2 px-4 text-sm rounded-lg hover:bg-indigo-gray",
                 )}
+                onClick={() => nuke()}
               >
-                Edit
+                Unsubscribe
+              </button>
+            )}
+            <Link to={`/album/${ship}/${albumId}/share`}>
+              <button
+                className={cn(
+                  "bg-indigo-black text-white py-2 px-4 text-sm rounded-lg hover:brightness-110",
+                )}
+              >
+                Share
               </button>
             </Link>
-          )}
-          {!our && (
-            <button
-              className={cn(
-                "bg-indigo-white text-indigo-black py-2 px-4 text-sm rounded-lg hover:bg-indigo-gray",
-              )}
-              onClick={() => nuke()}
-            >
-              Unsubscribe
-            </button>
-          )}
-          <Link to={`/album/${ship}/${albumId}/share`}>
-            <button
-              className={cn(
-                "bg-indigo-black text-white py-2 px-4 text-sm rounded-lg hover:brightness-110",
-              )}
-            >
-              Share
-            </button>
-          </Link>
+          </div>
+        </div>
+        <div className="flex flex-wrap justify-center md:justify-normal gap-[30px] w-full max-h-full min-h-0">
+          {images?.map((image, i) => {
+            return (
+              <div
+                className="w-[200px] h-[200px] hover:bg-gray-100 cursor-pointer"
+                key={image[0]}
+                onClick={() => setLightboxPhoto(i)}
+              >
+                <img
+                  src={image[1]?.src}
+                  alt=""
+                  className="w-[200px] h-[200px] object-contain"
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
-      <div className="flex flex-wrap justify-center md:justify-normal gap-[30px] w-full max-h-full min-h-0">
-        {images?.map((image, i) => {
-          return (
-            <div
-              className="w-32 h-32 hover:bg-gray-100 cursor-pointer"
-              key={image[0]}
-              onClick={() => setLightboxPhoto(i)}
-            >
-              <img
-                src={image[1]?.src}
-                alt=""
-                className="w-32 h-32 object-contain"
-              />
-            </div>
-          );
-        })}
-      </div>
-    </div>
+    </>
   );
 }
