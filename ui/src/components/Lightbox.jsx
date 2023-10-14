@@ -298,7 +298,9 @@ export default function Lightbox({
                   );
                 })}
               </div>
-              <textarea
+              {album?.albums?.archive ? <div>
+                <p className="text-xs text-[#999999] border-t pt-2">This album has been deleted by its owner. You cannot comment on your archived copy.</p>
+              </div> : <textarea
                 className="w-full sticky bottom-0 h-16 resize-none border border-indigo-gray p-2 rounded-md shrink-0"
                 placeholder="Add a comment..."
                 value={comment}
@@ -315,7 +317,7 @@ export default function Lightbox({
                     });
                   }
                 }}
-              />
+              />}
             </>
           )}
         </div>

@@ -419,9 +419,14 @@ function Gallery({
       )}
       <div className="h-full w-full p-[30px] bg-white rounded-xl flex flex-col space-y-[30px] overflow-y-auto min-h-0">
         <div className="flex flex-col space-y-2 md:space-y-0 lg:flex-row lg:justify-between rounded-md bg-white">
-          <Link to={`/album/${ship}/${albumId}`}>
-            <p className="font-semibold">{album?.albums?.title || albumId}</p>
-          </Link>
+          <div className="flex items-center space-x-2">
+            <Link to={`/album/${ship}/${albumId}`}>
+              <p className="font-semibold">{album?.albums?.title || albumId}</p>
+            </Link>
+            {album?.albums?.archive && (
+              <p className="text-sm bg-indigo-white px-2 py-1 rounded-md text-[#666666]">Archive</p>
+            )}
+          </div>
           <div className="flex space-x-[15px] font-semibold text-[#666666] items-center">
             {(our || write) && credentials?.accessKeyId && (
               <button
