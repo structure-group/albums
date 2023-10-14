@@ -28,6 +28,7 @@ export default function Album() {
   const [addPhoto, setAddPhoto] = useState(false);
   const [lightboxPhoto, setLightboxPhoto] = useState(null);
   const { ship, albumId, subview } = useParams();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: album } = useQuery({
     queryKey: ["album", ship, albumId],
@@ -55,12 +56,22 @@ export default function Album() {
     }, []),
   };
 
+  useEffect(() => {
+    if (subview !== "edit" && subview !== "share") {
+      const photoMatch = images.findIndex((e) => e[0] === subview);
+      if (photoMatch !== -1) {
+        navigate(`/album/${ship}/${albumId}`)
+        setLightboxPhoto(photoMatch);
+      }
+    }
+  }, [subview, navigate, setLightboxPhoto, images, ship, albumId]);
   const addPhotosToAlbum = async (files) => {
     addPhotos(files, albumId, ship).then(() => {
       queryClient.invalidateQueries(["album", ship, albumId]);
       setAddPhoto(false);
     });
   };
+
   return (
     <>
       <GlobalHotKeys keyMap={keyMap} handlers={handlers} allowChanges={true} />
