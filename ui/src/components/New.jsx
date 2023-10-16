@@ -60,14 +60,14 @@ export default function NewAlbum() {
     } catch (e) {
       console.error(e);
     } finally {
-      if (cover || selectedPhotos.length > 0) {
+      if (cover) {
         await api.poke({
           app: "albums",
           mark: "albums-action",
           json: {
             cover: {
               "album-id": { name: stripTitle, owner: `~${window.ship}` },
-              cover: cover || selectedPhotos[0],
+              cover,
             },
           },
         });
