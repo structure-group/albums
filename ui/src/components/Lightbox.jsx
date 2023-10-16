@@ -97,7 +97,13 @@ export default function Lightbox({
   return (
     <div className="fixed top-0 left-0 bg-indigo-black w-full h-full flex flex-col items-center justify-center space-y-[30px] p-[14px] z-40">
       <div className="h-full w-full flex flex-col lg:flex-row justify-center">
-        <div className="min-w-0 min-h-0 flex justify-center lg:justify-between basis-1/2 lg:basis-3/4 lg:pr-[14px]">
+        <div
+          className="min-w-0 min-h-0 flex justify-center lg:justify-between basis-1/2 lg:basis-3/4 lg:pr-[14px]"
+          onMouseEnter={(e) => showButtons()}
+          onMouseLeave={(e) => {
+            setTimeout(() => hideButtons(), 500);
+          }}
+        >
           {!first ? (
             <div
               className={cn(
@@ -126,10 +132,6 @@ export default function Lightbox({
             src={photo[1]?.src}
             alt=""
             className="min-w-0 min-h-0 object-contain select-none"
-            onMouseEnter={(e) => showButtons()}
-            onMouseLeave={(e) => {
-              setTimeout(() => hideButtons(), 500);
-            }}
             onTouchEnd={(e) => toggleOpacity()}
           />
           {!last ? (
