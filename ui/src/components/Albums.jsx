@@ -3,6 +3,7 @@ import { albumsQuery } from "../state/query";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import useStorageState from "../state/storage";
+import { DefaultAlbum } from "./icons/DefaultAlbum";
 export default function Albums({ shared = false }) {
   const { s3 } = useStorageState();
   const { credentials } = s3 ?? { credentials: { accessKeyId: "" } };
@@ -27,7 +28,7 @@ export default function Albums({ shared = false }) {
                     <div
                       className="w-[270px] h-[270px] bg-gray-200 rounded-xl flex flex-col items-center justify-center"
                       style={{
-                        backgroundImage: cover ? `url(${cover})` : "none",
+                        backgroundImage: cover ? `url(${cover})` : DefaultAlbum,
                         backgroundSize: "cover",
                         backgroundPosition: "center",
                       }}
