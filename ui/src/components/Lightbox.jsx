@@ -9,6 +9,7 @@ import { addComment, changeCover, deletePhoto } from "../state/actions";
 import cn from "classnames";
 import Ellipsis from "./icons/Ellipsis";
 import Close from "./icons/Close";
+import { DefaultAlbum } from "./icons/DefaultAlbum";
 
 export default function Lightbox({
   cover,
@@ -164,10 +165,10 @@ export default function Lightbox({
             <div className="border-b pb-2 space-y-2">
               <div className="flex w-full justify-end items-center">
                 <div className="flex w-full space-x-2 items-center">
-                  <img
+                  {album?.albums?.cover ? <img
                     src={album?.albums?.cover}
                     className="h-8 w-8 lg:w-[43px] lg:h-[43px] rounded-md"
-                  />
+                  /> : <div className="h-8 w-8 lg:w-[43px] lg:h-[43px] rounded-md bg-cover" style={{ backgroundImage: DefaultAlbum }} />}
                   <div className="flex flex-col font-semibold text-sm">
                     <p className="text-indigo-black">{album?.albums?.title}</p>
                     <p className="text-[#999999]">
