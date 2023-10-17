@@ -23,6 +23,7 @@
       [%cover =album-id cover=src]
       [%add =album-id =img-id =src caption=comment] :: add an image
       [%del =album-id =img-id] :: delete an image
+      [%edit-img =album-id =img-id =src caption=comment] :: edit an image
       [%comment =album-id =img-id =comment] :: add comment to an image
       [%share =album-id receiver=@p =write-perm] :: share album with user
       [%unshare =album-id receiver=@p] :: unshare album with user

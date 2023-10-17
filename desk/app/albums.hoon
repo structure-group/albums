@@ -81,6 +81,24 @@
           [%give %kick ~[wire] `who]
       ==
     ::
+      %edit-img
+    =,  act
+    ?>  =(owner.album-id src.bowl)  
+    ?.  (~(has by albums) album-id)
+      ~&  >  ["albums: Album not found" album-id]
+      `this
+    =/  album  (~(got by albums) album-id)
+    =/  new-img  (~(got by images.album) img-id)
+    =.  src.new-img  src
+    =.  caption.new-img  caption
+    =/  new-album  %=  album
+    images  (~(put by images.album) img-id new-img)
+    ==
+    =/  =wire  /share/(scot %p owner.album-id)/[name.album-id]
+    :_  this(albums (~(put by albums) album-id new-album))
+    :~  [%give %fact ~[wire] %albums-update !>(`update`[%album new-album])]
+    ==
+    ::
       %add
     =,  act
     ?.  (~(has by albums) album-id)

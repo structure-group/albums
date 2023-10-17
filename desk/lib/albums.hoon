@@ -79,6 +79,7 @@
         [%add dejs-add]
         [%del dejs-del]
         [%comment dejs-comment]
+        [%edit-img dejs-edit-img]
         [%share dejs-share]
         [%unshare dejs-unshare]
         [%edit dejs-edit]
@@ -112,6 +113,14 @@
         [%album-id (ot ~[name+so owner+(se %p)])]
         img-id+so
         [%comment (ot ~[who+(se %p) when+sd what+so])]
+      ==
+  ++  dejs-edit-img
+    %-  ot
+      :~  
+        [%album-id (ot ~[name+so owner+(se %p)])]
+        img-id+so
+        src+so
+        [%caption (ot ~[who+(se %p) when+sd what+so])]
       ==
   ++  dejs-share
     %-  ot
