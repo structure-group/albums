@@ -71,6 +71,8 @@
     =/  =wire  /share/(scot %p owner.album-id)/[name.album-id]
     =/  album=album  (~(got by albums) album-id)
     :_  this(albums (~(del by albums) album-id))
+    ?.  =(owner.album-id our.bowl)
+      ~
     %-  zing
       %+  turn  ~(tap in ~(key by shared.album))
       |=  who=@p 
@@ -211,7 +213,7 @@
     ::
       %archive 
     =,  act
-    ?>  =(owner.album-id our.bowl)
+    ?>  =(owner.album-id src.bowl)
     =/  new-album  (~(got by albums) album-id)
     =.  archive.new-album  %.y
     [~ this(albums (~(put by albums) album-id new-album))]
