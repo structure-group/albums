@@ -200,7 +200,7 @@
     ::
       %unshare
     =,  act
-    ?>  =(src.bowl owner.album-id)
+    ?>  =(owner.album-id src.bowl)
     =/  =wire  /share/(scot %p owner.album-id)/[name.album-id]
     =/  new-album  (~(got by albums) album-id)
     =.  shared.new-album  (~(del by shared.new-album) receiver)
@@ -211,6 +211,7 @@
     ::
       %archive 
     =,  act
+    ?>  =(owner.album-id our.bowl)
     =/  new-album  (~(got by albums) album-id)
     =.  archive.new-album  %.y
     [~ this(albums (~(put by albums) album-id new-album))]
