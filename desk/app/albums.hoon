@@ -83,11 +83,15 @@
     ::
       %edit-img
     =,  act
-    ?>  =(owner.album-id src.bowl)  
     ?.  (~(has by albums) album-id)
       ~&  >  ["albums: Album not found" album-id]
       `this
     =/  album  (~(got by albums) album-id)
+    =/  shared=(unit write-perm)  (~(get by shared.album) src.bowl)
+    ?~  shared  `this
+    ?.  =(u.shared %.y)
+      ~&  >  ["albums: We havent shared the album with this person" src.bowl]
+      `this
     =/  new-img  (~(got by images.album) img-id)
     =.  src.new-img  src
     =.  caption.new-img  caption
