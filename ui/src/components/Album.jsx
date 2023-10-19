@@ -424,6 +424,7 @@ function Gallery({
   our,
   write,
 }) {
+  const [showUnsubscribe, setShowUnsubscribe] = useState(false);
   const location = useLocation();
   const { saved } = location.state || { saved: false };
   const { s3 } = useStorageState();
@@ -448,6 +449,34 @@ function Gallery({
           </div>
         </div>
       )}
+      {showUnsubscribe && (
+        <div className="fixed top-0 left-0 h-screen w-screen bg-[rgba(0,0,0,0.25)] z-50 flex items-center justify-center">
+          <Foco
+            onClickOutside={() => setShowUnsubscribe(false)}
+          >
+            <div className="bg-white dark:bg-[#252526] text-black dark:text-white rounded-[10px] p-4 flex flex-col space-y-4">
+              <h2 className="font-semibold text-lg">Unsubscribe "{album?.albums?.title || albumId}"</h2>
+              <p className="text-sm max-w-prose">This will delete this album from your computer.  Other viewers will still retain access. This action is irreversible.</p>
+              <div className="flex w-full justify-end space-x-[15px]">
+                <button
+                  className="font-semibold bg-indigo-white dark:bg-indigo-black dark:hover:bg-indigo-black dark:hover:brightness-110 text-black hover:bg-indigo-gray dark:text-white w-fit py-2 px-4 text-sm text-center rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={() => setShowUnsubscribe(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="font-semibold bg-indigo-black hover:brightness-110 text-white w-fit py-2 px-4 text-sm text-center rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={() => {
+                    setShowUnsubscribe(false);
+                    nuke();
+                  }}>
+                  Unsubscribe
+                </button>
+              </div>
+            </div>
+          </Foco>
+        </div>
+      )}
       <div className="h-full w-full p-[30px] bg-white dark:bg-[#1E1E1E] rounded-xl flex flex-col space-y-[30px] overflow-y-auto min-h-0">
         <div className="flex flex-col space-y-2 md:space-y-0 lg:flex-row lg:justify-between rounded-md bg-white dark:bg-[#1E1E1E]">
           <div className="flex items-center space-x-2">
@@ -455,7 +484,7 @@ function Gallery({
               <p className="font-semibold">{album?.albums?.title || albumId}</p>
             </Link>
             {album?.albums?.archive && (
-              <p className="text-sm dark:bg-[#1E1E1E] bg-indigo-white px-2 py-1 rounded-md text-[#666666]">Archive</p>
+              <p className="text-sm dark:bg-[#252526] bg-indigo-white px-2 py-1 rounded-md text-[#666666]">Archive</p>
             )}
           </div>
           <div className="flex space-x-[15px] font-semibold text-[#666666] items-center">
@@ -481,9 +510,9 @@ function Gallery({
             {!our && (
               <button
                 className={cn(
-                  "dark:bg-[#1E1E1E] bg-indigo-white text-indigo-black dark:text-white py-2 px-4 text-sm rounded-lg hover:bg-indigo-gray dark:hover:bg-indigo-black",
+                  "dark:bg-[#252526] bg-indigo-white text-indigo-black dark:text-white py-2 px-4 text-sm rounded-lg hover:bg-indigo-gray dark:hover:bg-indigo-black",
                 )}
-                onClick={() => nuke()}
+                onClick={() => setShowUnsubscribe(true)}
               >
                 Unsubscribe
               </button>
