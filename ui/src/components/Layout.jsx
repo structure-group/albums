@@ -11,7 +11,7 @@ export default function Layout() {
     }
   }, [location, navigate]);
   return (
-    <div className="h-full w-full flex flex-col bg-indigo-white">
+    <div className="h-full w-full flex flex-col dark:bg-[#1E1E1E] bg-indigo-white">
       <Header />
       <Outlet />
     </div>

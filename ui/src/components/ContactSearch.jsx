@@ -18,18 +18,18 @@ export default function ContactSearch({
   const search =
     searchQuery !== ""
       ? Object.entries(contacts || {}).filter(
-          ([ship, contact]) =>
-            !groupMembers.some((e) => deSig(e) === deSig(ship)) &&
-            (ship.includes(searchQuery) ||
-              contact?.nickname?.includes(searchQuery)),
-        )
+        ([ship, contact]) =>
+          !groupMembers.some((e) => deSig(e) === deSig(ship)) &&
+          (ship.includes(searchQuery) ||
+            contact?.nickname?.includes(searchQuery)),
+      )
       : [];
   return (
     <div className="w-full relative">
       <SearchIcon className="absolute top-[10px] left-2 z-20" />
       <input
         type="text"
-        className="p-2 pl-8 w-full text-sm bg-indigo-white rounded-lg relative focus:outline-indigo-gray"
+        className="p-2 pl-8 w-full text-sm dark:bg-[#252526] bg-indigo-white rounded-lg relative focus:outline-indigo-gray"
         placeholder="Search for people to invite to album..."
         onFocus={() => setShowSearch(true)}
         onBlur={() => setShowSearch(false)}
@@ -48,7 +48,7 @@ export default function ContactSearch({
         value={searchQuery}
       />
       {showSearch && (
-        <div className="absolute flex flex-col w-full p-4 border border-indigo-gray max-h-32 overflow-y-auto bg-white rounded-md z-30 space-y-4">
+        <div className="absolute flex flex-col w-full p-4 border border-indigo-gray max-h-32 overflow-y-auto bg-white dark:bg-[#1E1E1E] rounded-md z-30 space-y-4">
           {search.map(([ship, contact]) => {
             return (
               <div key={ship} className="w-full z-20">
@@ -57,7 +57,7 @@ export default function ContactSearch({
                   contact={contact}
                   disableNicknames={disableNicknames}
                   disableAvatars={disableAvatars}
-                  className="hover:bg-indigo-white"
+                  className="hover:dark:bg-[#252526] bg-indigo-white dark:bg-[#1E1E1E]"
                   onMouseDown={(e) => {
                     if (!selectedMembers.includes(ship)) {
                       e.preventDefault();
@@ -76,7 +76,7 @@ export default function ContactSearch({
                 ship={`~${deSig(searchQuery)}`}
                 disableNicknames={disableNicknames}
                 disableAvatars={disableAvatars}
-                className="hover:bg-indigo-gray"
+                className="hover:bg-indigo-gray dark:hover:bg-[#252526]"
                 onMouseDown={(e) => {
                   if (
                     !selectedMembers.some(
@@ -97,8 +97,8 @@ export default function ContactSearch({
             searchQuery !== "" &&
             !ob.isValidPatp(`~${deSig(searchQuery)}`)) ||
             isInGroup) && (
-            <p className="text-sm text-gray-400 text-center">No results</p>
-          )}
+              <p className="text-sm text-gray-400 text-center">No results</p>
+            )}
           {searchQuery === "" && (
             <p className="text-sm text-gray-400 text-center">...</p>
           )}

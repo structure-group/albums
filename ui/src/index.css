@@ -20,7 +20,7 @@ div#app {
 }
 
 select {
-  @apply appearance-none bg-indigo-white border-none text-gray-500 text-sm py-2 pl-4 pr-9 font-semibold rounded-lg;
+  @apply appearance-none dark:bg-[#252526] dark:text-white bg-indigo-white border-none text-gray-500 text-sm py-2 pl-4 pr-9 font-semibold rounded-lg;
   background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23666666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E%0A");
   background-repeat: no-repeat;
   background-position: right 16px center;
@@ -47,7 +47,7 @@ select {
 }
 
 .toggle::after {
-  @apply absolute left-[2px] top-[2px] w-[12px] h-[12px] rounded-full bg-white transition-all duration-300;
+  @apply absolute left-[2px] top-[2px] w-[12px] h-[12px] rounded-full bg-white dark:bg-[#1E1E1E] transition-all duration-300;
   content: "";
 }
 

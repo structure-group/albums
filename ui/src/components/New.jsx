@@ -101,7 +101,7 @@ export default function NewAlbum() {
   return (
     <div className="flex w-full h-full">
       {addPhoto && <AddPhoto addPhotos={addPhotos} setAddPhoto={setAddPhoto} />}
-      <div className="p-[30px] h-full bg-white basis-full md:basis-1/2 flex flex-col border-r-2 border-indigo-gray overflow-y-auto pb-24">
+      <div className="p-[30px] h-full bg-white dark:bg-[#1E1E1E] basis-full md:basis-1/2 flex flex-col border-r-2 border-indigo-gray dark:border-[#131314] overflow-y-auto pb-24">
         {!shareStep ? (
           <>
             <h2 className="font-semibold text-lg mb-2">New Album</h2>
@@ -109,7 +109,7 @@ export default function NewAlbum() {
               <h3 className="text-sm font-semibold">Album Title</h3>
               <input
                 type="text"
-                className="bg-indigo-white rounded-md p-1 py-2 text-sm"
+                className="dark:bg-[#252526] bg-indigo-white rounded-md p-1 py-2 text-sm"
                 placeholder="My Great Photos"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -120,7 +120,7 @@ export default function NewAlbum() {
               <div className="flex justify-between w-full">
                 <div className="flex space-x-2">
                   <a
-                    className="font-semibold text-sm bg-indigo-black hover:bg-brightness-110 text-white py-1 px-2 text-center rounded-md cursor-pointer"
+                    className="font-semibold text-sm dark:bg-black bg-indigo-black hover:bg-brightness-110 text-white py-1 px-2 text-center rounded-md cursor-pointer"
                     onClick={() => setAddPhoto(true)}
                   >
                     Select Photos
@@ -130,7 +130,7 @@ export default function NewAlbum() {
                       "font-semibold text-sm hover:bg-brightness-110 py-1 px-2 text-center rounded-md cursor-pointer",
                       {
                         "bg-indigo-black text-white": clickMode === "cover",
-                        "bg-indigo-white text-black": clickMode !== "cover",
+                        "dark:bg-[#1E1E1E] bg-indigo-white text-black dark:text-white": clickMode !== "cover",
                       },
                     )}
                     onClick={() => setClickMode("cover")}
@@ -143,7 +143,7 @@ export default function NewAlbum() {
                     "font-semibold text-sm hover:bg-brightness-110 py-1 px-2 text-center rounded-md cursor-pointer",
                     {
                       "bg-indigo-red text-white": clickMode === "delete",
-                      "bg-indigo-white text-black": clickMode !== "delete",
+                      "dark:bg-[#1E1E1E] bg-indigo-white text-black dark:text-white": clickMode !== "delete",
                     },
                   )}
                   onClick={() => setClickMode("delete")}
@@ -151,7 +151,7 @@ export default function NewAlbum() {
                   Delete
                 </a>
               </div>
-              <div className="bg-indigo-white rounded-md border-2 border-dashed border-indigo-gray w-full p-2 flex flex-wrap gap-4 overflow-y-auto max-h-48">
+              <div className="dark:bg-[#1E1E1E] bg-indigo-white rounded-md border-2 border-dashed border-indigo-gray dark:border-[#252526] w-full p-2 flex flex-wrap gap-4 overflow-y-auto max-h-48">
                 {selectedPhotos.length === 0 && (
                   <p className="text-sm">No photos selected</p>
                 )}
@@ -199,13 +199,13 @@ export default function NewAlbum() {
             </div>
             <div className="flex justify-end w-full space-x-2">
               <button
-                className="font-semibold bg-indigo-white hover:bg-indigo-gray w-fit py-2 px-4 text-center text-sm rounded-md"
+                className="font-semibold dark:bg-[#252526] bg-indigo-white hover:bg-indigo-gray dark:hover:bg-indigo-black text-black dark:text-white w-fit py-2 px-4 text-center text-sm rounded-md"
                 onClick={() => navigate("/")}
               >
                 Cancel
               </button>
               <button
-                className="font-semibold bg-black hover:bg-indigo-black text-white w-fit py-2 px-4 text-sm text-center rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+                className="font-semibold bg-indigo-black hover:brightness-110 text-white w-fit py-2 px-4 text-sm text-center rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={() => createAlbum()}
                 disabled={title.length === 0}
               >
@@ -226,12 +226,12 @@ export default function NewAlbum() {
                 setSelectedMembers={setSelectedMembers}
               />
             </div>
-            <div className="bg-indigo-white mt-2 p-3 rounded-lg flex flex-col space-y-3 max-h-60 overflow-y-auto mb-4">
+            <div className="dark:bg-[#252526] bg-indigo-white mt-2 p-3 rounded-lg flex flex-col space-y-3 max-h-60 overflow-y-auto mb-4">
               {selectedMembers.length > 0 &&
                 selectedMembers.map((member) => {
                   return (
                     <div
-                      className="flex items-center justify-between space-x-2 w-full bg-white p-2 rounded-[4px]"
+                      className="flex items-center justify-between space-x-2 w-full bg-white dark:bg-[#1E1E1E] p-2 rounded-[4px]"
                       key={member[0]}
                     >
                       <Contact

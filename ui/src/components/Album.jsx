@@ -115,7 +115,7 @@ export default function Album() {
           </EditFrame>
         )}
         {!subview && (
-          <div className="h-full bg-indigo-white flex flex-col min-h-0 p-[30px]">
+          <div className="h-full dark:bg-[#252526] bg-indigo-white flex flex-col min-h-0 p-[30px]">
             <Gallery
               ship={ship}
               albumId={albumId}
@@ -169,7 +169,7 @@ function EditFrame({ album, ship, albumId, queryClient, shareMode, children }) {
   return (
     <div className="flex h-full">
       <div
-        className="p-[30px] h-full min-h-0 bg-white basis-full lg:basis-1/2 flex flex-col border-r-2 border-indigo-gray slide-in"
+        className="p-[30px] h-full min-h-0 bg-white dark:bg-[#1E1E1E] basis-full lg:basis-1/2 flex flex-col border-r-2 border-indigo-gray slide-in"
         ref={panel}
       >
         <Link to={`/album/${ship}/${albumId}`}>
@@ -184,7 +184,7 @@ function EditFrame({ album, ship, albumId, queryClient, shareMode, children }) {
               <h3 className="text-sm font-semibold">Album Title</h3>
               <input
                 type="text"
-                className="bg-indigo-white rounded-md p-1 py-2 text-sm w-full"
+                className="dark:bg-[#252526] bg-indigo-white rounded-md p-1 py-2 text-sm w-full"
                 placeholder="My Great Photos"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -210,7 +210,7 @@ function EditFrame({ album, ship, albumId, queryClient, shareMode, children }) {
             </div>
             <div className="w-full flex justify-end space-x-2">
               <button
-                className="bg-indigo-white hover:bg-indigo-gray text-black text-sm px-4 py-2 rounded-md font-semibold"
+                className="dark:bg-[#252526] bg-indigo-white hover:bg-indigo-gray dark:hover:bg-indigo-black text-black dark:text-white text-sm px-4 py-2 rounded-md font-semibold"
                 onClick={() => {
                   panel.current.classList.add("slide-out");
                   setTimeout(() => {
@@ -252,11 +252,11 @@ function EditFrame({ album, ship, albumId, queryClient, shareMode, children }) {
                 setSelectedMembers={setSelectedMembers}
               />
             )}
-            <div className="bg-indigo-white mt-2 p-3 rounded-lg flex flex-col space-y-3 max-h-60 overflow-y-auto">
+            <div className="dark:bg-[#252526] bg-indigo-white mt-2 p-3 rounded-lg flex flex-col space-y-3 max-h-60 overflow-y-auto">
               {shared.map((share) => {
                 return (
                   <div
-                    className="flex w-full items-center justify-between space-x-2 bg-white p-2 rounded-[4px]"
+                    className="flex w-full items-center justify-between space-x-2 bg-white dark:bg-[#1E1E1E] p-2 rounded-[4px]"
                     key={share[0]}
                   >
                     <Contact
@@ -316,7 +316,7 @@ function EditFrame({ album, ship, albumId, queryClient, shareMode, children }) {
                 selectedMembers.map((member) => {
                   return (
                     <div
-                      className="flex items-center justify-between space-x-2 w-full bg-white p-2 rounded-[4px]"
+                      className="flex items-center justify-between space-x-2 w-full bg-white dark:bg-[#1E1E1E] p-2 rounded-[4px]"
                       key={member[0]}
                     >
                       <Contact
@@ -376,7 +376,7 @@ function EditFrame({ album, ship, albumId, queryClient, shareMode, children }) {
           </div>
         )}
       </div>
-      <div className="overflow-x-auto min-h-0 bg-indigo-white h-full lg:basis-1/2 p-[30px] hidden lg:flex flex-col">
+      <div className="overflow-x-auto min-h-0 dark:bg-[#252526] bg-indigo-white h-full lg:basis-1/2 p-[30px] hidden lg:flex flex-col">
         <div style={{ width: "calc(100% + 400px)" }}>{children}</div>
       </div>
     </div>
@@ -412,25 +412,25 @@ function Gallery({
     <>
       {saved && (
         <div className="fixed w-screen h-screen top-0 left-0 flex justify-center items-center wait-and-fade">
-          <div className="bg-white shadow-md rounded-md p-4 text-sm text-black">
+          <div className="bg-white dark:bg-[#1E1E1E] shadow-md rounded-md p-4 text-sm text-black dark:text-white">
             Changes saved!
           </div>
         </div>
       )}
-      <div className="h-full w-full p-[30px] bg-white rounded-xl flex flex-col space-y-[30px] overflow-y-auto min-h-0">
-        <div className="flex flex-col space-y-2 md:space-y-0 lg:flex-row lg:justify-between rounded-md bg-white">
+      <div className="h-full w-full p-[30px] bg-white dark:bg-[#1E1E1E] rounded-xl flex flex-col space-y-[30px] overflow-y-auto min-h-0">
+        <div className="flex flex-col space-y-2 md:space-y-0 lg:flex-row lg:justify-between rounded-md bg-white dark:bg-[#1E1E1E]">
           <div className="flex items-center space-x-2">
             <Link to={`/album/${ship}/${albumId}`}>
               <p className="font-semibold">{album?.albums?.title || albumId}</p>
             </Link>
             {album?.albums?.archive && (
-              <p className="text-sm bg-indigo-white px-2 py-1 rounded-md text-[#666666]">Archive</p>
+              <p className="text-sm dark:bg-[#1E1E1E] bg-indigo-white px-2 py-1 rounded-md text-[#666666]">Archive</p>
             )}
           </div>
           <div className="flex space-x-[15px] font-semibold text-[#666666] items-center">
             {(our || write) && credentials?.accessKeyId && !album?.albums?.archive && (
               <button
-                className="cursor-pointer bg-indigo-white text-indigo-black py-2 px-4 text-sm rounded-lg hover:bg-indigo-gray"
+                className="cursor-pointer dark:bg-[#252526] dark:hover:bg-indigo-black bg-indigo-white text-indigo-black dark:text-white py-2 px-4 text-sm rounded-lg hover:bg-indigo-gray"
                 onClick={() => setAddPhoto(true)}
               >
                 Add Photos
@@ -440,7 +440,7 @@ function Gallery({
               <Link to={`/album/${ship}/${albumId}/edit`}>
                 <button
                   className={cn(
-                    "bg-indigo-white text-indigo-black py-2 px-4 text-sm rounded-lg hover:bg-indigo-gray",
+                    "dark:bg-[#252526] dark:hover:bg-indigo-black bg-indigo-white text-indigo-black dark:text-white py-2 px-4 text-sm rounded-lg hover:bg-indigo-gray",
                   )}
                 >
                   Edit
@@ -450,7 +450,7 @@ function Gallery({
             {!our && (
               <button
                 className={cn(
-                  "bg-indigo-white text-indigo-black py-2 px-4 text-sm rounded-lg hover:bg-indigo-gray",
+                  "dark:bg-[#1E1E1E] bg-indigo-white text-indigo-black dark:text-white py-2 px-4 text-sm rounded-lg hover:bg-indigo-gray dark:hover:bg-indigo-black",
                 )}
                 onClick={() => nuke()}
               >
@@ -472,7 +472,7 @@ function Gallery({
           {images?.map((image, i) => {
             return (
               <div
-                className="w-[200px] h-[200px] hover:bg-gray-100 cursor-pointer"
+                className="w-[200px] h-[200px] hover:bg-gray-100 hover:dark:bg-[rgba(0,0,0,0.1)] cursor-pointer"
                 key={image[0]}
                 onClick={() => setLightboxPhoto(i)}
               >

@@ -8,7 +8,7 @@ export default function Header() {
   const location = useLocation();
   const { credentials } = s3 ?? { credentials: { accessKeyId: "" } };
   return (
-    <div className="text-sm bg-white border-b-2 border-indigo-gray flex justify-between px-6 py-[12px] items-center font-semibold">
+    <div className="text-sm bg-white dark:bg-[#1E1E1E] border-b-2 border-indigo-gray dark:border-[#131414] flex justify-between px-6 py-[12px] items-center font-semibold">
       <Link to="/">
         <div className="hidden lg:flex items-center space-x-2 cursor-pointer">
           <AlbumsHeaderIcon />

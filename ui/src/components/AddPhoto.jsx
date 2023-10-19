@@ -71,7 +71,7 @@ export default function AddPhoto({ setAddPhoto, addPhotos }) {
           "pointer-events-none opacity-25": album?.images?.some(
             (image) => image[1]?.src === url,
           ),
-          "border-black": selectedFiles.some((file) => file === url),
+          "border-black dark:border-white": selectedFiles.some((file) => file === url),
           "border-transparent": !selectedFiles.some((file) => file === url),
         })}
         onClick={() => {
@@ -101,7 +101,7 @@ export default function AddPhoto({ setAddPhoto, addPhotos }) {
     <div className="absolute top-0 left-0 bg-[rgba(0,0,0,0.25)] w-full h-full flex flex-col items-center justify-center z-40">
       <Foco onClickOutside={() => setAddPhoto(false)}>
         <div
-          className="bg-white rounded-xl flex flex-col items-center justify-center z-10 p-4"
+          className="bg-white dark:bg-[#1E1E1E] rounded-xl flex flex-col items-center justify-center z-10 p-4"
           style={{
             width: promptWidth + 32,
             height: promptHeight + 32,
@@ -110,7 +110,7 @@ export default function AddPhoto({ setAddPhoto, addPhotos }) {
           <div className="w-full flex items-center justify-between mb-2">
             <p className="font-semibold">Your Images</p>
             <button
-              className="bg-black text-white p-1 rounded-md text-sm font-semibold hover:bg-indigo-black"
+              className="bg-indigo-black text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-black hover:dark:bg-[#1E1E1E] dark:hover:brightness-90"
               onClick={() => {
                 const input = document.createElement("input");
                 input.type = "file";
@@ -160,13 +160,13 @@ export default function AddPhoto({ setAddPhoto, addPhotos }) {
           </Grid>
           <div className="flex space-x-2 pt-2 w-full">
             <button
-              className="text-sm font-semibold bg-white text-black w-full rounded-md py-1 hover:bg-indigo-white"
+              className="text-sm font-semibold dark:bg-[#252526] text-black dark:text-white w-full rounded-md px-4 py-2 hover:dark:bg-[#1E1E1E] bg-indigo-white hover:brightness-90"
               onClick={() => setAddPhoto(false)}
             >
               Cancel
             </button>
             <button
-              className="text-sm font-semibold bg-black hover:bg-indigo-black text-white w-full rounded-md py-1 disabled:bg-indigo-white disabled:text-indigo-gray"
+              className="text-sm font-semibold text-white w-full rounded-md px-4 py-2 disabled:dark:bg-[#1E1E1E] bg-indigo-black disabled:text-indigo-gray hover:bg-black hover:dark:bg-[#1E1E1E] dark:hover:brightness-90 disabled:hover:bg-indigo-black disabled:opacity-50 disabled:cursor-default"
               disabled={selectedFiles.length === 0}
               onClick={() => addPhotos(selectedFiles, queryClient)}
             >

@@ -160,7 +160,7 @@ export default function Lightbox({
             <div className="px-8 absolute lg:static" />
           )}
         </div>
-        <div className="bg-white relative rounded-[10px] p-4 flex flex-col min-h-0 justify-end lg:w-full max-h-96 lg:max-h-full basis-1/2 lg:basis-1/4 space-y-4">
+        <div className="bg-white dark:bg-[#1E1E1E] relative rounded-[10px] p-4 flex flex-col min-h-0 justify-end lg:w-full max-h-96 lg:max-h-full basis-1/2 lg:basis-1/4 space-y-4">
           <div className="grow">
             <div className="border-b pb-2 space-y-2">
               <div className="flex w-full justify-end items-center">
@@ -170,7 +170,7 @@ export default function Lightbox({
                     className="h-8 w-8 lg:w-[43px] lg:h-[43px] rounded-md"
                   /> : <div className="h-8 w-8 lg:w-[43px] lg:h-[43px] rounded-md bg-cover" style={{ backgroundImage: DefaultAlbum }} />}
                   <div className="flex flex-col font-semibold text-sm">
-                    <p className="text-indigo-black">{album?.albums?.title}</p>
+                    <p className="text-indigo-black dark:text-white">{album?.albums?.title}</p>
                     <p className="text-[#999999]">
                       {photoNumber} of {album?.albums?.images.length}
                     </p>
@@ -211,7 +211,7 @@ export default function Lightbox({
                 >
                   <div
                     className={
-                      "flex flex-col justify-end items-end bg-indigo-white shadow-sm w-[200px] border border-[#DEE1EA]"
+                      "flex flex-col justify-end items-end dark:bg-[#1E1E1E] bg-indigo-white shadow-sm w-[200px] border border-[#DEE1EA]"
                     }
                   >
                     <a
@@ -304,7 +304,7 @@ export default function Lightbox({
               {album?.albums?.archive ? <div>
                 <p className="text-xs text-[#999999] border-t pt-2">This album has been deleted by its owner. You cannot comment on your archived copy.</p>
               </div> : <textarea
-                className="w-full sticky bottom-0 h-16 resize-none border border-indigo-gray p-2 rounded-md shrink-0"
+                className="w-full sticky bottom-0 h-16 resize-none border border-indigo-gray dark:bg-[#252526] dark:text-white dark:border-indigo-black p-2 rounded-md shrink-0"
                 placeholder="Add a comment..."
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
