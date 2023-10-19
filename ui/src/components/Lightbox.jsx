@@ -215,7 +215,7 @@ export default function Lightbox({
                     }
                   >
                     <a
-                      className="text-sm w-full p-2 block hover:bg-[#DEE1EA]"
+                      className="text-sm w-full p-2 block hover:bg-[#DEE1EA] dark:hover:bg-[#252526]"
                       href={photo[1]?.src}
                       target="_blank"
                     >
@@ -223,7 +223,7 @@ export default function Lightbox({
                     </a>
                     {ship === `~${window.ship}` && (
                       <a
-                        className="text-sm cursor-pointer block w-full p-2 hover:bg-[#DEE1EA]"
+                        className="text-sm cursor-pointer block w-full p-2 hover:bg-[#DEE1EA] dark:hover:bg-[#252526]"
                         onClick={(e) => {
                           e.stopPropagation();
                           changeCover(albumId, ship, photo[1]?.src).then(() => {
@@ -241,7 +241,7 @@ export default function Lightbox({
                     )}
                     {write && (
                       <a
-                        className="text-sm cursor-pointer block w-full p-2 hover:bg-[#DEE1EA]"
+                        className="text-sm cursor-pointer block w-full p-2 hover:bg-[#DEE1EA] dark:hover:bg-[#252526]"
                         onClick={(e) => {
                           e.stopPropagation();
                           if (photo[1]?.src === cover) {
