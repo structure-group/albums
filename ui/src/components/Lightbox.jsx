@@ -99,7 +99,7 @@ export default function Lightbox({
     <div className="fixed top-0 left-0 bg-indigo-black w-full h-full flex flex-col items-center justify-center space-y-[30px] p-[14px] z-40">
       <div className="h-full w-full flex flex-col lg:flex-row justify-center">
         <div
-          className="min-w-0 min-h-0 flex justify-center lg:justify-between basis-1/2 lg:basis-3/4 lg:pr-[14px]"
+          className="min-w-0 min-h-0 flex justify-center basis-1/2 lg:basis-3/4 lg:pr-[14px] relative"
           onMouseEnter={(e) => showButtons()}
           onMouseLeave={(e) => {
             setTimeout(() => hideButtons(), 500);
@@ -108,7 +108,7 @@ export default function Lightbox({
           {!first ? (
             <div
               className={cn(
-                "bg-[rgba(0,0,0,0.3)] hover:bg-[rgba(0,0,0,0.1)] flex flex-col justify-center lg:h-full rounded-[10px] px-8 cursor-pointer absolute left-0 top-1 lg:static h-[calc(50%-8px)] opacity-0 transition-opacity duration-300",
+                "bg-[rgba(0,0,0,0.3)] hover:bg-[rgba(0,0,0,0.1)] flex flex-col justify-center lg:h-full rounded-[10px] px-8 cursor-pointer absolute left-0 top-1 lg:top-0 h-[calc(50%-8px)] opacity-0 transition-opacity duration-300",
               )}
               onClick={() => handlers.BACK()}
               ref={left}
@@ -138,7 +138,7 @@ export default function Lightbox({
           {!last ? (
             <div
               className={cn(
-                "bg-[rgba(0,0,0,0.3)] hover:bg-[rgba(0,0,0,0.1)] flex flex-col justify-center lg:h-full rounded-[10px] px-8 cursor-pointer absolute right-0 top-1 lg:static h-[calc(50%-8px)] opacity-0 transition-opacity duration-300",
+                "bg-[rgba(0,0,0,0.3)] hover:bg-[rgba(0,0,0,0.1)] flex flex-col justify-center lg:h-full rounded-[10px] px-8 cursor-pointer absolute right-0 top-1 lg:top-0 h-[calc(50%-8px)] opacity-0 transition-opacity duration-300",
               )}
               onClick={() => handlers.FORWARD()}
               ref={right}
