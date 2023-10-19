@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState, useRef } from "react";
 import AddPhoto from "./AddPhoto";
 import Contact from "./Contact";
 import Lightbox from "./Lightbox";
+import LoadWrapper from "./LoadWrapper";
 import cn from "classnames";
 import ContactSearch from "./ContactSearch";
 import { api } from "../state/api";
@@ -30,7 +31,7 @@ export default function Album() {
   const { ship, albumId, subview } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { data: album } = useQuery({
+  const { data: album, isLoading } = useQuery({
     queryKey: ["album", ship, albumId],
     queryFn: () => albumQuery(albumId, ship),
   });
@@ -73,7 +74,7 @@ export default function Album() {
   };
 
   return (
-    <>
+    <LoadWrapper loaders={[isLoading]}>
       <GlobalHotKeys keyMap={keyMap} handlers={handlers} allowChanges={true} />
       <div className="w-full h-full min-h-0 flex flex-col">
         {addPhoto && (
@@ -129,7 +130,7 @@ export default function Album() {
           </div>
         )}
       </div>
-    </>
+    </LoadWrapper>
   );
 }
 

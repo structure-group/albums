@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import useStorageState from "../state/storage";
 import { DefaultAlbum } from "./icons/DefaultAlbum";
+import LoadWrapper from "./LoadWrapper";
 export default function Albums({ shared = false }) {
   const { s3 } = useStorageState();
   const { credentials } = s3 ?? { credentials: { accessKeyId: "" } };
@@ -12,7 +13,7 @@ export default function Albums({ shared = false }) {
   const sharedFilter = (album) => album?.owner !== `~${window.ship}`;
   // console.log(albums.data)
   return (
-    <>
+    <LoadWrapper loaders={[albums]}>
       <Helmet>
         <title>Albums</title>
       </Helmet>
@@ -57,6 +58,6 @@ export default function Albums({ shared = false }) {
           </p>
         </div>
       )}
-    </>
+    </LoadWrapper>
   );
 }
