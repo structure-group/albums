@@ -8,13 +8,13 @@
   =/  u  ;;(update upd) 
   ?-  -.u  
       %album-id
-    =/  album-info=(list [=album-id cover=src title=@t])  +.u
+    =/  album-info=(list [=album-id cover=src title=@t archive=?])  +.u
     %+  frond  'album-id'
     :-  %a
     %+  turn  album-info
-    |=  [=album-id cover=src title=@t]
+    |=  [=album-id cover=src title=@t =archive]
     ^-  ^json
-      (en-vase !>([name=name.album-id owner=owner.album-id cover=cover title=title])) 
+      (en-vase !>([name=name.album-id owner=owner.album-id cover=cover title=title archive=archive])) 
       %album
     =/  =album  +.u
     %+  frond  'albums'

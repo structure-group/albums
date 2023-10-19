@@ -30,7 +30,7 @@
       [%archive =album-id] :: unshare album with user
   ==
 +$  update
-  $%  [%album-id album-info=(list [album-id cover=src =title])]
+  $%  [%album-id album-info=(list [album-id cover=src =title =archive])]
       [%album =album]
   ==
 --
