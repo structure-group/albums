@@ -18,6 +18,7 @@ import {
   inviteSelected,
   unshare,
 } from "../state/actions";
+import Foco from "react-foco";
 
 const keyMap = {
   BACK: "ArrowLeft",
@@ -138,6 +139,7 @@ function EditFrame({ album, ship, albumId, queryClient, shareMode, children }) {
   const navigate = useNavigate();
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [title, setTitle] = useState("");
+  const [showDelete, setShowDelete] = useState(false);
   const panel = useRef(null);
   const [comments, setComments] = useState(false);
   const { data: contactsData } = useQuery({
@@ -169,6 +171,34 @@ function EditFrame({ album, ship, albumId, queryClient, shareMode, children }) {
 
   return (
     <div className="flex h-full">
+      {showDelete && (
+        <div className="fixed top-0 left-0 h-screen w-screen bg-[rgba(0,0,0,0.25)] z-50 flex items-center justify-center">
+          <Foco
+            onClickOutside={() => setShowDelete(false)}
+          >
+            <div className="bg-white dark:bg-[#252526] text-black dark:text-white rounded-[10px] p-4 flex flex-col space-y-4">
+              <h2 className="font-semibold text-lg">Delete album</h2>
+              <p className="text-sm">Are you sure you want to delete this album? Current subscribers will retain an archived copy.</p>
+              <div className="flex w-full justify-end space-x-[15px]">
+                <button
+                  className="dark:bg-[#252526] bg-indigo-white hover:bg-indigo-gray dark:hover:bg-indigo-black text-black dark:text-white text-sm px-4 py-2 rounded-md font-semibold"
+                  onClick={() => setShowDelete(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="bg-red-500 text-white text-sm font-semibold rounded-md py-2 px-4 hover:brightness-110"
+                  onClick={() => {
+                    setShowDelete(false);
+                    nuke();
+                  }}>
+                  Delete
+                </button>
+              </div>
+            </div>
+          </Foco>
+        </div>
+      )}
       <div
         className="p-[30px] h-full min-h-0 bg-white dark:bg-[#1E1E1E] basis-full lg:basis-1/2 flex flex-col border-r-2 border-indigo-gray slide-in"
         ref={panel}
@@ -204,7 +234,7 @@ function EditFrame({ album, ship, albumId, queryClient, shareMode, children }) {
               <p className="font-semibold text-sm">Delete</p>
               <a
                 className="text-indigo-red font-semibold border-b border-indigo-red w-fit text-xs cursor-pointer"
-                onClick={() => nuke()}
+                onClick={() => setShowDelete(true)}
               >
                 Delete album
               </a>
