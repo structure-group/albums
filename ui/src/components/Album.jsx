@@ -428,7 +428,7 @@ function Gallery({
             )}
           </div>
           <div className="flex space-x-[15px] font-semibold text-[#666666] items-center">
-            {(our || write) && credentials?.accessKeyId && (
+            {(our || write) && credentials?.accessKeyId && !album?.albums?.archive && (
               <button
                 className="cursor-pointer bg-indigo-white text-indigo-black py-2 px-4 text-sm rounded-lg hover:bg-indigo-gray"
                 onClick={() => setAddPhoto(true)}
@@ -457,7 +457,7 @@ function Gallery({
                 Unsubscribe
               </button>
             )}
-            <Link to={`/album/${ship}/${albumId}/share`}>
+            {!album?.albums?.archive && <Link to={`/album/${ship}/${albumId}/share`}>
               <button
                 className={cn(
                   "bg-indigo-black text-white py-2 px-4 text-sm rounded-lg hover:brightness-110",
@@ -465,7 +465,7 @@ function Gallery({
               >
                 Share
               </button>
-            </Link>
+            </Link>}
           </div>
         </div>
         <div className="flex flex-wrap justify-center md:justify-normal gap-[30px] w-full max-h-full min-h-0">
