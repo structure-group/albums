@@ -8,6 +8,6 @@
   base+'albums'
   image+'https://files.native.computer/albums/albums.svg'
   :+  %glob-http
-    'https://files.native.computer/albums/glob-albums-v1.0.glob'
-    0v3.3ah5d.p9odf.j2le5.a2fgk.86qso
+    'https://mopfel-winrux-s3.nyc3.digitaloceanspaces.com/albums/glob-albums-v1.0.glob'
+    0v6.n64qe.3ic8k.ft428.22fo0.e6cv2
 ==
