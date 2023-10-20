@@ -200,7 +200,7 @@ function EditFrame({ album, ship, albumId, queryClient, shareMode, children }) {
         </div>
       )}
       <div
-        className="p-[30px] h-full min-h-0 bg-white dark:bg-[#1E1E1E] basis-full lg:basis-1/2 flex flex-col border-r-2 border-indigo-gray slide-in"
+        className="p-[30px] h-full min-h-0 bg-white dark:bg-[#1E1E1E] basis-full lg:basis-1/2 flex flex-col border-r-2 border-indigo-gray dark:border-[#131314] slide-in"
         ref={panel}
       >
         <Link to={`/album/${ship}/${albumId}`}>
