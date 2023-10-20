@@ -152,7 +152,7 @@ export default function AddPhoto({ setAddPhoto, addPhotos }) {
             columnCount={columns}
             columnWidth={108}
             height={promptHeight}
-            rowCount={sortedFiles.length / 3}
+            rowCount={sortedFiles.length / columns}
             rowHeight={100}
             width={columns * 113}
           >
