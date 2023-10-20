@@ -6,8 +6,8 @@
   website+'https://github.com/structure-group/albums'
   license+'MIT'
   base+'albums'
-  image+'https://mopfel-winrux-s3.nyc3.digitaloceanspaces.com/albums/albums-tile.svg'
+  image+'https://files.native.computer/albums/albums.svg'
   :+  %glob-http
-    'https://mopfel-winrux-s3.nyc3.digitaloceanspaces.com/albums/glob-albums-v1.0.glob'
+    'https://files.native.computer/albums/glob-albums-v1.0.glob'
     0v7.1888k.ejdho.327to.7f54g.qqjul
 ==
