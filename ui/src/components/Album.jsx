@@ -424,6 +424,7 @@ function Gallery({
   our,
   write,
 }) {
+  const queryClient = useQueryClient();
   const [showUnsubscribe, setShowUnsubscribe] = useState(false);
   const location = useLocation();
   const { saved } = location.state || { saved: false };
