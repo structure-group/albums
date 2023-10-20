@@ -2,12 +2,12 @@
   title+'Albums'
   info+'A photo sharing app'
   color+0x9a.acbd
-  version+[0 9 5]
+  version+[1 0 0]
   website+'https://github.com/structure-group/albums'
   license+'MIT'
   base+'albums'
-  image+'https://s3.figfel-bicseb-dozzod-topdem.nativeplanet.live/bucket/albums/2023.10.05..14.58.50-albums_logo.png'
+  image+'https://mopfel-winrux-s3.nyc3.digitaloceanspaces.com/albums/albums-tile.svg'
   :+  %glob-http
-    'https://s3.figfel-bicseb-dozzod-topdem.nativeplanet.live/bucket/albums/2023.10.20..01.48.46-glob-albums-v0.9.5.glob'
+    'https://mopfel-winrux-s3.nyc3.digitaloceanspaces.com/albums/glob-albums-v1.0.glob'
     0v7.1888k.ejdho.327to.7f54g.qqjul
 ==
