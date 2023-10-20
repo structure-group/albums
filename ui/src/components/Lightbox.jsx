@@ -108,7 +108,7 @@ export default function Lightbox({
           {!first ? (
             <div
               className={cn(
-                "bg-[rgba(0,0,0,0.3)] hover:bg-[rgba(0,0,0,0.1)] flex flex-col justify-center lg:h-full rounded-[10px] px-8 cursor-pointer absolute left-0 top-1 lg:top-0 h-[calc(50%-8px)] opacity-0 transition-opacity duration-300",
+                "bg-[rgba(0,0,0,0.3)] hover:bg-[rgba(0,0,0,0.1)] flex flex-col justify-center lg:h-full rounded-[10px] px-8 cursor-pointer absolute left-0 top-14 lg:top-0 h-[calc(50%-8px)] opacity-0 transition-opacity duration-300",
               )}
               onClick={() => handlers.BACK()}
               ref={left}
@@ -138,7 +138,7 @@ export default function Lightbox({
           {!last ? (
             <div
               className={cn(
-                "bg-[rgba(0,0,0,0.3)] hover:bg-[rgba(0,0,0,0.1)] flex flex-col justify-center lg:h-full rounded-[10px] px-8 cursor-pointer absolute right-0 lg:right-[14px] top-1 lg:top-0 h-[calc(50%-8px)] opacity-0 transition-opacity duration-300",
+                "bg-[rgba(0,0,0,0.3)] hover:bg-[rgba(0,0,0,0.1)] flex flex-col justify-center lg:h-full rounded-[10px] px-8 cursor-pointer absolute right-0 lg:right-[14px] top-14 lg:top-0 h-[calc(50%-8px)] opacity-0 transition-opacity duration-300",
               )}
               onClick={() => handlers.FORWARD()}
               ref={right}
