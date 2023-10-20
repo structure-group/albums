@@ -150,7 +150,7 @@ export default function AddPhoto({ setAddPhoto, addPhotos }) {
           <Grid
             className="self-center"
             columnCount={columns}
-            columnWidth={113}
+            columnWidth={108}
             height={promptHeight}
             rowCount={sortedFiles.length / 3}
             rowHeight={100}
