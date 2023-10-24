@@ -113,9 +113,11 @@ export default function AddPhoto({ setAddPhoto, addPhotos }) {
               className="bg-indigo-black text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-black hover:dark:bg-[#1E1E1E] dark:hover:brightness-90"
               onClick={() => {
                 const input = document.createElement("input");
+                input.style.display = "none";
                 input.type = "file";
                 input.multiple = true;
                 input.accept = "image/*";
+                document.body.appendChild(input);
                 input.onchange = (e) => {
                   const files = Array.from(e.target.files);
                   const promises = files.map(async (file) => {
@@ -140,6 +142,7 @@ export default function AddPhoto({ setAddPhoto, addPhotos }) {
                 } catch (e) {
                   console.log(e);
                 } finally {
+                  input.remove();
                   getFiles(s3);
                 }
               }}
